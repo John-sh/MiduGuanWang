@@ -1,0 +1,252 @@
+<div class="page">
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--left" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow--right" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <main class="main">
+    <section class="hero">
+      <h1 class="hero-title">欢迎报名</h1>
+      <p class="hero-name">
+        2026年南昌市“洪工杯”<br />
+        网络舆情应对处置职工职业技能竞赛
+      </p>
+      <ul class="hero-tips">
+        <li>请完整填写参赛单位、战队与三位联系人信息</li>
+        <li>报名即注册蜜度官网账号，请确保手机号可用</li>
+      </ul>
+    </section>
+
+    @if (submitSuccess) {
+      <section class="panel success-panel" role="status">
+        <div class="success-icon">✓</div>
+        <h2>提交成功</h2>
+        <p>报名信息已提交，请留意后续通知短信。</p>
+        <button type="button" class="btn-primary" (click)="resetForm()">
+          继续报名
+        </button>
+      </section>
+    } @else {
+      <form class="panel" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <h2 class="panel-title"><span>◆</span> 报名信息 <span>◆</span></h2>
+
+        <div class="field" [class.field--error]="fieldInvalid('organization')">
+          <label for="organization">参赛单位名称</label>
+          <div class="control">
+            <input
+              id="organization"
+              type="text"
+              formControlName="organization"
+              placeholder="请输入参赛单位名称"
+              maxlength="100"
+              autocomplete="organization"
+            />
+            <span class="required" aria-hidden="true">*</span>
+          </div>
+          @if (fieldInvalid('organization')) {
+            <p class="error">请填写参赛单位名称</p>
+          }
+        </div>
+
+        <div class="field" [class.field--error]="fieldInvalid('teamName')">
+          <label for="teamName">参赛战队名称</label>
+          <div class="control">
+            <input
+              id="teamName"
+              type="text"
+              formControlName="teamName"
+              placeholder="请输入参赛战队名称"
+              maxlength="50"
+            />
+            <span class="required" aria-hidden="true">*</span>
+          </div>
+          @if (fieldInvalid('teamName')) {
+            <p class="error">请填写参赛战队名称</p>
+          }
+        </div>
+
+        <div class="section-label">联系人（固定 3 人）</div>
+        <div formArrayName="contacts" class="contacts">
+          @for (ctrl of contacts.controls; track $index; let i = $index) {
+            <div class="field" [class.field--error]="contactInvalid(i)">
+              <label [for]="'contact' + i">联系人{{ i + 1 }}</label>
+              <div class="control">
+                <input
+                  [id]="'contact' + i"
+                  type="text"
+                  [formControlName]="i"
+                  [placeholder]="'请输入联系人' + (i + 1) + '姓名'"
+                  maxlength="20"
+                  autocomplete="name"
+                />
+                <span class="required" aria-hidden="true">*</span>
+              </div>
+              @if (contactInvalid(i)) {
+                <p class="error">请填写有效姓名（2-20个字）</p>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="field" [class.field--error]="fieldInvalid('phone')">
+          <label for="phone">联系电话</label>
+          <div class="control">
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              placeholder="请输入11位手机号"
+              maxlength="11"
+              inputmode="numeric"
+              autocomplete="tel"
+            />
+            <span class="required" aria-hidden="true">*</span>
+          </div>
+          @if (fieldInvalid('phone')) {
+            <p class="error">请输入正确的手机号码</p>
+          }
+        </div>
+
+        <div class="field" [class.field--error]="fieldInvalid('verifyCode')">
+          <label for="verifyCode">验证码</label>
+          <div class="control control--code">
+            <input
+              id="verifyCode"
+              type="text"
+              formControlName="verifyCode"
+              placeholder="请输入验证码"
+              maxlength="6"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+            />
+            <button
+              type="button"
+              class="code-btn"
+              [disabled]="codeSending || countdown > 0"
+              (click)="sendCode()"
+            >
+              @if (codeSending) {
+                发送中...
+              } @else if (countdown > 0) {
+                {{ countdown }}s
+              } @else {
+                获取验证码
+              }
+            </button>
+            <span class="required" aria-hidden="true">*</span>
+          </div>
+          @if (fieldInvalid('verifyCode')) {
+            <p class="error">请输入验证码</p>
+          }
+        </div>
+
+        <div class="section-label">上传附件</div>
+
+        <div class="upload-group">
+          <div class="upload-head">
+            <p class="upload-title">附件一：近三个月单位社保缴费证明（3份）</p>
+            <span class="required" aria-hidden="true">*</span>
+          </div>
+          <p class="upload-hint">{{ attachmentHints.socialSecurity }}</p>
+
+          <div formArrayName="socialSecurityFiles" class="upload-slots">
+            @for (
+              ctrl of socialSecurityFiles.controls;
+              track $index;
+              let i = $index
+            ) {
+              <div
+                class="upload upload--slot"
+                [class.upload--error]="!!socialSecurityError(i)"
+              >
+                <p class="upload-slot-label">{{ socialSecurityLabels[i] }}</p>
+                <label class="upload-box" [for]="'file-social-' + i">
+                  <input
+                    [id]="'file-social-' + i"
+                    type="file"
+                    accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
+                    (change)="onSocialSecurityChange($event, i)"
+                  />
+                  @if (socialSecurityFileAt(i); as file) {
+                    <div class="file-chip">
+                      <span class="file-name">{{ file.name }}</span>
+                      <button
+                        type="button"
+                        class="file-remove"
+                        (click)="clearSocialSecurity(i); $event.preventDefault(); $event.stopPropagation()"
+                      >
+                        移除
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="upload-cta">点击上传</span>
+                  }
+                </label>
+                @if (socialSecurityError(i); as err) {
+                  <p class="error">{{ err }}</p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div
+          class="upload"
+          [class.upload--error]="!!unionCertError()"
+        >
+          <div class="upload-head">
+            <p class="upload-title">附件二：工会法人资格证书</p>
+            <span class="required" aria-hidden="true">*</span>
+          </div>
+          <p class="upload-hint">{{ attachmentHints.unionCert }}</p>
+          <label class="upload-box" for="file-union">
+            <input
+              id="file-union"
+              type="file"
+              accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
+              (change)="onUnionCertChange($event)"
+            />
+            @if (unionCertFile) {
+              <div class="file-chip">
+                <span class="file-name">{{ unionCertFile.name }}</span>
+                <button
+                  type="button"
+                  class="file-remove"
+                  (click)="clearUnionCert(); $event.preventDefault(); $event.stopPropagation()"
+                >
+                  移除
+                </button>
+              </div>
+            } @else {
+              <span class="upload-cta">点击上传附件</span>
+            }
+          </label>
+          @if (unionCertError(); as err) {
+            <p class="error">{{ err }}</p>
+          }
+        </div>
+
+        <label class="agree" [class.agree--error]="fieldInvalid('agreed')">
+          <input type="checkbox" formControlName="agreed" />
+          <span>
+            我已阅读并同意
+            <a href="javascript:void(0)">用户协议</a>
+            和
+            <a href="javascript:void(0)">隐私政策</a>
+          </span>
+        </label>
+        @if (fieldInvalid('agreed')) {
+          <p class="error agree-error">请勾选同意用户协议和隐私政策</p>
+        }
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="submitting"
+        >
+          {{ submitting ? '提交中...' : '立即提交' }}
+        </button>
+      </form>
+    }
+  </main>
+</div>
