@@ -2,6 +2,10 @@
 
 2026年南昌市“洪工杯”网络舆情应对处置职工职业技能竞赛 · 报名填表页（Angular）。
 
+## 在线访问
+
+GitHub Pages：https://john-sh.github.io/MiduGuanWang/
+
 ## 本地运行
 
 ```bash
@@ -14,6 +18,6 @@ npm start
 ## 功能说明
 
 - 参赛单位、战队名称、3 位联系人、手机号、验证码
-- 两个附件上传（≤5MB，PDF/PNG/JPG/JPEG）
+- 社保证明 3 份 + 工会法人资格证书上传（≤5MB，PDF/PNG/JPG/JPEG）
 - 用户协议勾选与表单校验
 - 验证码发送与提交当前为前端模拟，可后续对接接口

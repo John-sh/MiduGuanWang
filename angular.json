@@ -60,6 +60,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/MiduGuanWang/",
               "budgets": [
                 {
                   "type": "initial",
