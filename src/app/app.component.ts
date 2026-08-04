@@ -145,6 +145,15 @@ export class AppComponent implements OnDestroy {
     this.clearFileControl(this.form.get('unionCertFile'), 'file-union');
   }
 
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '').slice(0, 11);
+    if (input.value !== digits) {
+      input.value = digits;
+    }
+    this.form.get('phone')?.setValue(digits, { emitEvent: false });
+  }
+
   sendCode(): void {
     const phone = this.form.get('phone');
     phone?.markAsTouched();
@@ -181,6 +190,7 @@ export class AppComponent implements OnDestroy {
     window.setTimeout(() => {
       this.submitting = false;
       this.submitSuccess = true;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 900);
   }
 

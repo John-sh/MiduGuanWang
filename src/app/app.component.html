@@ -18,10 +18,10 @@
     </section>
 
     @if (submitSuccess) {
-      <section class="panel success-panel" role="status">
-        <div class="success-icon">✓</div>
+      <section class="panel success-panel" role="status" aria-live="polite">
+        <div class="success-icon" aria-hidden="true">✓</div>
         <h2>提交成功</h2>
-        <p>报名信息已提交，请留意后续通知短信。</p>
+        <p>您的报名信息已提交成功。</p>
         <button type="button" class="btn-primary" (click)="resetForm()">
           继续报名
         </button>
@@ -98,7 +98,9 @@
               placeholder="请输入11位手机号"
               maxlength="11"
               inputmode="numeric"
+              pattern="[0-9]*"
               autocomplete="tel"
+              (input)="onPhoneInput($event)"
             />
             <span class="required" aria-hidden="true">*</span>
           </div>
