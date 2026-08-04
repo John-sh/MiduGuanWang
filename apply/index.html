@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>申请试用-蜜度Midu-垂直大模型企业</title>
+  <meta name="description" content="蜜度语言智能融合应用多项人工智能前沿技术，自主研发蜜巢、文修两个垂直大模型与六大算法引擎，推出标准产品及服务，深度赋能千行百业。">
+  <link rel="icon" type="image/x-icon" href="https://www.midu.com/favicon.ico">
+  <link rel="stylesheet" href="./css/apply.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="logo" href="https://www.midu.com/" aria-label="蜜度首页">
+      <span class="logo-mark">midu</span>
+      <span class="logo-cn">蜜度</span>
+    </a>
+    <nav class="nav-links" aria-label="产品导航">
+      <a href="https://yqt.midu.com/" target="_blank" rel="noopener">新浪舆情通</a>
+      <a href="https://jdt.midu.com/" target="_blank" rel="noopener">校对通</a>
+      <a href="https://mlt.midu.com/" target="_blank" rel="noopener">模力通</a>
+      <a href="https://www.midu.com/ailab" target="_blank" rel="noopener">AI Lab</a>
+    </nav>
+  </header>
+
+  <main class="details">
+    <div class="details-content">
+      <section class="left-dox" aria-label="品牌介绍">
+        <h1 class="dox-title">AI智能应用产品</h1>
+        <p class="view">免费体验</p>
+      </section>
+
+      <section class="left-form">
+        <div class="form-box" id="formCard">
+          <h2 class="step-title step-title-top" id="step1Title">开启您的免费试用权限</h2>
+
+          <!-- Step progress -->
+          <div class="progress-bar" id="progressBar" aria-hidden="false">
+            <span class="progress-seg active" data-step="1"></span>
+            <span class="progress-seg" data-step="2"></span>
+          </div>
+
+          <!-- STEP 1 -->
+          <div class="step-panel" id="step1" data-step="1">
+            <form id="formStep1" autocomplete="on" novalidate>
+              <div class="field">
+                <label for="companyName"><span class="req">*</span>单位名称</label>
+                <div class="input-wrap company-wrap">
+                  <input id="companyName" name="companyName" type="text" placeholder="请输入单位名称" autocomplete="organization" required>
+                  <ul class="suggest-list" id="companySuggest" hidden></ul>
+                </div>
+                <p class="field-error" id="companyError" hidden></p>
+              </div>
+
+              <div class="field">
+                <label for="userName"><span class="req">*</span>联系人</label>
+                <div class="input-wrap">
+                  <input id="userName" name="userName" type="text" placeholder="请输入联系人姓名" autocomplete="name" required>
+                </div>
+                <p class="field-error" id="userNameError" hidden></p>
+              </div>
+
+              <div class="field">
+                <label for="phone"><span class="req">*</span>手机号</label>
+                <div class="input-wrap">
+                  <input id="phone" name="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="请输入11位手机号" autocomplete="tel" required>
+                </div>
+                <p class="field-error" id="phoneError" hidden></p>
+              </div>
+
+              <div class="field">
+                <label for="smsCode"><span class="req">*</span>验证码</label>
+                <div class="input-wrap sms-wrap">
+                  <input id="smsCode" name="smsCode" type="text" inputmode="numeric" maxlength="6" placeholder="请输入验证码" autocomplete="one-time-code" required>
+                  <button type="button" class="sms-btn" id="smsBtn">获取验证码</button>
+                </div>
+                <p class="field-error" id="smsError" hidden></p>
+              </div>
+
+              <button type="submit" class="btn primary" id="nextBtn">立即申请试用</button>
+            </form>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="step-panel" id="step2" data-step="2" hidden>
+            <button type="button" class="back-link" id="backBtn">← 返回上一步</button>
+            <h2 class="step-title">最后一步，激活全部试用权限</h2>
+            <p class="step-desc">选择产品与地区，顾问将为您开通对应体验权限</p>
+
+            <form id="formStep2" autocomplete="on" novalidate>
+              <div class="field field-inline">
+                <label for="department">部门</label>
+                <div class="field-control">
+                  <div class="input-wrap">
+                    <input id="department" name="department" type="text" placeholder="请填写部门" autocomplete="organization-title">
+                  </div>
+                </div>
+              </div>
+
+              <div class="field field-inline">
+                <label><span class="req">*</span>产品选择</label>
+                <div class="field-control">
+                  <div class="product-select">
+                    <button type="button" class="product-trigger" id="productTrigger" aria-expanded="false" aria-controls="productPanel">
+                      <span id="productSummary" class="placeholder">请选择您想要体验的产品</span>
+                      <span class="chevron">▾</span>
+                    </button>
+                    <div class="product-panel" id="productPanel" hidden>
+                      <div class="product-groups" id="productGroups"></div>
+                      <div class="product-panel-foot">
+                        <span id="productCount">已选 0/3</span>
+                        <button type="button" class="link-btn" id="productDone">完成</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="selected-tags" id="selectedTags"></div>
+                  <p class="hint-inline">最多选择 3 个</p>
+                  <p class="field-error" id="productError" hidden></p>
+                </div>
+              </div>
+
+              <div class="field field-inline field-area">
+                <label for="areaInput"><span class="req">*</span>地区</label>
+                <div class="field-control">
+                  <div class="area-select" id="areaSelect">
+                    <input type="hidden" id="area" name="area" value="">
+                    <div class="area-control">
+                      <input
+                        id="areaInput"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="请选择地区"
+                        aria-autocomplete="list"
+                        aria-controls="areaPanel"
+                      >
+                      <span class="area-search-icon" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                          <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <ul class="area-panel" id="areaPanel" hidden role="listbox"></ul>
+                  </div>
+                  <p class="field-error" id="areaError" hidden></p>
+                </div>
+              </div>
+
+              <div class="field field-inline">
+                <label for="demand">需求</label>
+                <div class="field-control">
+                  <div class="input-wrap">
+                    <textarea id="demand" name="demand" rows="3" placeholder="请简单描述您的需求，如使用场景、预期效果等"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="agreement">
+                <label class="agreement-check">
+                  <input type="checkbox" id="checked" name="checked">
+                  <span>我已阅读并同意</span>
+                </label>
+                <a href="https://www.midu.com/policies" target="_blank" rel="noopener">用户协议</a>
+                <span>和</span>
+                <a href="https://www.midu.com/private" target="_blank" rel="noopener">隐私政策</a>
+              </div>
+              <p class="field-error" id="agreeError" hidden></p>
+
+              <button type="submit" class="btn primary" id="submitBtn">立即提交</button>
+            </form>
+          </div>
+
+          <!-- SUCCESS -->
+          <div class="step-panel success-panel" id="stepSuccess" hidden>
+            <h2 class="success-title">恭喜！试用申请提交成功 🎉</h2>
+            <p class="success-sub">
+              已收到您的提交，请留意手机来电<br>
+              我们工作人员将在1个工作日内与您联系。
+            </p>
+            <div class="qr-box">
+              <img
+                id="qrImg"
+                class="qr-img pc-only"
+                src="https://www.midu.com/assets/images/qiyeweixin.png"
+                alt="企业微信二维码"
+                width="200"
+                height="200"
+              >
+              <p class="qr-cta pc-only">☝️ 现在添加顾问微信 <span>立即获取产品方案</span></p>
+              <a
+                class="btn primary wecom-btn mobile-only"
+                id="wecomBtn"
+                href="https://work.weixin.qq.com/ca/cawcdeada70162b02d"
+                target="_blank"
+                rel="noopener"
+              >添加顾问微信</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+  <script src="./js/apply.js"></script>
+</body>
+</html>
