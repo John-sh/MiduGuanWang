@@ -89,12 +89,10 @@
     smsBtn: $("smsBtn"),
     smsError: $("smsError"),
     department: $("department"),
-    productTrigger: $("productTrigger"),
     productPanel: $("productPanel"),
     productGroups: $("productGroups"),
     productSummary: $("productSummary"),
     productCount: $("productCount"),
-    productDone: $("productDone"),
     productError: $("productError"),
     selectedTags: $("selectedTags"),
     area: $("area"),
@@ -380,10 +378,10 @@
     const labels = state.selectedProducts.map(productLabel);
     if (labels.length) {
       els.productSummary.textContent = labels.join("、");
-      els.productSummary.className = "has-value";
+      els.productSummary.className = "product-summary has-value";
     } else {
       els.productSummary.textContent = "请选择您想要体验的产品";
-      els.productSummary.className = "placeholder";
+      els.productSummary.className = "product-summary placeholder";
     }
     els.productCount.textContent = `已选 ${state.selectedProducts.length}/${MAX_PRODUCTS}`;
     els.selectedTags.innerHTML = labels
@@ -587,10 +585,6 @@
       if (!e.target.closest(".company-wrap")) {
         renderCompanySuggest([]);
       }
-      if (!e.target.closest(".product-select")) {
-        els.productPanel.hidden = true;
-        els.productTrigger.setAttribute("aria-expanded", "false");
-      }
     });
 
     els.phone.addEventListener("input", validatePhoneLive);
@@ -603,26 +597,10 @@
 
     els.backBtn.addEventListener("click", () => setStep(1));
 
-    els.productTrigger.addEventListener("click", () => {
-      const open = els.productPanel.hidden;
-      els.productPanel.hidden = !open;
-      els.productTrigger.setAttribute("aria-expanded", String(open));
-    });
-
-    els.productDone.addEventListener("click", () => {
-      els.productPanel.hidden = true;
-      els.productTrigger.setAttribute("aria-expanded", "false");
-    });
-
     els.productGroups.addEventListener("click", (e) => {
       const chip = e.target.closest(".product-chip");
       if (!chip || chip.disabled) return;
-      e.stopPropagation();
       toggleProduct(chip.dataset.value);
-    });
-
-    els.productPanel.addEventListener("click", (e) => {
-      e.stopPropagation();
     });
 
     els.selectedTags.addEventListener("click", (e) => {

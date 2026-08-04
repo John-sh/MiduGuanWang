@@ -99,21 +99,17 @@
               <div class="field field-inline">
                 <label><span class="req">*</span>产品选择</label>
                 <div class="field-control">
-                  <div class="product-select">
-                    <button type="button" class="product-trigger" id="productTrigger" aria-expanded="false" aria-controls="productPanel">
-                      <span id="productSummary" class="placeholder">请选择您想要体验的产品</span>
-                      <span class="chevron">▾</span>
-                    </button>
-                    <div class="product-panel" id="productPanel" hidden>
+                  <div class="product-select product-select-open">
+                    <div class="product-summary placeholder" id="productSummary">请选择您想要体验的产品</div>
+                    <div class="product-panel" id="productPanel">
                       <div class="product-groups" id="productGroups"></div>
                       <div class="product-panel-foot">
                         <span id="productCount">已选 0/3</span>
-                        <button type="button" class="link-btn" id="productDone">完成</button>
+                        <span class="hint-inline-inline">最多选择 3 个</span>
                       </div>
                     </div>
                   </div>
                   <div class="selected-tags" id="selectedTags"></div>
-                  <p class="hint-inline">最多选择 3 个</p>
                   <p class="field-error" id="productError" hidden></p>
                 </div>
               </div>

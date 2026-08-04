@@ -410,82 +410,74 @@ textarea {
 
 .product-select {
   position: relative;
-  z-index: 5;
+  z-index: 1;
 }
 
-.product-trigger {
-  width: 100%;
-  min-height: 46px;
-  padding: 10px 14px;
+.product-select-open .product-summary {
+  min-height: 44px;
+  padding: 12px 14px;
   border: 1px solid var(--md-border);
-  border-radius: 8px;
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
   background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  text-align: left;
-}
-
-.product-trigger .placeholder {
-  color: #adadad;
-  font-size: 14px;
-}
-
-.product-trigger .has-value {
+  font-size: 15px;
+  line-height: 1.4;
   color: #1f1f1f;
-  font-size: 14px;
 }
 
-.product-trigger .chevron {
-  color: #999;
+.product-select-open .product-summary.placeholder {
+  color: #adadad;
+}
+
+.product-select-open .product-summary.has-value {
+  color: #1f1f1f;
 }
 
 .product-panel {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  z-index: 20;
+  position: static;
   margin: 0;
   border: 1px solid var(--md-border);
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
   background: #fff;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.product-select-open .product-panel {
+  border-top-color: #eef1f4;
 }
 
 .product-groups {
-  padding: 12px 14px 4px;
-  max-height: 260px;
-  overflow: auto;
+  padding: 16px 16px 8px;
+  max-height: none;
+  overflow: visible;
 }
 
 .product-group + .product-group {
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px dashed #eef1f4;
 }
 
 .product-group-title {
-  font-size: 12px;
-  color: #888;
-  margin-bottom: 8px;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 10px;
 }
 
 .product-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 
 .product-chip {
   border: 1px solid #e0e6eb;
   background: #fff;
   color: #444;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 13px;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
   cursor: pointer;
   transition: 0.15s ease;
 }
@@ -510,11 +502,17 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: 12px 16px;
   background: #f8fafc;
   border-top: 1px solid #eef1f4;
-  font-size: 12px;
+  font-size: 13px;
   color: #777;
+}
+
+.product-panel-foot .hint-inline-inline {
+  margin: 0;
+  font-size: 12px;
+  color: #a0a0a0;
 }
 
 .field-inline {
