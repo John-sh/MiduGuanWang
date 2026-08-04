@@ -35,9 +35,11 @@ jobs:
 
       - name: Prepare publish directory
         run: |
-          mkdir -p dist/pages/hgcompetition
+          mkdir -p dist/pages/hgcompetition dist/pages/apply
           cp -R dist/honggong-cup-signup/browser/. dist/pages/hgcompetition/
           cp dist/pages/hgcompetition/index.html dist/pages/hgcompetition/404.html
+          cp -R apply/. dist/pages/apply/
+          touch dist/pages/.nojekyll
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

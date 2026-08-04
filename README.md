@@ -4,7 +4,8 @@
 
 ## 在线访问
 
-GitHub Pages：https://john-sh.github.io/MiduGuanWang/hgcompetition/
+- 洪工杯报名：https://john-sh.github.io/MiduGuanWang/hgcompetition/
+- 申请试用页：https://john-sh.github.io/MiduGuanWang/apply/
 
 ## 本地运行
 
