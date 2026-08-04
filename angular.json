@@ -60,7 +60,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/MiduGuanWang/",
+              "baseHref": "/MiduGuanWang/hgcompetition/",
               "budgets": [
                 {
                   "type": "initial",

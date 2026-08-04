@@ -4,7 +4,7 @@
 
 ## 在线访问
 
-GitHub Pages：https://john-sh.github.io/MiduGuanWang/
+GitHub Pages：https://john-sh.github.io/MiduGuanWang/hgcompetition/
 
 ## 本地运行
 

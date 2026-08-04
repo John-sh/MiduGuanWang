@@ -31,15 +31,18 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build -- --configuration production --base-href /MiduGuanWang/
+        run: npm run build -- --configuration production --base-href /MiduGuanWang/hgcompetition/
 
-      - name: Prepare SPA fallback
-        run: cp dist/honggong-cup-signup/browser/index.html dist/honggong-cup-signup/browser/404.html
+      - name: Prepare publish directory
+        run: |
+          mkdir -p dist/pages/hgcompetition
+          cp -R dist/honggong-cup-signup/browser/. dist/pages/hgcompetition/
+          cp dist/pages/hgcompetition/index.html dist/pages/hgcompetition/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/honggong-cup-signup/browser
+          path: dist/pages
 
   deploy:
     needs: build
