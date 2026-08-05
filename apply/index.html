@@ -27,6 +27,7 @@
       <section class="left-dox" aria-label="品牌介绍">
         <h1 class="dox-title">AI智能应用产品</h1>
         <p class="view">免费体验</p>
+        <p class="left-contact">马上联系顾问：<a href="tel:4006007505">400-600-7505</a></p>
       </section>
 
       <section class="left-form">
@@ -88,28 +89,34 @@
 
             <form id="formStep2" autocomplete="on" novalidate>
               <div class="field field-inline">
-                <label for="department">部门</label>
+                <label for="department"><span class="req">*</span>部门</label>
                 <div class="field-control">
                   <div class="input-wrap">
-                    <input id="department" name="department" type="text" placeholder="请填写部门" autocomplete="organization-title">
+                    <input id="department" name="department" type="text" placeholder="请填写部门" autocomplete="organization-title" required>
                   </div>
+                  <p class="field-error" id="departmentError" hidden></p>
                 </div>
               </div>
 
               <div class="field field-inline">
                 <label><span class="req">*</span>产品选择</label>
                 <div class="field-control">
-                  <div class="product-select product-select-open">
-                    <div class="product-summary placeholder" id="productSummary">请选择您想要体验的产品</div>
-                    <div class="product-panel" id="productPanel">
+                  <div class="product-select">
+                    <button type="button" class="product-trigger" id="productTrigger" aria-expanded="false" aria-controls="productPanel">
+                      <span id="productSummary" class="product-trigger-inner">
+                        <span class="placeholder">请选择您想要体验的产品</span>
+                      </span>
+                      <span class="chevron">▾</span>
+                    </button>
+                    <div class="product-panel" id="productPanel" hidden>
                       <div class="product-groups" id="productGroups"></div>
                       <div class="product-panel-foot">
                         <span id="productCount">已选 0/3</span>
-                        <span class="hint-inline-inline">最多选择 3 个</span>
+                        <button type="button" class="link-btn" id="productDone">完成</button>
                       </div>
                     </div>
                   </div>
-                  <div class="selected-tags" id="selectedTags"></div>
+                  <p class="hint-inline">最多选择 3 个</p>
                   <p class="field-error" id="productError" hidden></p>
                 </div>
               </div>
@@ -170,7 +177,7 @@
             <h2 class="success-title">恭喜！试用申请提交成功 🎉</h2>
             <p class="success-sub">
               已收到您的提交，请留意手机来电<br>
-              我们工作人员将在1个工作日内与您联系。
+              蜜度顾问将在4个小时内与您联系。
             </p>
             <div class="qr-box">
               <img
@@ -192,6 +199,7 @@
             </div>
           </div>
         </div>
+        <p class="mobile-contact mobile-only">马上联系顾问：<a href="tel:4006007505">400-600-7505</a></p>
       </section>
     </div>
   </main>

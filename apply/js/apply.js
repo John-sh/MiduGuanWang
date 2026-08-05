@@ -89,12 +89,14 @@
     smsBtn: $("smsBtn"),
     smsError: $("smsError"),
     department: $("department"),
+    departmentError: $("departmentError"),
+    productTrigger: $("productTrigger"),
     productPanel: $("productPanel"),
     productGroups: $("productGroups"),
     productSummary: $("productSummary"),
     productCount: $("productCount"),
+    productDone: $("productDone"),
     productError: $("productError"),
-    selectedTags: $("selectedTags"),
     area: $("area"),
     areaInput: $("areaInput"),
     areaPanel: $("areaPanel"),
@@ -125,6 +127,7 @@
   function setStep(step) {
     state.step = step;
     const isSuccess = step === "success";
+    if (step !== 2) closeProductPanel();
     els.step1.hidden = step !== 1;
     els.step2.hidden = step !== 2;
     els.stepSuccess.hidden = !isSuccess;
@@ -235,6 +238,16 @@
 
   function validateStep2() {
     let ok = true;
+
+    if (!els.department.value.trim()) {
+      showError(els.departmentError, "请填写部门");
+      setWrapState(els.department, "error");
+      ok = false;
+    } else {
+      showError(els.departmentError, "");
+      setWrapState(els.department, "");
+    }
+
     if (!state.selectedProducts.length) {
       showError(els.productError, "请选择您想要体验的产品");
       ok = false;
@@ -377,19 +390,16 @@
     renderProductGroups();
     const labels = state.selectedProducts.map(productLabel);
     if (labels.length) {
-      els.productSummary.textContent = labels.join("、");
-      els.productSummary.className = "product-summary has-value";
+      els.productSummary.innerHTML = labels
+        .map(
+          (label, i) =>
+            `<span class="tag">${escapeHtml(label)}<button type="button" data-remove="${state.selectedProducts[i]}" aria-label="移除${escapeHtml(label)}">×</button></span>`
+        )
+        .join("");
     } else {
-      els.productSummary.textContent = "请选择您想要体验的产品";
-      els.productSummary.className = "product-summary placeholder";
+      els.productSummary.innerHTML = '<span class="placeholder">请选择您想要体验的产品</span>';
     }
     els.productCount.textContent = `已选 ${state.selectedProducts.length}/${MAX_PRODUCTS}`;
-    els.selectedTags.innerHTML = labels
-      .map(
-        (label, i) =>
-          `<span class="tag">${label}<button type="button" data-remove="${state.selectedProducts[i]}" aria-label="移除${label}">×</button></span>`
-      )
-      .join("");
   }
 
   function toggleProduct(value) {
@@ -564,6 +574,51 @@
     }, 0);
   }
 
+  function positionProductPanel() {
+    const rect = els.productTrigger.getBoundingClientRect();
+    const panel = els.productPanel;
+    const gap = 4;
+    const width = Math.round(Math.min(Math.max(rect.width + 80, 520), window.innerWidth - 24));
+    let left = Math.round(rect.left);
+    const maxLeft = window.innerWidth - width - 12;
+    if (left > maxLeft) left = Math.max(12, maxLeft);
+
+    const top = Math.round(rect.bottom + gap);
+    const maxHeight = Math.max(160, window.innerHeight - top - 12);
+
+    panel.style.left = `${left}px`;
+    panel.style.width = `${width}px`;
+    panel.style.top = `${top}px`;
+    panel.style.bottom = "auto";
+    panel.style.right = "auto";
+    panel.style.maxHeight = `${maxHeight}px`;
+  }
+
+  function openProductPanel() {
+    const host = els.productTrigger.closest(".product-select");
+    els.productPanel.hidden = false;
+    document.body.appendChild(els.productPanel);
+    positionProductPanel();
+    els.productTrigger.setAttribute("aria-expanded", "true");
+    host?.classList.add("is-open");
+  }
+
+  function closeProductPanel() {
+    const host = els.productTrigger.closest(".product-select");
+    els.productPanel.hidden = true;
+    host?.appendChild(els.productPanel);
+    els.productTrigger.setAttribute("aria-expanded", "false");
+    host?.classList.remove("is-open");
+    els.productPanel.style.left = "";
+    els.productPanel.style.top = "";
+    els.productPanel.style.width = "";
+    els.productPanel.style.maxHeight = "";
+  }
+
+  function isProductPanelOpen() {
+    return !els.productPanel.hidden;
+  }
+
   function bindEvents() {
     els.companyName.addEventListener("input", () => {
       state.companyPicked = false;
@@ -585,7 +640,30 @@
       if (!e.target.closest(".company-wrap")) {
         renderCompanySuggest([]);
       }
+      if (
+        isProductPanelOpen() &&
+        !e.target.closest(".product-select") &&
+        !e.target.closest("#productPanel")
+      ) {
+        closeProductPanel();
+      }
     });
+
+    window.addEventListener(
+      "resize",
+      () => {
+        if (isProductPanelOpen()) positionProductPanel();
+      },
+      { passive: true }
+    );
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (isProductPanelOpen()) positionProductPanel();
+      },
+      { passive: true, capture: true }
+    );
 
     els.phone.addEventListener("input", validatePhoneLive);
     els.smsBtn.addEventListener("click", sendSms);
@@ -595,22 +673,46 @@
       if (validateStep1()) setStep(2);
     });
 
-    els.backBtn.addEventListener("click", () => setStep(1));
+    els.backBtn.addEventListener("click", () => {
+      closeProductPanel();
+      setStep(1);
+    });
+
+    els.productTrigger.addEventListener("click", (e) => {
+      if (e.target.closest("[data-remove]")) return;
+      e.stopPropagation();
+      if (isProductPanelOpen()) closeProductPanel();
+      else openProductPanel();
+    });
+
+    els.productDone.addEventListener("click", () => {
+      closeProductPanel();
+    });
 
     els.productGroups.addEventListener("click", (e) => {
       const chip = e.target.closest(".product-chip");
       if (!chip || chip.disabled) return;
+      e.stopPropagation();
       toggleProduct(chip.dataset.value);
+      if (isProductPanelOpen()) positionProductPanel();
     });
 
-    els.selectedTags.addEventListener("click", (e) => {
+    els.productPanel.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    els.productSummary.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-remove]");
       if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
       toggleProduct(btn.dataset.remove);
+      if (isProductPanelOpen()) positionProductPanel();
     });
 
     els.formStep2.addEventListener("submit", (e) => {
       e.preventDefault();
+      closeProductPanel();
       submitForm();
     });
   }
