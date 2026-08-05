@@ -144,52 +144,40 @@
 
         <div class="section-label">上传附件</div>
 
-        <div class="upload-group">
+        <div
+          class="upload"
+          [class.upload--error]="!!employmentProofError()"
+        >
           <div class="upload-head">
-            <p class="upload-title">附件一：近三个月单位社保缴费证明（3份）</p>
+            <p class="upload-title">附件一：3名参赛者的在职证明</p>
             <span class="required" aria-hidden="true">*</span>
           </div>
-          <p class="upload-hint">{{ attachmentHints.socialSecurity }}</p>
-
-          <div formArrayName="socialSecurityFiles" class="upload-slots">
-            @for (
-              ctrl of socialSecurityFiles.controls;
-              track $index;
-              let i = $index
-            ) {
-              <div
-                class="upload upload--slot"
-                [class.upload--error]="!!socialSecurityError(i)"
-              >
-                <p class="upload-slot-label">{{ socialSecurityLabels[i] }}</p>
-                <label class="upload-box" [for]="'file-social-' + i">
-                  <input
-                    [id]="'file-social-' + i"
-                    type="file"
-                    accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
-                    (change)="onSocialSecurityChange($event, i)"
-                  />
-                  @if (socialSecurityFileAt(i); as file) {
-                    <div class="file-chip">
-                      <span class="file-name">{{ file.name }}</span>
-                      <button
-                        type="button"
-                        class="file-remove"
-                        (click)="clearSocialSecurity(i); $event.preventDefault(); $event.stopPropagation()"
-                      >
-                        移除
-                      </button>
-                    </div>
-                  } @else {
-                    <span class="upload-cta">点击上传</span>
-                  }
-                </label>
-                @if (socialSecurityError(i); as err) {
-                  <p class="error">{{ err }}</p>
-                }
+          <p class="upload-hint">{{ attachmentHints.employmentProof }}</p>
+          <label class="upload-box" for="file-employment">
+            <input
+              id="file-employment"
+              type="file"
+              accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
+              (change)="onEmploymentProofChange($event)"
+            />
+            @if (employmentProofFile) {
+              <div class="file-chip">
+                <span class="file-name">{{ employmentProofFile.name }}</span>
+                <button
+                  type="button"
+                  class="file-remove"
+                  (click)="clearEmploymentProof(); $event.preventDefault(); $event.stopPropagation()"
+                >
+                  移除
+                </button>
               </div>
+            } @else {
+              <span class="upload-cta">点击上传附件</span>
             }
-          </div>
+          </label>
+          @if (employmentProofError(); as err) {
+            <p class="error">{{ err }}</p>
+          }
         </div>
 
         <div
@@ -239,6 +227,20 @@
         </label>
         @if (fieldInvalid('agreed')) {
           <p class="error agree-error">请勾选同意用户协议和隐私政策</p>
+        }
+
+        <label
+          class="agree"
+          [class.agree--error]="fieldInvalid('competitionPrivacy')"
+        >
+          <input type="checkbox" formControlName="competitionPrivacy" />
+          <span>
+            我已经阅读并同意
+            <a href="javascript:void(0)">竞赛报名专项隐私政策</a>
+          </span>
+        </label>
+        @if (fieldInvalid('competitionPrivacy')) {
+          <p class="error agree-error">请勾选同意竞赛报名专项隐私政策</p>
         }
 
         <button

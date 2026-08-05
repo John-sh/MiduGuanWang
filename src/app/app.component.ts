@@ -28,11 +28,9 @@ export class AppComponent implements OnDestroy {
   countdown = 0;
   private timerId: ReturnType<typeof setInterval> | null = null;
 
-  socialSecurityLabels = ['联系人1', '联系人2', '联系人3'];
-
   attachmentHints = {
-    socialSecurity:
-      '请分别上传近三个月单位社保缴费证明（共3份），附件大小不超过5MB，支持 PDF/PNG/JPG/JPEG',
+    employmentProof:
+      '请上传3名参赛者的在职证明（需盖章），附件大小不超过5MB，支持 PDF/PNG/JPG/JPEG',
     unionCert: '工会法人资格证书，附件大小不超过5MB，支持 PDF/PNG/JPG/JPEG',
   };
 
@@ -47,13 +45,10 @@ export class AppComponent implements OnDestroy {
       ]),
       phone: ['', [Validators.required, Validators.pattern(/^1\d{10}$/)]],
       verifyCode: ['', [Validators.required, Validators.pattern(/^\d{4,6}$/)]],
-      socialSecurityFiles: this.fb.array([
-        this.createFileControl(),
-        this.createFileControl(),
-        this.createFileControl(),
-      ]),
+      employmentProofFile: [null as File | null, [Validators.required]],
       unionCertFile: [null as File | null, [Validators.required]],
       agreed: [false, [Validators.requiredTrue]],
+      competitionPrivacy: [false, [Validators.requiredTrue]],
     });
   }
 
@@ -61,16 +56,12 @@ export class AppComponent implements OnDestroy {
     return this.form.get('contacts') as FormArray;
   }
 
-  get socialSecurityFiles(): FormArray {
-    return this.form.get('socialSecurityFiles') as FormArray;
+  get employmentProofFile(): File | null {
+    return this.form.get('employmentProofFile')?.value ?? null;
   }
 
   get unionCertFile(): File | null {
     return this.form.get('unionCertFile')?.value ?? null;
-  }
-
-  socialSecurityFileAt(index: number): File | null {
-    return this.socialSecurityFiles.at(index)?.value ?? null;
   }
 
   ngOnDestroy(): void {
@@ -83,10 +74,6 @@ export class AppComponent implements OnDestroy {
       Validators.maxLength(20),
       Validators.pattern(/^[\u4e00-\u9fa5a-zA-Z·\s]{2,20}$/),
     ]);
-  }
-
-  createFileControl() {
-    return this.fb.control(null as File | null, [Validators.required]);
   }
 
   fieldInvalid(path: string): boolean {
@@ -115,30 +102,24 @@ export class AppComponent implements OnDestroy {
     return '';
   }
 
-  socialSecurityError(index: number): string {
-    return this.fileError(this.socialSecurityFiles.at(index));
+  employmentProofError(): string {
+    return this.fileError(this.form.get('employmentProofFile'));
   }
 
   unionCertError(): string {
     return this.fileError(this.form.get('unionCertFile'));
   }
 
-  onSocialSecurityChange(event: Event, index: number): void {
-    this.applyFileToControl(
-      event,
-      this.socialSecurityFiles.at(index)
-    );
+  onEmploymentProofChange(event: Event): void {
+    this.applyFileToControl(event, this.form.get('employmentProofFile'));
   }
 
   onUnionCertChange(event: Event): void {
     this.applyFileToControl(event, this.form.get('unionCertFile'));
   }
 
-  clearSocialSecurity(index: number): void {
-    this.clearFileControl(
-      this.socialSecurityFiles.at(index),
-      `file-social-${index}`
-    );
+  clearEmploymentProof(): void {
+    this.clearFileControl(this.form.get('employmentProofFile'), 'file-employment');
   }
 
   clearUnionCert(): void {
@@ -203,18 +184,17 @@ export class AppComponent implements OnDestroy {
       contacts: ['', '', ''],
       phone: '',
       verifyCode: '',
-      socialSecurityFiles: [null, null, null],
+      employmentProofFile: null,
       unionCertFile: null,
       agreed: false,
+      competitionPrivacy: false,
     });
-    ['file-social-0', 'file-social-1', 'file-social-2', 'file-union'].forEach(
-      (id) => {
-        const input = document.getElementById(id) as HTMLInputElement | null;
-        if (input) {
-          input.value = '';
-        }
+    ['file-employment', 'file-union'].forEach((id) => {
+      const input = document.getElementById(id) as HTMLInputElement | null;
+      if (input) {
+        input.value = '';
       }
-    );
+    });
   }
 
   private applyFileToControl(
