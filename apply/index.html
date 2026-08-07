@@ -46,8 +46,13 @@
               <div class="field">
                 <label for="companyName"><span class="req">*</span>单位名称</label>
                 <div class="input-wrap company-wrap">
-                  <input id="companyName" name="companyName" type="text" placeholder="请输入单位名称" autocomplete="organization" required>
-                  <ul class="suggest-list" id="companySuggest" hidden></ul>
+                  <input id="companyName" name="companyName" type="text" placeholder="请输入单位名称搜索并选择" autocomplete="organization" required>
+                  <div class="company-dropdown" id="companyDropdown" hidden>
+                    <ul class="suggest-list" id="companySuggest"></ul>
+                    <div class="company-dropdown-foot">
+                      无匹配主体，<button type="button" class="text-link" id="contactServiceBtn">联系客服开通试用</button>
+                    </div>
+                  </div>
                 </div>
                 <p class="field-error" id="companyError" hidden></p>
               </div>
@@ -205,6 +210,22 @@
   </main>
 
   <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
+
+  <div class="modal" id="wecomModal" hidden>
+    <div class="modal-mask" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wecomModalTitle">
+      <button type="button" class="modal-close" data-close-modal aria-label="关闭">×</button>
+      <h3 id="wecomModalTitle">添加官方客服企微</h3>
+      <img
+        src="https://www.midu.com/assets/images/qiyeweixin.png"
+        alt="官方客服企微二维码"
+        width="200"
+        height="200"
+      >
+      <p>扫码添加顾问微信，开通试用</p>
+    </div>
+  </div>
+
   <script src="./js/apply.js"></script>
 </body>
 </html>

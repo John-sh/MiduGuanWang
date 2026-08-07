@@ -80,7 +80,10 @@
     formStep2: $("formStep2"),
     companyName: $("companyName"),
     companySuggest: $("companySuggest"),
+    companyDropdown: $("companyDropdown"),
     companyError: $("companyError"),
+    contactServiceBtn: $("contactServiceBtn"),
+    wecomModal: $("wecomModal"),
     userName: $("userName"),
     userNameError: $("userNameError"),
     phone: $("phone"),
@@ -202,6 +205,10 @@
 
     if (!company) {
       showError(els.companyError, "单位名称不能为空");
+      setWrapState(els.companyName, "error");
+      ok = false;
+    } else if (!state.companyPicked) {
+      showError(els.companyError, "请从下拉列表中选择单位名称");
       setWrapState(els.companyName, "error");
       ok = false;
     } else {
@@ -424,17 +431,16 @@
     state.selectedProducts = values.filter((v) => valid.includes(v)).slice(0, MAX_PRODUCTS);
   }
 
+  function hideCompanyDropdown() {
+    if (els.companyDropdown) els.companyDropdown.hidden = true;
+  }
+
   function renderCompanySuggest(list) {
-    if (!list.length) {
-      els.companySuggest.hidden = true;
-      els.companySuggest.innerHTML = "";
-      return;
-    }
-    els.companySuggest.innerHTML = list
-      .slice(0, 10)
+    const names = (list || []).slice(0, 10);
+    els.companySuggest.innerHTML = names
       .map((name) => `<li role="option">${escapeHtml(name)}</li>`)
       .join("");
-    els.companySuggest.hidden = false;
+    els.companyDropdown.hidden = false;
   }
 
   function escapeHtml(str) {
@@ -445,24 +451,51 @@
       .replace(/"/g, "&quot;");
   }
 
+  const MOCK_COMPANIES = [
+    "蜜度科技股份有限公司",
+    "北京蜜度信息技术有限公司",
+    "上海蜜度蜜巢智能科技有限公司",
+  ];
+
+  function filterMockCompanies(keyword) {
+    const kw = (keyword || "").trim();
+    if (!kw) return [];
+    return MOCK_COMPANIES.filter((name) => name.includes(kw));
+  }
+
   function searchCompany(keyword) {
     clearTimeout(state.searchTimer);
     if (!keyword) {
-      renderCompanySuggest([]);
+      hideCompanyDropdown();
+      els.companySuggest.innerHTML = "";
       return;
     }
+    // 输入即展示下拉（含底部提示），便于无匹配时联系客服
+    els.companyDropdown.hidden = false;
     state.searchTimer = setTimeout(async () => {
+      const mockList = filterMockCompanies(keyword);
       try {
         const res = await apiPost("/other/enterpriseSearch", { keyword });
         const list = (res && res.data) || [];
         const names = list
           .map((item) => (typeof item === "string" ? item : item.name || item.enterpriseName || item.companyName || ""))
           .filter(Boolean);
-        renderCompanySuggest(names);
+        // 本地联调：接口无结果或失败时用假数据；有结果则优先接口，并补充匹配到的假数据
+        const merged = [...new Set([...names, ...mockList])];
+        renderCompanySuggest(merged.length ? merged : mockList);
       } catch (e) {
-        renderCompanySuggest([]);
+        renderCompanySuggest(mockList);
       }
     }, 400);
+  }
+
+  function openWecomModal() {
+    hideCompanyDropdown();
+    els.wecomModal.hidden = false;
+  }
+
+  function closeWecomModal() {
+    els.wecomModal.hidden = true;
   }
 
   function startSmsCountdown() {
@@ -626,6 +659,14 @@
       searchCompany(els.companyName.value.trim());
     });
 
+    els.companyName.addEventListener("focus", () => {
+      const keyword = els.companyName.value.trim();
+      if (keyword && !state.companyPicked) {
+        els.companyDropdown.hidden = false;
+        if (!els.companySuggest.children.length) searchCompany(keyword);
+      }
+    });
+
     els.companySuggest.addEventListener("click", (e) => {
       const li = e.target.closest("li");
       if (!li) return;
@@ -633,12 +674,22 @@
       state.companyPicked = true;
       setWrapState(els.companyName, "");
       showError(els.companyError, "");
-      renderCompanySuggest([]);
+      hideCompanyDropdown();
+    });
+
+    els.contactServiceBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openWecomModal();
+    });
+
+    els.wecomModal.addEventListener("click", (e) => {
+      if (e.target.closest("[data-close-modal]")) closeWecomModal();
     });
 
     document.addEventListener("click", (e) => {
-      if (!e.target.closest(".company-wrap")) {
-        renderCompanySuggest([]);
+      if (!e.target.closest(".company-wrap") && !e.target.closest("#wecomModal")) {
+        hideCompanyDropdown();
       }
       if (
         isProductPanelOpen() &&
