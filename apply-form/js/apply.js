@@ -1,7 +1,15 @@
 (() => {
   "use strict";
 
-  const API_BASE = "https://www.midu.com/gw";
+  // 部署时填写完整接口地址；留空则走本地模拟，便于流程联调
+  const API = {
+    base: "", // 例：https://www.midu.com/gw
+    sendSms: "", // 例：/login/sendSms
+    enterpriseSearch: "", // 例：/other/enterpriseSearch
+    applyTry: "", // 例：/other/applyTry
+    getIpAddress: "", // 例：/other/getIpAddress
+  };
+
   const PHONE_RE = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
   const MAX_PRODUCTS = 3;
 
@@ -281,8 +289,27 @@
     return ok;
   }
 
-  async function apiPost(path, body) {
-    const res = await fetch(`${API_BASE}${path}`, {
+  const MOCK_COMPANIES = [
+    "蜜度科技股份有限公司",
+    "北京蜜度信息技术有限公司",
+    "上海蜜度蜜巢智能科技有限公司",
+  ];
+
+  function filterMockCompanies(keyword) {
+    const kw = (keyword || "").trim();
+    if (!kw) return [];
+    return MOCK_COMPANIES.filter((name) => name.includes(kw));
+  }
+
+  function isApiReady(pathKey) {
+    return Boolean(API.base && API[pathKey]);
+  }
+
+  async function apiPost(pathKey, body) {
+    if (!isApiReady(pathKey)) {
+      return mockApi(pathKey, body);
+    }
+    const res = await fetch(`${API.base}${API[pathKey]}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -290,6 +317,22 @@
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json();
+  }
+
+  function mockApi(pathKey, body) {
+    if (pathKey === "enterpriseSearch") {
+      return Promise.resolve({
+        code: "0000",
+        data: filterMockCompanies((body && body.keyword) || ""),
+      });
+    }
+    if (pathKey === "sendSms" || pathKey === "applyTry") {
+      return Promise.resolve({ code: "0000", message: "ok" });
+    }
+    if (pathKey === "getIpAddress") {
+      return Promise.resolve({ code: "0000", data: ["上海市"] });
+    }
+    return Promise.resolve({ code: "0000", data: null });
   }
 
   function setAreaValue(name) {
@@ -328,7 +371,7 @@
   function initArea() {
     setAreaValue("上海市");
 
-    apiPost("/other/getIpAddress", {})
+    apiPost("getIpAddress", {})
       .then((res) => {
         if (res && res.code === "0000" && res.data) {
           const ipArea = Array.isArray(res.data) ? res.data.join("") : String(res.data);
@@ -451,18 +494,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  const MOCK_COMPANIES = [
-    "蜜度科技股份有限公司",
-    "北京蜜度信息技术有限公司",
-    "上海蜜度蜜巢智能科技有限公司",
-  ];
-
-  function filterMockCompanies(keyword) {
-    const kw = (keyword || "").trim();
-    if (!kw) return [];
-    return MOCK_COMPANIES.filter((name) => name.includes(kw));
-  }
-
   function searchCompany(keyword) {
     clearTimeout(state.searchTimer);
     if (!keyword) {
@@ -473,18 +504,15 @@
     // 输入即展示下拉（含底部提示），便于无匹配时联系客服
     els.companyDropdown.hidden = false;
     state.searchTimer = setTimeout(async () => {
-      const mockList = filterMockCompanies(keyword);
       try {
-        const res = await apiPost("/other/enterpriseSearch", { keyword });
+        const res = await apiPost("enterpriseSearch", { keyword });
         const list = (res && res.data) || [];
         const names = list
           .map((item) => (typeof item === "string" ? item : item.name || item.enterpriseName || item.companyName || ""))
           .filter(Boolean);
-        // 本地联调：接口无结果或失败时用假数据；有结果则优先接口，并补充匹配到的假数据
-        const merged = [...new Set([...names, ...mockList])];
-        renderCompanySuggest(merged.length ? merged : mockList);
+        renderCompanySuggest(names);
       } catch (e) {
-        renderCompanySuggest(mockList);
+        renderCompanySuggest(filterMockCompanies(keyword));
       }
     }, 400);
   }
@@ -524,7 +552,7 @@
     els.smsBtn.disabled = true;
     els.smsBtn.textContent = "发送中";
     try {
-      const res = await apiPost("/login/sendSms", {
+      const res = await apiPost("sendSms", {
         mobile: els.phone.value.trim(),
         smsType: 4,
       });
@@ -553,22 +581,98 @@
       .join(",");
   }
 
+  function buildApplyPayload() {
+    const demandUser = els.demand.value.trim();
+    const agentText = agentDemandPrefix();
+    return {
+      txtName: els.userName.value.trim(),
+      txtCompany: els.companyName.value.trim(),
+      txtMobile: els.phone.value.trim(),
+      province: els.area.value || "",
+      department: els.department.value.trim() || "",
+      demand: (agentText || "") + (demandUser || ""),
+      smsCode: els.smsCode.value.trim(),
+      cueType: qs("cueType") || 156,
+      originUrl: location.href,
+      webGamesType: "",
+      industryType: "",
+      targetProject: state.selectedProducts.join(","),
+      apiId: qs("apiId") || "",
+      eventId: "",
+    };
+  }
+
+  async function submitStep1() {
+    if (state.saving) return;
+    if (!validateStep1()) return;
+
+    state.saving = true;
+    els.nextBtn.disabled = true;
+    els.nextBtn.textContent = "提交中...";
+
+    try {
+      const res = await apiPost("applyTry", buildApplyPayload());
+      if (res && res.code === "0000") {
+        setStep(2);
+      } else {
+        toast((res && res.message) || "提交失败，请稍后重试");
+      }
+    } catch (e) {
+      toast("请检查您的网络再试！");
+    } finally {
+      state.saving = false;
+      els.nextBtn.disabled = false;
+      els.nextBtn.textContent = "立即申请试用";
+    }
+  }
+
   async function submitForm() {
     if (state.saving) return;
     if (!validateStep2()) return;
 
-    // 本地联调：暂不调用提交接口，直接进入成功态
     state.saving = true;
     els.submitBtn.disabled = true;
     els.submitBtn.textContent = "提交中...";
 
-    // PC 需同步打开新页签，避免被浏览器拦截
-    openConsoleIfDesktop();
-    setStep("success");
+    // 在用户点击手势内先打开页签，避免异步后被拦截
+    let pendingTab = null;
+    if (!isMobileDevice()) {
+      pendingTab = window.open("about:blank", "_blank");
+      try {
+        if (pendingTab) pendingTab.opener = null;
+      } catch (e) {
+        // ignore
+      }
+    }
 
-    state.saving = false;
-    els.submitBtn.disabled = false;
-    els.submitBtn.textContent = "立即提交";
+    try {
+      const res = await apiPost("applyTry", buildApplyPayload());
+      if (res && res.code === "0000") {
+        if (pendingTab) {
+          const homeUrl = /midu\.com$/i.test(location.hostname)
+            ? `${location.origin}/home`
+            : "https://www.midu.com/home";
+          pendingTab.location.href = homeUrl;
+          try {
+            pendingTab.blur();
+          } catch (e) {
+            // ignore
+          }
+          window.focus();
+        }
+        setStep("success");
+      } else {
+        if (pendingTab) pendingTab.close();
+        toast((res && res.message) || "提交失败，请稍后重试");
+      }
+    } catch (e) {
+      if (pendingTab) pendingTab.close();
+      toast("请检查您的网络再试！");
+    } finally {
+      state.saving = false;
+      els.submitBtn.disabled = false;
+      els.submitBtn.textContent = "立即提交";
+    }
   }
 
   function isMobileDevice() {
@@ -721,7 +825,7 @@
 
     els.formStep1.addEventListener("submit", (e) => {
       e.preventDefault();
-      if (validateStep1()) setStep(2);
+      submitStep1();
     });
 
     els.backBtn.addEventListener("click", () => {
