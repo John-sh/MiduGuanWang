@@ -188,7 +188,7 @@
               <img
                 id="qrImg"
                 class="qr-img pc-only"
-                src="https://www.midu.com/assets/images/qiyeweixin.png"
+                src="./assets/images/qiyeweixin.png"
                 alt="企业微信二维码"
                 width="200"
                 height="200"
@@ -213,16 +213,26 @@
 
   <div class="modal" id="wecomModal" hidden>
     <div class="modal-mask" data-close-modal></div>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wecomModalTitle">
-      <button type="button" class="modal-close" data-close-modal aria-label="关闭">×</button>
-      <h3 id="wecomModalTitle">添加官方客服企微</h3>
-      <img
-        src="https://www.midu.com/assets/images/qiyeweixin.png"
-        alt="官方客服企微二维码"
-        width="200"
-        height="200"
-      >
-      <p>扫码添加顾问微信，开通试用</p>
+    <div class="modal-card wecom-modal" role="dialog" aria-modal="true" aria-labelledby="wecomModalTitle">
+      <button type="button" class="modal-close" data-close-modal aria-label="关闭">
+        <span aria-hidden="true">×</span>
+      </button>
+      <div class="wecom-modal-head">
+        <h3 id="wecomModalTitle">蜜度官方客服企微</h3>
+      </div>
+      <div class="wecom-modal-body">
+        <div class="wecom-qr-frame">
+          <img
+            src="./assets/images/qiyeweixin.png"
+            alt="官方客服企微二维码"
+            width="220"
+            height="220"
+          >
+        </div>
+        <p class="wecom-modal-tip">微信扫码添加 · 快速开通试用</p>
+        <p class="wecom-modal-phone">客服热线：<a href="tel:4006007505">400-600-7505</a></p>
+        <p class="wecom-modal-hours">在线时间：工作日9:00-18:00</p>
+      </div>
     </div>
   </div>
 
