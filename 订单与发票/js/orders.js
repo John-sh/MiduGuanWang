@@ -1,26 +1,45 @@
 const orders = [
-  { id: "GEO202608050019", brand: "瑞幸咖啡", product: "品牌 AI 搜索竞争力诊断报告", date: "2026-08-05 10:24", status: "completed", statusText: "已完成", amount: 299, canInvoice: true, invoiced: false, detail: "微信小程序体验套餐", questionCount: 7, models: ["DeepSeek", "豆包", "元宝"] },
-  { id: "GEO202608040083", brand: "库迪咖啡", product: "品牌 AI 搜索竞争力诊断报告", date: "2026-08-04 16:12", status: "completed", statusText: "已完成", amount: 599, canInvoice: false, invoiced: true, invoiceId: "INV202608040021", detail: "微信小程序体验套餐", questionCount: 10, models: ["DeepSeek", "豆包", "元宝", "Kimi"] },
-  { id: "GEO202608030057", brand: "蜜雪冰城", product: "品牌 AI 搜索竞争力诊断报告", date: "2026-08-03 09:35", status: "completed", statusText: "已完成", amount: 299, canInvoice: false, invoiced: true, invoiceId: "INV202608030008", detail: "微信小程序体验套餐", questionCount: 7, models: ["DeepSeek", "豆包", "千问"] },
-  { id: "GEO202608020031", brand: "霸王茶姬", product: "品牌 AI 搜索竞争力诊断报告", date: "2026-08-02 14:07", status: "pending_pay", statusText: "待支付", amount: 299, canInvoice: false, invoiced: false, detail: "微信小程序体验套餐", questionCount: 7, models: ["DeepSeek", "豆包", "元宝"] },
-  { id: "GEO202607300027", brand: "茶百道", product: "品牌 AI 搜索竞争力诊断报告", date: "2026-07-30 13:18", status: "cancelled", statusText: "已取消", amount: 199, canInvoice: false, invoiced: false, detail: "微信小程序体验套餐", questionCount: 5, models: ["DeepSeek", "豆包"] },
-  { id: "GEO202607280061", brand: "海底捞", product: "品牌 AI 搜索竞争力诊断报告", date: "2026-07-28 17:40", status: "completed", statusText: "已完成", amount: 599, canInvoice: true, invoiced: false, detail: "微信小程序体验套餐", questionCount: 10, models: ["DeepSeek", "豆包", "元宝", "Kimi", "千问", "文心一言"] },
+  { id: "MD202608150019", product: "新浪舆情通", version: "旗舰版", benefit: "全网监测 12 个月 · 账号 10 个", price: 98000, qty: 1, amount: 98000, date: "2026-08-15 10:24", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608140083", product: "索骥", version: "专业版", benefit: "线索监测 6 个月 · 预警 50 条/日", price: 36000, qty: 1, amount: 36000, date: "2026-08-14 16:12", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608140021" },
+  { id: "MD202608130057", product: "城感通", version: "标准版", benefit: "城市感知监测 12 个月 · 账号 5 个", price: 28000, qty: 1, amount: 28000, date: "2026-08-13 09:35", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608130008" },
+  { id: "MD202608120031", product: "校对通", version: "企业版", benefit: "智能校对 10 万字/月 · 12 个月", price: 12800, qty: 1, amount: 12800, date: "2026-08-12 14:07", status: "pending_pay", statusText: "待支付", canInvoice: false, invoiced: false },
+  { id: "MD202608110027", product: "新媒通", version: "专业版", benefit: "新媒体运营 12 个月 · 账号 5 个", price: 19800, qty: 1, amount: 19800, date: "2026-08-11 13:18", status: "cancelled", statusText: "已取消", canInvoice: false, invoiced: false },
+  { id: "MD202608100061", product: "安巡通", version: "旗舰版", benefit: "安全巡检 12 个月 · 站点 20 个", price: 56000, qty: 1, amount: 56000, date: "2026-08-10 17:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608090044", product: "模力通", version: "标准版", benefit: "模型调用 100 万 tokens · 12 个月", price: 8800, qty: 2, amount: 17600, date: "2026-08-09 11:05", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608080072", product: "模力通智能体", version: "专业版", benefit: "智能体席位 3 个 · 12 个月", price: 25800, qty: 1, amount: 25800, date: "2026-08-08 15:22", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608070018", product: "校对通智能体", version: "标准版", benefit: "校对智能体 1 席 · 12 个月", price: 9800, qty: 1, amount: 9800, date: "2026-08-07 09:48", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608070014" },
+  { id: "MD202608060053", product: "DataQ智能体", version: "企业版", benefit: "数据问答席位 5 个 · 12 个月", price: 39800, qty: 1, amount: 39800, date: "2026-08-06 18:16", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608050036", product: "数据服务", version: "定制包", benefit: "专项数据采集与清洗 · 1 次", price: 48000, qty: 1, amount: 48000, date: "2026-08-05 16:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608040012", product: "报告定制", version: "专题报告", benefit: "行业分析报告定制 · 1 份", price: 26800, qty: 1, amount: 26800, date: "2026-08-04 10:18", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
 ];
 
 let records = [
-  { id: "INV202608040021", status: "processing", statusText: "开票中", date: "2026-08-04 18:20", amount: 599, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "待发送", invoiceNo: "—", orderIds: ["GEO202608040083"] },
-  { id: "INV202608030008", status: "issued", statusText: "开票完成", date: "2026-08-03 11:26", amount: 299, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026080300010872", orderIds: ["GEO202608030057"] },
-  { id: "INV202607260014", status: "failed", statusText: "开票失败", date: "2026-07-26 18:05", amount: 598, count: 2, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "orma***@midu.com", emailStatus: "发送失败", invoiceNo: "—", orderIds: [] },
+  { id: "INV202608140021", status: "processing", statusText: "开票中", date: "2026-08-14 18:20", amount: 36000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "待发送", invoiceNo: "—", orderIds: ["MD202608140083"] },
+  { id: "INV202608130008", status: "issued", statusText: "开票完成", date: "2026-08-13 11:26", amount: 28000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026081300010872", orderIds: ["MD202608130057"] },
+  { id: "INV202608070014", status: "failed", statusText: "开票失败", date: "2026-08-07 18:05", amount: 9800, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "orma***@midu.com", emailStatus: "发送失败", invoiceNo: "—", orderIds: ["MD202608070018"] },
 ];
+
+const PAGE_SIZE = 10;
 
 const state = {
   module: "orders",
   orderFilter: "all",
+  orderPage: 1,
   invoiceView: "eligible",
   recordFilter: "all",
   selected: new Set(),
   currentOrder: null,
   currentRecord: null,
+};
+
+const entity = {
+  confirmed: false,
+  company: "",
+  tax: "",
+  bank: "",
+  account: "",
+  address: "",
+  phone: "",
 };
 
 function $(id) {
@@ -35,10 +54,10 @@ function statusClass(s) {
   return "cancel";
 }
 
-function orderTitle(o) {
-  const p = o.product || "";
-  if (p.startsWith("品牌")) return (o.brand || "") + p.slice(2);
-  return p.replace("品牌", o.brand || "");
+function recordProducts(r) {
+  const related = orders.filter((o) => Array.isArray(r.orderIds) && r.orderIds.includes(o.id));
+  if (!related.length) return r.content || "信息技术服务";
+  return related.map((o) => o.product).join("、");
 }
 
 function findInvoiceForOrder(order) {
@@ -110,29 +129,94 @@ function orderActions(o) {
   return `<button class="btn-ghost" data-detail="${o.id}">订单详情</button><button class="btn-primary" data-invoice="${o.id}">开发票</button>`;
 }
 
+function drawerActions(o) {
+  return orderActions(o).replace(/<button class="btn-ghost" data-detail="[^"]+">订单详情<\/button>/g, "").trim();
+}
+
+function filteredOrders() {
+  return orders.filter((o) => state.orderFilter === "all" || o.status === state.orderFilter);
+}
+
+function orderPageCount() {
+  return Math.max(1, Math.ceil(filteredOrders().length / PAGE_SIZE) || 1);
+}
+
+function pagerNumbers(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const items = [1];
+  let start = Math.max(2, current - 2);
+  let end = Math.min(total - 1, current + 2);
+  if (current <= 4) {
+    start = 2;
+    end = 5;
+  } else if (current >= total - 3) {
+    start = total - 4;
+    end = total - 1;
+  }
+  if (start > 2) items.push("ellipsis");
+  for (let i = start; i <= end; i++) items.push(i);
+  if (end < total - 1) items.push("ellipsis");
+  items.push(total);
+  return items;
+}
+
+function setOrderPage(page) {
+  const total = orderPageCount();
+  state.orderPage = Math.min(total, Math.max(1, Number(page) || 1));
+  renderOrders();
+}
+
+function jumpOrderPage() {
+  const total = orderPageCount();
+  const n = parseInt($("orderPageJump").value, 10);
+  if (!Number.isFinite(n) || n < 1 || n > total) return toast("请输入有效页码");
+  $("orderPageJump").value = "";
+  setOrderPage(n);
+}
+
+function renderOrderPager() {
+  const totalItems = filteredOrders().length;
+  const total = orderPageCount();
+  if (state.orderPage > total) state.orderPage = total;
+  const current = state.orderPage;
+  const nums = totalItems ? pagerNumbers(current, total) : [1];
+  const prevDisabled = current <= 1;
+  const nextDisabled = current >= total || !totalItems;
+  $("orderPagerPages").innerHTML = `
+    <button type="button" class="pager-btn" data-order-page="prev" ${prevDisabled ? "disabled" : ""} aria-label="上一页">&lt;</button>
+    ${nums
+      .map((n) =>
+        n === "ellipsis"
+          ? `<span class="pager-ellipsis">...</span>`
+          : `<button type="button" class="pager-btn${n === current ? " active" : ""}" data-order-page="${n}">${n}</button>`
+      )
+      .join("")}
+    <button type="button" class="pager-btn" data-order-page="next" ${nextDisabled ? "disabled" : ""} aria-label="下一页">&gt;</button>
+  `;
+}
+
 function renderOrders() {
-  const data = orders.filter((o) => state.orderFilter === "all" || o.status === state.orderFilter);
+  const data = filteredOrders();
+  const total = Math.max(1, Math.ceil(data.length / PAGE_SIZE) || 1);
+  if (state.orderPage > total) state.orderPage = total;
+  const pageData = data.slice((state.orderPage - 1) * PAGE_SIZE, state.orderPage * PAGE_SIZE);
   const list = $("orderList");
-  list.innerHTML = data.length
-    ? data
+  list.innerHTML = pageData.length
+    ? pageData
         .map(
           (o) => `
       <tr class="order-card" data-order-id="${o.id}">
-        <td>
-          <span class="cell-title">${orderTitle(o)}</span>
-          <span class="cell-meta">${o.detail} · ${o.questionCount} 个问题</span>
-        </td>
-        <td>
-          <span class="cell-title">${o.id}</span>
-          <span class="cell-meta">${o.date}<br>${o.models.join("、")}</span>
-        </td>
+        <td class="num-cell">${o.id}</td>
+        <td><span class="cell-title">${o.product}</span></td>
+        <td>${o.version}</td>
         <td class="amount">¥${money(o.amount)}</td>
         <td><span class="status ${statusClass(o.status)}">${o.statusText}</span></td>
         <td><div class="ops">${orderActions(o)}</div></td>
       </tr>`
         )
         .join("")
-    : `<tr><td colspan="5" class="empty">暂无相关订单</td></tr>`;
+    : `<tr><td colspan="6" class="empty">暂无相关订单</td></tr>`;
+  renderOrderPager();
 }
 
 function renderEligible() {
@@ -145,13 +229,14 @@ function renderEligible() {
           (o) => `
       <tr class="${state.selected.has(o.id) ? "row-selected" : ""}" data-select="${o.id}">
         <td class="select-cell"><span class="check"></span></td>
-        <td><span class="cell-title">${orderTitle(o)}</span><span class="cell-meta">${o.detail}</span></td>
-        <td><span class="cell-title">${o.id}</span><span class="cell-meta">${o.date}</span></td>
+        <td class="num-cell">${o.id}</td>
+        <td><span class="cell-title">${o.product}</span></td>
+        <td>${o.version}</td>
         <td class="amount">¥${money(o.amount)}</td>
       </tr>`
         )
         .join("")
-    : `<tr><td colspan="4" class="empty">当前没有可开票的已完成订单</td></tr>`;
+    : `<tr><td colspan="5" class="empty">当前没有可开票的已完成订单</td></tr>`;
   updateSelection();
 }
 
@@ -187,7 +272,7 @@ function renderRecords() {
       (r) => `
       <tr>
         <td>
-          <span class="cell-title">品牌 AI 搜索竞争力诊断报告</span>
+          <span class="cell-title">${recordProducts(r)}</span>
           <span class="cell-meta">${r.id} · ${r.count > 1 ? `共 ${r.count} 笔订单` : r.company}</span>
         </td>
         <td class="cell-meta">${r.date}</td>
@@ -207,11 +292,91 @@ function renderRecords() {
 
 function setModule(module) {
   state.module = module;
+  $("entityModule").classList.toggle("hidden", module !== "entity");
   $("ordersModule").classList.toggle("hidden", module !== "orders");
   $("invoiceModule").classList.toggle("hidden", module !== "invoice");
   document.querySelectorAll(".nav-item").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.module === module);
   });
+}
+
+function syncEntityStatus() {
+  const tag = $("entityStatusTag");
+  const nav = $("navEntityStatus");
+  if (entity.confirmed) {
+    tag.textContent = "已确认";
+    tag.className = "status done";
+    nav.textContent = "已确认";
+    nav.className = "nav-status done";
+    $("confirmEntity").textContent = "保存并确认";
+  } else {
+    tag.textContent = "未确认";
+    tag.className = "status wait";
+    nav.textContent = "未确认";
+    nav.className = "nav-status wait";
+    $("confirmEntity").textContent = "确认开票主体";
+  }
+}
+
+function readEntityForm() {
+  return {
+    company: $("entityCompany").value.trim(),
+    tax: $("entityTax").value.trim().toUpperCase(),
+    bank: $("entityBank").value.trim(),
+    account: $("entityAccount").value.trim(),
+    address: $("entityAddress").value.trim(),
+    phone: $("entityPhone").value.trim(),
+  };
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function confirmEntity() {
+  const data = readEntityForm();
+  if (!data.company) return toast("请填写单位名称");
+  if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的纳税人识别号");
+  Object.assign(entity, data, { confirmed: true });
+  syncEntityStatus();
+  toast("开票主体已确认");
+}
+
+function fillInvoiceFromEntity() {
+  const select = $("invoiceTitleSelect");
+  $("entityNeededTip").classList.toggle("hidden", entity.confirmed);
+  if (entity.confirmed) {
+    select.innerHTML = `
+      <option value="">请选择开票主体</option>
+      <option value="confirmed">${escapeHtml(entity.company)}</option>
+    `;
+    select.disabled = false;
+  } else {
+    select.innerHTML = `<option value="">请选择开票主体</option>`;
+    select.disabled = true;
+  }
+  select.value = "";
+  $("invoiceEmail").value = "";
+  $("remark").value = "";
+  applySelectedInvoiceTitle();
+}
+
+function applySelectedInvoiceTitle() {
+  const selected = $("invoiceTitleSelect").value === "confirmed" && entity.confirmed;
+  $("invoiceTaxText").textContent = selected ? entity.tax : "";
+  const extras = [
+    ["开户银行", entity.bank],
+    ["银行账号", entity.account],
+    ["企业地址", entity.address],
+    ["企业电话", entity.phone],
+  ].filter(([, v]) => selected && v);
+  $("invoiceEntityExtras").innerHTML = extras
+    .map(([label, value]) => `<label class="form-row"><span>${label}</span><b>${escapeHtml(value)}</b></label>`)
+    .join("");
 }
 
 function setInvoiceView(view) {
@@ -239,19 +404,24 @@ function openOrderDetail(id) {
     <section class="detail-hero">
       <span class="status ${statusClass(o.status)}">${o.statusText}</span>
       <div class="amount-big">¥${money(o.amount)}</div>
-      <p>${orderTitle(o)}</p>
+      <p>${o.product}</p>
     </section>
     <div class="section-title">订单信息</div>
     <section class="info-card">
-      <div class="info-row"><span>订单号</span><b>${o.id}</b></div>
-      <div class="info-row"><span>套餐</span><b>${o.detail}</b></div>
-      <div class="info-row"><span>问题数量</span><b>${o.questionCount} 个</b></div>
-      <div class="info-row"><span>采样模型</span><b>${o.models.join("、")}</b></div>
+      <div class="info-row"><span>订单编号</span><b>${o.id}</b></div>
+      <div class="info-row"><span>产品</span><b>${o.product}</b></div>
+      <div class="info-row"><span>版本信息</span><b>${o.version}</b></div>
+      <div class="info-row"><span>权益详情</span><b>${o.benefit}</b></div>
+      <div class="info-row"><span>价格</span><b>¥${money(o.price)}</b></div>
+      <div class="info-row"><span>数量</span><b>${o.qty}</b></div>
+      <div class="info-row"><span>金额</span><b>¥${money(o.amount)}</b></div>
+      <div class="info-row"><span>订单状态</span><span class="status ${statusClass(o.status)}">${o.statusText}</span></div>
       <div class="info-row"><span>下单时间</span><b>${o.date}</b></div>
-      <div class="info-row"><span>支付金额</span><b>¥${money(o.amount)}</b></div>
     </section>
   `;
-  $("orderDrawerFoot").innerHTML = orderActions(o);
+  const foot = $("orderDrawerFoot");
+  foot.innerHTML = drawerActions(o);
+  foot.hidden = !foot.innerHTML;
   $("drawerMask").hidden = false;
   $("orderDrawer").hidden = false;
   $("invoiceDrawer").hidden = true;
@@ -277,7 +447,7 @@ function openInvoiceDetail(id) {
     <div class="section-title">发票信息</div>
     <section class="info-card">
       <div class="info-row"><span>发票编号</span><b>${r.invoiceNo}</b></div>
-      <div class="info-row"><span>企业名称</span><b>${r.company}</b></div>
+      <div class="info-row"><span>单位名称</span><b>${r.company}</b></div>
       <div class="info-row"><span>公司税号</span><b>${r.tax}</b></div>
       <div class="info-row"><span>发票格式</span><b>PDF</b></div>
       <div class="info-row"><span>申请时间</span><b>${r.date}</b></div>
@@ -316,8 +486,14 @@ function openInvoiceForm() {
   const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
   if (!selected.length) return toast("请先选择可开票订单");
   updateSelection();
+  fillInvoiceFromEntity();
   closeOverlays();
   $("invoiceFormModal").hidden = false;
+}
+
+function goConfirmEntity() {
+  closeOverlays();
+  setModule("entity");
 }
 
 function payOrder(id) {
@@ -343,19 +519,22 @@ function cancelOrder(id) {
 }
 
 function submitInvoice() {
-  const company = $("companyName").value.trim();
-  const tax = $("taxNo").value.trim();
+  if (!entity.confirmed || $("invoiceTitleSelect").value !== "confirmed") {
+    toast("请先选择已确认的开票主体");
+    return;
+  }
+  const company = entity.company;
+  const tax = entity.tax;
   const email = $("invoiceEmail").value.trim();
-  if (!company) return toast("请填写公司名称");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast("请输入正确的电子邮箱");
   const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
   const total = selected.reduce((s, o) => s + o.amount, 0);
   $("confirmBody").innerHTML = `
-    <div class="info-row"><span>企业名称</span><b>${company}</b></div>
-    <div class="info-row"><span>公司税号</span><b>${tax || "—"}</b></div>
+    <div class="info-row"><span>单位名称</span><b>${escapeHtml(company)}</b></div>
+    <div class="info-row"><span>纳税人识别号</span><b>${escapeHtml(tax || "—")}</b></div>
     <div class="info-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></div>
     <div class="info-row"><span>发票金额</span><b>¥${money(total)}</b></div>
-    <div class="info-row"><span>电子邮箱</span><b>${email}</b></div>
+    <div class="info-row"><span>电子邮箱</span><b>${escapeHtml(email)}</b></div>
   `;
   $("confirmModal").hidden = false;
 }
@@ -370,8 +549,8 @@ function finishSubmit() {
     date: "2026-08-14 14:30",
     amount: total,
     count: selected.length,
-    company: $("companyName").value.trim(),
-    tax: $("taxNo").value.trim(),
+    company: entity.company,
+    tax: entity.tax,
     content: "*信息技术服务*平台服务费",
     email: $("invoiceEmail").value.trim(),
     emailStatus: "待发送",
@@ -404,16 +583,23 @@ function refresh() {
 }
 
 function onClick(e) {
-  const t = e.target.closest("[data-module],[data-order-filter],[data-invoice-view],[data-record-filter],[data-detail],[data-pay],[data-cancel],[data-invoice],[data-view-invoice],[data-select],[data-record-detail],[data-resend],[data-reopen],[data-retry],[data-close-drawer],[data-close-modal]");
+  const t = e.target.closest("[data-module],[data-order-filter],[data-order-page],[data-invoice-view],[data-record-filter],[data-detail],[data-pay],[data-cancel],[data-invoice],[data-view-invoice],[data-select],[data-record-detail],[data-resend],[data-reopen],[data-retry],[data-close-drawer],[data-close-modal]");
   if (!t) return;
 
   if (t.dataset.module) setModule(t.dataset.module);
   if (t.dataset.orderFilter) {
     state.orderFilter = t.dataset.orderFilter;
+    state.orderPage = 1;
     document.querySelectorAll("[data-order-filter]").forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.orderFilter === state.orderFilter);
     });
     renderOrders();
+  }
+  if (t.dataset.orderPage) {
+    if (t.disabled) return;
+    if (t.dataset.orderPage === "prev") setOrderPage(state.orderPage - 1);
+    else if (t.dataset.orderPage === "next") setOrderPage(state.orderPage + 1);
+    else setOrderPage(t.dataset.orderPage);
   }
   if (t.dataset.invoiceView) setInvoiceView(t.dataset.invoiceView);
   if (t.dataset.recordFilter) {
@@ -487,10 +673,30 @@ $("selectAll").addEventListener("click", () => {
 $("goInvoice").addEventListener("click", openInvoiceForm);
 $("submitInvoice").addEventListener("click", submitInvoice);
 $("confirmSubmit").addEventListener("click", finishSubmit);
+$("invoiceTitleSelect").addEventListener("change", applySelectedInvoiceTitle);
+$("goConfirmEntity").addEventListener("click", goConfirmEntity);
+$("confirmEntity").addEventListener("click", confirmEntity);
+$("entityForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  confirmEntity();
+});
+["entityCompany", "entityTax", "entityBank", "entityAccount", "entityAddress", "entityPhone"].forEach((id) => {
+  $(id).addEventListener("input", () => {
+    if (!entity.confirmed) return;
+    entity.confirmed = false;
+    syncEntityStatus();
+  });
+});
+
+$("orderPageGo").addEventListener("click", jumpOrderPage);
+$("orderPageJump").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") jumpOrderPage();
+});
 
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".order-card");
   if (card && !e.target.closest("button")) openOrderDetail(card.dataset.orderId);
 });
 
+syncEntityStatus();
 refresh();

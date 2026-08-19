@@ -31,52 +31,101 @@
     <div class="console-layout">
       <aside class="side-nav-card">
         <nav class="side-nav" aria-label="订单与发票中心导航">
+          <button type="button" class="nav-item" data-module="entity">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6M9 10h.01M15 10h.01"/></svg>
+            </span>
+            <span>主体确认</span>
+            <em class="nav-status wait" id="navEntityStatus">未确认</em>
+          </button>
           <button type="button" class="nav-item active" data-module="orders">
             <span class="nav-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M7 7h10M7 12h10M7 17h6"/><rect x="4" y="3.5" width="16" height="17" rx="3"/></svg>
             </span>
             <span>订单管理</span>
-            <em id="navOrderBadge">6</em>
+            <em id="navOrderBadge">12</em>
           </button>
           <button type="button" class="nav-item" data-module="invoice">
             <span class="nav-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M7 8h10M7 12h6M7 16h8"/><path d="M6 3.5h12l2 3.2V20a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 20V6.7Z"/></svg>
             </span>
             <span>发票管理</span>
-            <em id="navInvoiceBadge">2</em>
+            <em id="navInvoiceBadge">7</em>
           </button>
         </nav>
-        <p class="side-hint">待支付可继续付款；已完成订单可申请电子发票。开票完成后将发送至绑定邮箱。</p>
+        <p class="side-hint">请先确认开票主体。待支付可继续付款；已完成订单可申请电子发票。</p>
       </aside>
 
       <main class="console-main">
+        <section class="block hidden" id="entityModule">
+          <div class="block-head">
+            <h2>主体确认</h2>
+            <span class="status wait" id="entityStatusTag">未确认</span>
+          </div>
+          <p class="entity-intro">请填写企业开票主体信息。确认后将用于电子发票开具，请与营业执照保持一致。</p>
+          <form class="entity-form" id="entityForm">
+            <label class="entity-field">
+              <span>单位名称 <i>*</i></span>
+              <input id="entityCompany" type="text" maxlength="80" value="" placeholder="请输入营业执照上的单位全称">
+            </label>
+            <label class="entity-field">
+              <span>纳税人识别号 <i>*</i></span>
+              <input id="entityTax" type="text" maxlength="20" value="" placeholder="请输入统一社会信用代码">
+            </label>
+            <label class="entity-field">
+              <span>开户银行</span>
+              <input id="entityBank" type="text" maxlength="50" placeholder="选填">
+            </label>
+            <label class="entity-field">
+              <span>银行账号</span>
+              <input id="entityAccount" type="text" maxlength="30" placeholder="选填">
+            </label>
+            <label class="entity-field">
+              <span>企业地址</span>
+              <input id="entityAddress" type="text" maxlength="80" placeholder="选填">
+            </label>
+            <label class="entity-field">
+              <span>企业电话</span>
+              <input id="entityPhone" type="text" maxlength="20" placeholder="选填">
+            </label>
+            <div class="entity-actions">
+              <button type="button" class="btn-primary" id="confirmEntity">确认开票主体</button>
+            </div>
+          </form>
+        </section>
+
         <section class="block" id="ordersModule">
           <div class="block-head">
             <h2>订单管理</h2>
           </div>
-          <div class="notice">
-            待支付订单请尽快完成付款；已完成订单可申请电子发票，开具完成后将发送至绑定邮箱。
-          </div>
           <div class="tabs" role="tablist" aria-label="订单状态">
-            <button type="button" class="tab active" data-order-filter="all">全部 <em id="countAll">6</em></button>
+            <button type="button" class="tab active" data-order-filter="all">全部 <em id="countAll">12</em></button>
             <button type="button" class="tab" data-order-filter="pending_pay">待支付 <em id="countPay">1</em></button>
-            <button type="button" class="tab" data-order-filter="completed">已完成 <em id="countDone">4</em></button>
+            <button type="button" class="tab" data-order-filter="completed">已完成 <em id="countDone">10</em></button>
             <button type="button" class="tab" data-order-filter="cancelled">已取消 <em id="countCancel">1</em></button>
           </div>
           <div class="table-wrap">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>商品信息</th>
-                  <th>订单信息</th>
+                  <th>订单编号</th>
+                  <th>产品</th>
+                  <th>版本</th>
                   <th>金额</th>
-                  <th>状态</th>
+                  <th>订单状态</th>
                   <th>操作</th>
                 </tr>
               </thead>
               <tbody id="orderList"></tbody>
             </table>
           </div>
+          <nav class="pager" aria-label="订单分页">
+            <div class="pager-pages" id="orderPagerPages"></div>
+            <span class="pager-jump">跳至</span>
+            <input class="pager-input" id="orderPageJump" type="text" inputmode="numeric" maxlength="4" aria-label="页码">
+            <span class="pager-jump">页</span>
+            <button type="button" class="pager-ok" id="orderPageGo">确定</button>
+          </nav>
         </section>
 
         <section class="block hidden" id="invoiceModule">
@@ -84,7 +133,7 @@
             <h2>发票管理</h2>
           </div>
           <div class="tabs" role="tablist" aria-label="发票模块">
-            <button type="button" class="tab active" data-invoice-view="eligible">可开发票 <em id="countEligible">2</em></button>
+            <button type="button" class="tab active" data-invoice-view="eligible">可开发票 <em id="countEligible">7</em></button>
             <button type="button" class="tab" data-invoice-view="records">开票记录</button>
           </div>
 
@@ -98,8 +147,9 @@
                 <thead>
                   <tr>
                     <th style="width:44px"></th>
-                    <th>商品信息</th>
-                    <th>订单号 / 完成时间</th>
+                    <th>订单编号</th>
+                    <th>产品</th>
+                    <th>版本信息</th>
                     <th>金额</th>
                   </tr>
                 </thead>
@@ -168,17 +218,21 @@
         <button type="button" class="icon-btn" data-close-modal aria-label="关闭">×</button>
       </header>
       <div class="form-grid">
+        <p class="entity-needed hidden" id="entityNeededTip">
+          暂无已确认的开票主体，请先完成主体确认后再申请开票。
+          <button type="button" class="text-link" id="goConfirmEntity">去主体确认</button>
+        </p>
         <div class="form-block">
           <h4>发票抬头</h4>
-          <label class="form-row"><span>抬头类型</span><b>企业单位</b></label>
           <label class="form-row">
-            <span>公司名称 <i>*</i></span>
-            <input id="companyName" type="text" value="上海蜜度云科技有限公司">
+            <span>选择抬头 <i>*</i></span>
+            <select id="invoiceTitleSelect" aria-label="选择已确认的发票抬头"></select>
           </label>
           <label class="form-row">
-            <span>公司税号</span>
-            <input id="taxNo" type="text" value="91310115MA1K4GEO88">
+            <span>纳税人识别号</span>
+            <b id="invoiceTaxText"></b>
           </label>
+          <div id="invoiceEntityExtras"></div>
           <label class="form-row"><span>发票格式</span><b>PDF 电子发票</b></label>
           <label class="form-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></label>
           <label class="form-row">
@@ -194,7 +248,7 @@
           <h4>接收方式</h4>
           <label class="form-row">
             <span>电子邮箱 <i>*</i></span>
-            <input id="invoiceEmail" type="email" value="lizemingsh@midu.com" placeholder="请输入接收邮箱">
+            <input id="invoiceEmail" type="email" value="" placeholder="请输入接收邮箱">
           </label>
           <p class="form-tip">电子发票开具完成后将发送至该邮箱，可在开票记录中查看进度。</p>
         </div>
