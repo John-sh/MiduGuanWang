@@ -1,16 +1,16 @@
 const orders = [
-  { id: "MD202608150019", product: "新浪舆情通", version: "旗舰版", benefit: "全网监测 12 个月 · 账号 10 个", price: 98000, qty: 1, amount: 98000, date: "2026-08-15 10:24", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608140083", product: "索骥", version: "专业版", benefit: "线索监测 6 个月 · 预警 50 条/日", price: 36000, qty: 1, amount: 36000, date: "2026-08-14 16:12", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608140021" },
-  { id: "MD202608130057", product: "城感通", version: "标准版", benefit: "城市感知监测 12 个月 · 账号 5 个", price: 28000, qty: 1, amount: 28000, date: "2026-08-13 09:35", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608130008" },
-  { id: "MD202608120031", product: "校对通", version: "企业版", benefit: "智能校对 10 万字/月 · 12 个月", price: 12800, qty: 1, amount: 12800, date: "2026-08-12 14:07", status: "pending_pay", statusText: "待支付", canInvoice: false, invoiced: false },
-  { id: "MD202608110027", product: "新媒通", version: "专业版", benefit: "新媒体运营 12 个月 · 账号 5 个", price: 19800, qty: 1, amount: 19800, date: "2026-08-11 13:18", status: "cancelled", statusText: "已取消", canInvoice: false, invoiced: false },
-  { id: "MD202608100061", product: "安巡通", version: "旗舰版", benefit: "安全巡检 12 个月 · 站点 20 个", price: 56000, qty: 1, amount: 56000, date: "2026-08-10 17:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608090044", product: "模力通", version: "标准版", benefit: "模型调用 100 万 tokens · 12 个月", price: 8800, qty: 2, amount: 17600, date: "2026-08-09 11:05", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608080072", product: "模力通智能体", version: "专业版", benefit: "智能体席位 3 个 · 12 个月", price: 25800, qty: 1, amount: 25800, date: "2026-08-08 15:22", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608070018", product: "校对通智能体", version: "标准版", benefit: "校对智能体 1 席 · 12 个月", price: 9800, qty: 1, amount: 9800, date: "2026-08-07 09:48", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608070014" },
-  { id: "MD202608060053", product: "DataQ智能体", version: "企业版", benefit: "数据问答席位 5 个 · 12 个月", price: 39800, qty: 1, amount: 39800, date: "2026-08-06 18:16", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608050036", product: "数据服务", version: "定制包", benefit: "专项数据采集与清洗 · 1 次", price: 48000, qty: 1, amount: 48000, date: "2026-08-05 16:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608040012", product: "报告定制", version: "专题报告", benefit: "行业分析报告定制 · 1 份", price: 26800, qty: 1, amount: 26800, date: "2026-08-04 10:18", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608150019", product: "新浪舆情通", version: "旗舰版", benefit: ["全网监测周期 12 个月，覆盖新闻、微博、微信、短视频、论坛等主流信源", "账号席位 10 个，支持按角色分配查看、研判、导出权限", "热点事件预警 200 条/日，支持关键词、地域、情感多维规则", "报告导出：日报 / 周报 / 专题报告，支持 Word、PDF", "历史数据回溯 3 年，含传播路径与重点账号分析"], price: 98000, qty: 1, amount: 98000, date: "2026-08-15 10:24", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608140083", product: "索骥", version: "专业版", benefit: ["线索监测周期 6 个月，覆盖公开网络与指定站点", "预警额度 50 条/日，支持优先级分级推送", "线索库容量 10 万条，支持标签、去重与合并研判", "导出权限：Excel / CSV，含原文链接与传播摘要"], price: 36000, qty: 1, amount: 36000, date: "2026-08-14 16:12", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608140021" },
+  { id: "MD202608130057", product: "城感通", version: "标准版", benefit: ["城市感知监测 12 个月，覆盖市政、交通、民生等主题", "账号席位 5 个，支持按区域查看", "事件工单联动 1000 次/月", "区域热力图与趋势看板，支持周报自动生成"], price: 28000, qty: 1, amount: 28000, date: "2026-08-13 09:35", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608130008" },
+  { id: "MD202608120031", product: "校对通", version: "企业版", benefit: ["智能校对额度 10 万字/月，有效期 12 个月", "支持公文、新闻、宣传稿等多文体校对", "错敏词库可定制，含行业词、领导人姓名、地名", "校对记录留存 180 天，支持对照导出"], price: 12800, qty: 1, amount: 12800, date: "2026-08-12 14:07", status: "pending_pay", statusText: "待支付", canInvoice: false, invoiced: false },
+  { id: "MD202608110027", product: "新媒通", version: "专业版", benefit: ["新媒体运营周期 12 个月", "账号席位 5 个，覆盖微博、微信、抖音等内容发布", "素材库 5000 条，支持选题日历与审核流", "传播效果复盘周报自动生成"], price: 19800, qty: 1, amount: 19800, date: "2026-08-11 13:18", status: "cancelled", statusText: "已取消", canInvoice: false, invoiced: false },
+  { id: "MD202608100061", product: "安巡通", version: "旗舰版", benefit: ["安全巡检周期 12 个月", "巡检站点 20 个，含可用性、篡改、挂马监测", "告警通道：短信 / 邮件 / 企微，响应时效 5 分钟", "巡检报告按日归档，支持整改闭环记录"], price: 56000, qty: 1, amount: 56000, date: "2026-08-10 17:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608090044", product: "模力通", version: "标准版", benefit: ["模型调用额度 100 万 tokens，有效期 12 个月", "支持主流大模型切换与提示词模板", "并发 10 路，日志留存 90 天", "用量看板与超限预警"], price: 8800, qty: 2, amount: 17600, date: "2026-08-09 11:05", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608080072", product: "模力通智能体", version: "专业版", benefit: ["智能体席位 3 个，有效期 12 个月", "支持知识库挂载 5 个，单库 2GB", "对话记录留存 180 天，可导出", "权限：创建、发布、分享至内部成员"], price: 25800, qty: 1, amount: 25800, date: "2026-08-08 15:22", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608070018", product: "校对通智能体", version: "标准版", benefit: ["校对智能体 1 席，有效期 12 个月", "支持长文分段校对与修改建议对照", "词库同步企业版校对通", "会话记录留存 90 天"], price: 9800, qty: 1, amount: 9800, date: "2026-08-07 09:48", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608070014" },
+  { id: "MD202608060053", product: "DataQ智能体", version: "企业版", benefit: ["数据问答席位 5 个，有效期 12 个月", "可连接业务数据源 3 个，支持权限隔离", "问数结果可导出图表与明细表", "问答审计日志留存 1 年"], price: 39800, qty: 1, amount: 39800, date: "2026-08-06 18:16", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608050036", product: "数据服务", version: "定制包", benefit: ["专项数据采集与清洗 1 次", "交付字段按需求清单约定，含去重、标准化、质检报告", "交付周期 15 个工作日，支持一次修订", "成果物：数据包 + 数据字典 + 质检说明"], price: 48000, qty: 1, amount: 48000, date: "2026-08-05 16:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608040012", product: "报告定制", version: "专题报告", benefit: ["行业分析报告定制 1 份", "含现状、竞品、传播与建议四部分，约 30 页", "提供 1 次大纲确认与 1 次成稿修订", "交付格式：PPT + PDF，含数据附件"], price: 26800, qty: 1, amount: 26800, date: "2026-08-04 10:18", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
 ];
 
 let records = [
@@ -40,6 +40,7 @@ const entity = {
   account: "",
   address: "",
   phone: "",
+  email: "",
 };
 
 function $(id) {
@@ -208,14 +209,13 @@ function renderOrders() {
       <tr class="order-card" data-order-id="${o.id}">
         <td class="num-cell">${o.id}</td>
         <td><span class="cell-title">${o.product}</span></td>
-        <td>${o.version}</td>
         <td class="amount">¥${money(o.amount)}</td>
         <td><span class="status ${statusClass(o.status)}">${o.statusText}</span></td>
         <td><div class="ops">${orderActions(o)}</div></td>
       </tr>`
         )
         .join("")
-    : `<tr><td colspan="6" class="empty">暂无相关订单</td></tr>`;
+    : `<tr><td colspan="5" class="empty">暂无相关订单</td></tr>`;
   renderOrderPager();
 }
 
@@ -231,12 +231,11 @@ function renderEligible() {
         <td class="select-cell"><span class="check"></span></td>
         <td class="num-cell">${o.id}</td>
         <td><span class="cell-title">${o.product}</span></td>
-        <td>${o.version}</td>
         <td class="amount">¥${money(o.amount)}</td>
       </tr>`
         )
         .join("")
-    : `<tr><td colspan="5" class="empty">当前没有可开票的已完成订单</td></tr>`;
+    : `<tr><td colspan="4" class="empty">当前没有可开票的已完成订单</td></tr>`;
   updateSelection();
 }
 
@@ -280,10 +279,10 @@ function renderRecords() {
         <td><span class="status ${statusClass(r.status)}">${r.statusText}</span></td>
         <td><div class="ops">${
           r.status === "issued"
-            ? `<button class="btn-ghost" data-resend="${r.id}">重新发送</button><button class="btn-ghost" data-reopen="${r.id}">申请重开</button>`
+            ? `<button class="btn-ghost" data-resend="${r.id}">重新发送</button>`
             : r.status === "failed"
             ? `<button class="btn-danger" data-retry="${r.id}">重新申请</button>`
-            : `<button class="btn-ghost" data-record-detail="${r.id}">查看进度</button>`
+            : ""
         }</div></td>
       </tr>`
     )
@@ -326,6 +325,7 @@ function readEntityForm() {
     account: $("entityAccount").value.trim(),
     address: $("entityAddress").value.trim(),
     phone: $("entityPhone").value.trim(),
+    email: $("entityEmail").value.trim(),
   };
 }
 
@@ -341,6 +341,7 @@ function confirmEntity() {
   const data = readEntityForm();
   if (!data.company) return toast("请填写单位名称");
   if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的纳税人识别号");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return toast("请输入正确的电子邮箱");
   Object.assign(entity, data, { confirmed: true });
   syncEntityStatus();
   toast("开票主体已确认");
@@ -360,7 +361,6 @@ function fillInvoiceFromEntity() {
     select.disabled = true;
   }
   select.value = "";
-  $("invoiceEmail").value = "";
   $("remark").value = "";
   applySelectedInvoiceTitle();
 }
@@ -368,6 +368,7 @@ function fillInvoiceFromEntity() {
 function applySelectedInvoiceTitle() {
   const selected = $("invoiceTitleSelect").value === "confirmed" && entity.confirmed;
   $("invoiceTaxText").textContent = selected ? entity.tax : "";
+  $("invoiceEmailText").textContent = selected ? entity.email : "";
   const extras = [
     ["开户银行", entity.bank],
     ["银行账号", entity.account],
@@ -396,27 +397,43 @@ function closeOverlays() {
   $("confirmModal").hidden = true;
 }
 
+function benefitItems(o) {
+  if (Array.isArray(o.benefit)) return o.benefit.filter(Boolean);
+  return String(o.benefit || "")
+    .split(/[·\n；;]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function openOrderDetail(id) {
   const o = orders.find((x) => x.id === id);
   if (!o) return;
   state.currentOrder = o;
+  const items = benefitItems(o);
   $("orderDrawerBody").innerHTML = `
     <section class="detail-hero">
       <span class="status ${statusClass(o.status)}">${o.statusText}</span>
       <div class="amount-big">¥${money(o.amount)}</div>
-      <p>${o.product}</p>
+      <p>${escapeHtml(o.product)}</p>
     </section>
     <div class="section-title">订单信息</div>
     <section class="info-card">
-      <div class="info-row"><span>订单编号</span><b>${o.id}</b></div>
-      <div class="info-row"><span>产品</span><b>${o.product}</b></div>
-      <div class="info-row"><span>版本信息</span><b>${o.version}</b></div>
-      <div class="info-row"><span>权益详情</span><b>${o.benefit}</b></div>
+      <div class="info-row"><span>订单编号</span><b>${escapeHtml(o.id)}</b></div>
+      <div class="info-row"><span>产品</span><b>${escapeHtml(o.product)}</b></div>
+      <div class="info-row"><span>版本</span><b>${escapeHtml(o.version)}</b></div>
       <div class="info-row"><span>价格</span><b>¥${money(o.price)}</b></div>
       <div class="info-row"><span>数量</span><b>${o.qty}</b></div>
-      <div class="info-row"><span>金额</span><b>¥${money(o.amount)}</b></div>
+      <div class="info-row"><span>订单金额</span><b>¥${money(o.amount)}</b></div>
       <div class="info-row"><span>订单状态</span><span class="status ${statusClass(o.status)}">${o.statusText}</span></div>
-      <div class="info-row"><span>下单时间</span><b>${o.date}</b></div>
+      <div class="info-row"><span>下单时间</span><b>${escapeHtml(o.date)}</b></div>
+    </section>
+    <div class="section-title">权益详情</div>
+    <section class="benefit-card">
+      ${
+        items.length
+          ? `<ul class="benefit-list">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+          : `<p class="benefit-empty">暂无权益说明</p>`
+      }
     </section>
   `;
   const foot = $("orderDrawerFoot");
@@ -460,7 +477,7 @@ function openInvoiceDetail(id) {
   `;
   $("invoiceDrawerFoot").innerHTML =
     r.status === "issued"
-      ? `<button class="btn-ghost" data-resend="${r.id}">重新发送</button><button class="btn-primary" data-reopen="${r.id}">申请重开</button>`
+      ? `<button class="btn-ghost" data-resend="${r.id}">重新发送</button>`
       : r.status === "failed"
       ? `<button class="btn-primary" data-retry="${r.id}">重新申请</button>`
       : `<button class="btn-ghost" data-close-drawer>关闭</button>`;
@@ -525,8 +542,8 @@ function submitInvoice() {
   }
   const company = entity.company;
   const tax = entity.tax;
-  const email = $("invoiceEmail").value.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast("请输入正确的电子邮箱");
+  const email = entity.email;
+  if (!email) return toast("请先在开票主体中填写电子邮箱");
   const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
   const total = selected.reduce((s, o) => s + o.amount, 0);
   $("confirmBody").innerHTML = `
@@ -552,7 +569,7 @@ function finishSubmit() {
     company: entity.company,
     tax: entity.tax,
     content: "*信息技术服务*平台服务费",
-    email: $("invoiceEmail").value.trim(),
+    email: entity.email,
     emailStatus: "待发送",
     invoiceNo: "—",
     orderIds: selected.map((s) => s.id),
@@ -680,7 +697,7 @@ $("entityForm").addEventListener("submit", (e) => {
   e.preventDefault();
   confirmEntity();
 });
-["entityCompany", "entityTax", "entityBank", "entityAccount", "entityAddress", "entityPhone"].forEach((id) => {
+["entityCompany", "entityTax", "entityBank", "entityAccount", "entityAddress", "entityPhone", "entityEmail"].forEach((id) => {
   $(id).addEventListener("input", () => {
     if (!entity.confirmed) return;
     entity.confirmed = false;

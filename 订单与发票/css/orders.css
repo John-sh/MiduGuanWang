@@ -624,7 +624,7 @@ tr[data-select] { cursor: pointer; }
   top: 0;
   right: 0;
   z-index: 60;
-  width: min(460px, 100vw);
+  width: min(520px, 100vw);
   height: 100vh;
   background: #fff;
   box-shadow: -12px 0 32px rgba(17, 24, 39, 0.12);
@@ -686,7 +686,50 @@ tr[data-select] { cursor: pointer; }
 }
 
 .info-row span { color: var(--muted); }
-.info-row b { font-weight: 500; text-align: right; }
+.info-row b { font-weight: 500; text-align: right; word-break: break-all; }
+
+.benefit-card {
+  margin: 8px 20px 20px;
+  padding: 4px 16px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f8fa;
+}
+
+.benefit-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.benefit-list li {
+  position: relative;
+  padding: 10px 0 10px 16px;
+  border-bottom: 1px dashed #e5e6eb;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.benefit-list li:last-child { border-bottom: 0; }
+
+.benefit-list li:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.benefit-empty {
+  margin: 12px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
 
 .modal {
   position: fixed;
