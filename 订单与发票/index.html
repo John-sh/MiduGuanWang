@@ -6,7 +6,7 @@
   <title>订单与发票中心-蜜度Midu</title>
   <meta name="description" content="蜜度控制台订单与发票中心：订单管理与发票管理。">
   <link rel="icon" type="image/x-icon" href="https://www.midu.com/favicon.ico">
-  <link rel="stylesheet" href="./css/orders.css?v=20260819c">
+  <link rel="stylesheet" href="./css/orders.css?v=20260819d">
 </head>
 <body>
   <header class="console-header">
@@ -62,14 +62,21 @@
             <h2>开票主体</h2>
             <span class="status wait" id="entityStatusTag">未确认</span>
           </div>
-          <p class="entity-intro">请填写企业开票主体信息。确认后将用于电子发票开具，请与营业执照保持一致。</p>
+          <p class="entity-intro">请填写开票主体信息。确认后将用于电子发票开具。企业单位请与营业执照保持一致。</p>
           <form class="entity-form" id="entityForm">
+            <div class="entity-field">
+              <span>单位类型 <i>*</i></span>
+              <div class="entity-radios">
+                <label><input type="radio" name="entityType" value="enterprise" checked> 企业单位</label>
+                <label><input type="radio" name="entityType" value="nonenterprise"> 非企业单位</label>
+              </div>
+            </div>
             <label class="entity-field">
-              <span>单位名称 <i>*</i></span>
+              <span id="entityCompanyLabel">单位名称 <i>*</i></span>
               <input id="entityCompany" type="text" maxlength="80" value="" placeholder="请输入营业执照上的单位全称">
             </label>
             <label class="entity-field">
-              <span>纳税人识别号 <i>*</i></span>
+              <span id="entityTaxLabel">纳税人识别号 <i>*</i></span>
               <input id="entityTax" type="text" maxlength="20" value="" placeholder="请输入统一社会信用代码">
             </label>
             <label class="entity-field">
@@ -169,7 +176,7 @@
             <div class="subtabs" role="tablist" aria-label="发票状态">
               <button type="button" class="subtab active" data-record-filter="all">全部</button>
               <button type="button" class="subtab" data-record-filter="processing">开票中</button>
-              <button type="button" class="subtab" data-record-filter="issued">开票完成</button>
+              <button type="button" class="subtab" data-record-filter="issued">已开票</button>
               <button type="button" class="subtab" data-record-filter="failed">开票失败</button>
             </div>
             <div class="table-wrap">
@@ -271,6 +278,6 @@
   </div>
 
   <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
-  <script src="./js/orders.js?v=20260819c"></script>
+  <script src="./js/orders.js?v=20260819d"></script>
 </body>
 </html>

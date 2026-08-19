@@ -15,7 +15,7 @@ const orders = [
 
 let records = [
   { id: "INV202608140021", status: "processing", statusText: "开票中", date: "2026-08-14 18:20", amount: 36000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "待发送", invoiceNo: "—", orderIds: ["MD202608140083"] },
-  { id: "INV202608130008", status: "issued", statusText: "开票完成", date: "2026-08-13 11:26", amount: 28000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026081300010872", orderIds: ["MD202608130057"] },
+  { id: "INV202608130008", status: "issued", statusText: "已开票", date: "2026-08-13 11:26", amount: 28000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026081300010872", orderIds: ["MD202608130057"] },
   { id: "INV202608070014", status: "failed", statusText: "开票失败", date: "2026-08-07 18:05", amount: 9800, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "orma***@midu.com", emailStatus: "发送失败", invoiceNo: "—", orderIds: ["MD202608070018"] },
 ];
 
@@ -34,6 +34,7 @@ const state = {
 
 const entity = {
   confirmed: false,
+  type: "enterprise",
   company: "",
   tax: "",
   bank: "",
@@ -318,7 +319,9 @@ function syncEntityStatus() {
 }
 
 function readEntityForm() {
+  const typeEl = document.querySelector('input[name="entityType"]:checked');
   return {
+    type: typeEl ? typeEl.value : "enterprise",
     company: $("entityCompany").value.trim(),
     tax: $("entityTax").value.trim().toUpperCase(),
     bank: $("entityBank").value.trim(),
@@ -327,6 +330,18 @@ function readEntityForm() {
     phone: $("entityPhone").value.trim(),
     email: $("entityEmail").value.trim(),
   };
+}
+
+function isEnterprise(type) {
+  return (type || entity.type) === "enterprise";
+}
+
+function syncEntityTypeUI() {
+  const enterprise = isEnterprise(readEntityForm().type);
+  $("entityCompanyLabel").innerHTML = enterprise ? "单位名称 <i>*</i>" : "单位全称 <i>*</i>";
+  $("entityCompany").placeholder = enterprise ? "请输入营业执照上的单位全称" : "请输入单位全称";
+  $("entityTaxLabel").innerHTML = enterprise ? "纳税人识别号 <i>*</i>" : "纳税人识别号";
+  $("entityTax").placeholder = enterprise ? "请输入统一社会信用代码" : "选填";
 }
 
 function escapeHtml(s) {
@@ -339,8 +354,12 @@ function escapeHtml(s) {
 
 function confirmEntity() {
   const data = readEntityForm();
-  if (!data.company) return toast("请填写单位名称");
-  if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的纳税人识别号");
+  if (!data.company) return toast(isEnterprise(data.type) ? "请填写单位名称" : "请填写单位全称");
+  if (isEnterprise(data.type)) {
+    if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的纳税人识别号");
+  } else if (data.tax && !/^[A-Z0-9]{15,20}$/.test(data.tax)) {
+    return toast("请填写正确的纳税人识别号");
+  }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return toast("请输入正确的电子邮箱");
   Object.assign(entity, data, { confirmed: true });
   syncEntityStatus();
@@ -367,9 +386,10 @@ function fillInvoiceFromEntity() {
 
 function applySelectedInvoiceTitle() {
   const selected = $("invoiceTitleSelect").value === "confirmed" && entity.confirmed;
-  $("invoiceTaxText").textContent = selected ? entity.tax : "";
+  $("invoiceTaxText").textContent = selected ? entity.tax || "—" : "";
   $("invoiceEmailText").textContent = selected ? entity.email : "";
   const extras = [
+    ["单位类型", selected ? (isEnterprise(entity.type) ? "企业单位" : "非企业单位") : ""],
     ["开户银行", entity.bank],
     ["银行账号", entity.account],
     ["企业地址", entity.address],
@@ -547,6 +567,7 @@ function submitInvoice() {
   const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
   const total = selected.reduce((s, o) => s + o.amount, 0);
   $("confirmBody").innerHTML = `
+    <div class="info-row"><span>单位类型</span><b>${isEnterprise(entity.type) ? "企业单位" : "非企业单位"}</b></div>
     <div class="info-row"><span>单位名称</span><b>${escapeHtml(company)}</b></div>
     <div class="info-row"><span>纳税人识别号</span><b>${escapeHtml(tax || "—")}</b></div>
     <div class="info-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></div>
@@ -704,6 +725,17 @@ $("entityForm").addEventListener("submit", (e) => {
     syncEntityStatus();
   });
 });
+document.querySelectorAll('input[name="entityType"]').forEach((el) => {
+  el.addEventListener("change", () => {
+    syncEntityTypeUI();
+    if (!entity.confirmed) return;
+    entity.confirmed = false;
+    syncEntityStatus();
+  });
+});
+
+syncEntityTypeUI();
+syncEntityStatus();
 
 $("orderPageGo").addEventListener("click", jumpOrderPage);
 $("orderPageJump").addEventListener("keydown", (e) => {
