@@ -35,7 +35,7 @@
             <span class="nav-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6M9 10h.01M15 10h.01"/></svg>
             </span>
-            <span>主体确认</span>
+            <span>开票主体</span>
             <em class="nav-status wait" id="navEntityStatus">未确认</em>
           </button>
           <button type="button" class="nav-item active" data-module="orders">
@@ -59,7 +59,7 @@
       <main class="console-main">
         <section class="block hidden" id="entityModule">
           <div class="block-head">
-            <h2>主体确认</h2>
+            <h2>开票主体</h2>
             <span class="status wait" id="entityStatusTag">未确认</span>
           </div>
           <p class="entity-intro">请填写企业开票主体信息。确认后将用于电子发票开具，请与营业执照保持一致。</p>
@@ -88,6 +88,10 @@
               <span>企业电话</span>
               <input id="entityPhone" type="text" maxlength="20" placeholder="选填">
             </label>
+            <label class="entity-field">
+              <span>电子邮箱 <i>*</i></span>
+              <input id="entityEmail" type="email" maxlength="80" value="" placeholder="请输入电子发票接收邮箱">
+            </label>
             <div class="entity-actions">
               <button type="button" class="btn-primary" id="confirmEntity">确认开票主体</button>
             </div>
@@ -110,8 +114,7 @@
                 <tr>
                   <th>订单编号</th>
                   <th>产品</th>
-                  <th>版本</th>
-                  <th>金额</th>
+                  <th>订单金额</th>
                   <th>订单状态</th>
                   <th>操作</th>
                 </tr>
@@ -149,8 +152,7 @@
                     <th style="width:44px"></th>
                     <th>订单编号</th>
                     <th>产品</th>
-                    <th>版本信息</th>
-                    <th>金额</th>
+                    <th>订单金额</th>
                   </tr>
                 </thead>
                 <tbody id="eligibleList"></tbody>
@@ -176,7 +178,7 @@
                   <tr>
                     <th>发票信息</th>
                     <th>申请时间</th>
-                    <th>金额</th>
+                    <th>订单金额</th>
                     <th>状态</th>
                     <th>操作</th>
                   </tr>
@@ -219,8 +221,8 @@
       </header>
       <div class="form-grid">
         <p class="entity-needed hidden" id="entityNeededTip">
-          暂无已确认的开票主体，请先完成主体确认后再申请开票。
-          <button type="button" class="text-link" id="goConfirmEntity">去主体确认</button>
+          暂无已确认的开票主体，请先完成开票主体确认后再申请开票。
+          <button type="button" class="text-link" id="goConfirmEntity">去开票主体</button>
         </p>
         <div class="form-block">
           <h4>发票抬头</h4>
@@ -231,6 +233,10 @@
           <label class="form-row">
             <span>纳税人识别号</span>
             <b id="invoiceTaxText"></b>
+          </label>
+          <label class="form-row">
+            <span>电子邮箱</span>
+            <b id="invoiceEmailText"></b>
           </label>
           <div id="invoiceEntityExtras"></div>
           <label class="form-row"><span>发票格式</span><b>PDF 电子发票</b></label>
@@ -243,14 +249,6 @@
             <span>发票金额</span>
             <strong>¥<em id="formTotal">0.00</em></strong>
           </div>
-        </div>
-        <div class="form-block">
-          <h4>接收方式</h4>
-          <label class="form-row">
-            <span>电子邮箱 <i>*</i></span>
-            <input id="invoiceEmail" type="email" value="" placeholder="请输入接收邮箱">
-          </label>
-          <p class="form-tip">电子发票开具完成后将发送至该邮箱，可在开票记录中查看进度。</p>
         </div>
       </div>
       <footer class="modal-foot">
