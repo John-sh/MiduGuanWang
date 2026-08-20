@@ -479,15 +479,15 @@ function openInvoiceDetail(id) {
     <section class="detail-hero">
       <span class="status ${statusClass(r.status)}">${r.statusText}</span>
       <div class="amount-big">¥${money(r.amount)}</div>
-      <p>${r.content}</p>
     </section>
     <div class="section-title">发票信息</div>
     <section class="info-card">
-      <div class="info-row"><span>发票编号</span><b>${r.invoiceNo}</b></div>
-      <div class="info-row"><span>单位名称</span><b>${r.company}</b></div>
-      <div class="info-row"><span>公司税号</span><b>${r.tax}</b></div>
+      <div class="info-row"><span>发票编号</span><b>${escapeHtml(r.invoiceNo)}</b></div>
+      <div class="info-row"><span>单位名称</span><b>${escapeHtml(r.company)}</b></div>
+      <div class="info-row"><span>公司税号</span><b>${escapeHtml(r.tax || "—")}</b></div>
+      <div class="info-row"><span>发票内容</span><b>${escapeHtml(r.content)}</b></div>
       <div class="info-row"><span>发票格式</span><b>PDF</b></div>
-      <div class="info-row"><span>申请时间</span><b>${r.date}</b></div>
+      <div class="info-row"><span>申请时间</span><b>${escapeHtml(r.date)}</b></div>
     </section>
     <div class="section-title">接收方式</div>
     <section class="info-card">
