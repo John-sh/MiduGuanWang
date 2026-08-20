@@ -6,7 +6,7 @@
   <title>订单与发票中心-蜜度Midu</title>
   <meta name="description" content="蜜度控制台订单与发票中心：订单管理与发票管理。">
   <link rel="icon" type="image/x-icon" href="https://www.midu.com/favicon.ico">
-  <link rel="stylesheet" href="./css/orders.css?v=20260819d">
+  <link rel="stylesheet" href="./css/orders.css?v=20260820a">
 </head>
 <body>
   <header class="console-header">
@@ -65,18 +65,18 @@
           <p class="entity-intro">请填写开票主体信息。确认后将用于电子发票开具。企业单位请与营业执照保持一致。</p>
           <form class="entity-form" id="entityForm">
             <div class="entity-field">
-              <span>单位类型 <i>*</i></span>
+              <span>抬头类型 <i>*</i></span>
               <div class="entity-radios">
                 <label><input type="radio" name="entityType" value="enterprise" checked> 企业单位</label>
                 <label><input type="radio" name="entityType" value="nonenterprise"> 非企业单位</label>
               </div>
             </div>
             <label class="entity-field">
-              <span id="entityCompanyLabel">单位名称 <i>*</i></span>
-              <input id="entityCompany" type="text" maxlength="80" value="" placeholder="请输入营业执照上的单位全称">
+              <span id="entityCompanyLabel">公司名称 <i>*</i></span>
+              <input id="entityCompany" type="text" maxlength="80" value="" placeholder="请输入营业执照上的公司全称">
             </label>
-            <label class="entity-field">
-              <span id="entityTaxLabel">纳税人识别号 <i>*</i></span>
+            <label class="entity-field" id="entityTaxRow">
+              <span id="entityTaxLabel">公司税号 <i>*</i></span>
               <input id="entityTax" type="text" maxlength="20" value="" placeholder="请输入统一社会信用代码">
             </label>
             <label class="entity-field">
@@ -88,11 +88,11 @@
               <input id="entityAccount" type="text" maxlength="30" placeholder="选填">
             </label>
             <label class="entity-field">
-              <span>企业地址</span>
+              <span>注册地址</span>
               <input id="entityAddress" type="text" maxlength="80" placeholder="选填">
             </label>
             <label class="entity-field">
-              <span>企业电话</span>
+              <span>注册电话</span>
               <input id="entityPhone" type="text" maxlength="20" placeholder="选填">
             </label>
             <label class="entity-field">
@@ -237,8 +237,8 @@
             <span>选择抬头 <i>*</i></span>
             <select id="invoiceTitleSelect" aria-label="选择已确认的发票抬头"></select>
           </label>
-          <label class="form-row">
-            <span>纳税人识别号</span>
+          <label class="form-row" id="invoiceTaxRow">
+            <span>公司税号</span>
             <b id="invoiceTaxText"></b>
           </label>
           <label class="form-row">
@@ -278,6 +278,6 @@
   </div>
 
   <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
-  <script src="./js/orders.js?v=20260819d"></script>
+  <script src="./js/orders.js?v=20260820a"></script>
 </body>
 </html>
