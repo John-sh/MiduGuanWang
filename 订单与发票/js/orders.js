@@ -320,10 +320,12 @@ function syncEntityStatus() {
 
 function readEntityForm() {
   const typeEl = document.querySelector('input[name="entityType"]:checked');
+  const type = typeEl ? typeEl.value : "enterprise";
+  const enterprise = isEnterprise(type);
   return {
-    type: typeEl ? typeEl.value : "enterprise",
+    type,
     company: $("entityCompany").value.trim(),
-    tax: $("entityTax").value.trim().toUpperCase(),
+    tax: enterprise ? $("entityTax").value.trim().toUpperCase() : "",
     bank: $("entityBank").value.trim(),
     account: $("entityAccount").value.trim(),
     address: $("entityAddress").value.trim(),
@@ -338,10 +340,10 @@ function isEnterprise(type) {
 
 function syncEntityTypeUI() {
   const enterprise = isEnterprise(readEntityForm().type);
-  $("entityCompanyLabel").innerHTML = enterprise ? "单位名称 <i>*</i>" : "单位全称 <i>*</i>";
-  $("entityCompany").placeholder = enterprise ? "请输入营业执照上的单位全称" : "请输入单位全称";
-  $("entityTaxLabel").innerHTML = enterprise ? "纳税人识别号 <i>*</i>" : "纳税人识别号";
-  $("entityTax").placeholder = enterprise ? "请输入统一社会信用代码" : "选填";
+  $("entityCompanyLabel").innerHTML = enterprise ? "公司名称 <i>*</i>" : "发票抬头 <i>*</i>";
+  $("entityCompany").placeholder = enterprise ? "请输入营业执照上的公司全称" : "请输入发票抬头";
+  $("entityTaxRow").classList.toggle("hidden", !enterprise);
+  if (!enterprise) $("entityTax").value = "";
 }
 
 function escapeHtml(s) {
@@ -354,12 +356,8 @@ function escapeHtml(s) {
 
 function confirmEntity() {
   const data = readEntityForm();
-  if (!data.company) return toast(isEnterprise(data.type) ? "请填写单位名称" : "请填写单位全称");
-  if (isEnterprise(data.type)) {
-    if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的纳税人识别号");
-  } else if (data.tax && !/^[A-Z0-9]{15,20}$/.test(data.tax)) {
-    return toast("请填写正确的纳税人识别号");
-  }
+  if (!data.company) return toast(isEnterprise(data.type) ? "请填写公司名称" : "请填写发票抬头");
+  if (isEnterprise(data.type) && !/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的公司税号");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return toast("请输入正确的电子邮箱");
   Object.assign(entity, data, { confirmed: true });
   syncEntityStatus();
@@ -386,14 +384,16 @@ function fillInvoiceFromEntity() {
 
 function applySelectedInvoiceTitle() {
   const selected = $("invoiceTitleSelect").value === "confirmed" && entity.confirmed;
-  $("invoiceTaxText").textContent = selected ? entity.tax || "—" : "";
+  const showTax = selected && isEnterprise(entity.type);
+  $("invoiceTaxRow").classList.toggle("hidden", !showTax);
+  $("invoiceTaxText").textContent = showTax ? entity.tax : "";
   $("invoiceEmailText").textContent = selected ? entity.email : "";
   const extras = [
-    ["单位类型", selected ? (isEnterprise(entity.type) ? "企业单位" : "非企业单位") : ""],
+    ["抬头类型", selected ? (isEnterprise(entity.type) ? "企业单位" : "非企业单位") : ""],
     ["开户银行", entity.bank],
     ["银行账号", entity.account],
-    ["企业地址", entity.address],
-    ["企业电话", entity.phone],
+    ["注册地址", entity.address],
+    ["注册电话", entity.phone],
   ].filter(([, v]) => selected && v);
   $("invoiceEntityExtras").innerHTML = extras
     .map(([label, value]) => `<label class="form-row"><span>${label}</span><b>${escapeHtml(value)}</b></label>`)
@@ -567,9 +567,9 @@ function submitInvoice() {
   const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
   const total = selected.reduce((s, o) => s + o.amount, 0);
   $("confirmBody").innerHTML = `
-    <div class="info-row"><span>单位类型</span><b>${isEnterprise(entity.type) ? "企业单位" : "非企业单位"}</b></div>
-    <div class="info-row"><span>单位名称</span><b>${escapeHtml(company)}</b></div>
-    <div class="info-row"><span>纳税人识别号</span><b>${escapeHtml(tax || "—")}</b></div>
+    <div class="info-row"><span>抬头类型</span><b>${isEnterprise(entity.type) ? "企业单位" : "非企业单位"}</b></div>
+    <div class="info-row"><span>${isEnterprise(entity.type) ? "公司名称" : "发票抬头"}</span><b>${escapeHtml(company)}</b></div>
+    ${isEnterprise(entity.type) ? `<div class="info-row"><span>公司税号</span><b>${escapeHtml(tax || "—")}</b></div>` : ""}
     <div class="info-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></div>
     <div class="info-row"><span>发票金额</span><b>¥${money(total)}</b></div>
     <div class="info-row"><span>电子邮箱</span><b>${escapeHtml(email)}</b></div>
