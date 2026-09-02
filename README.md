@@ -7,6 +7,9 @@
 - 洪工杯报名：https://john-sh.github.io/MiduGuanWang/hgcompetition/
 - 申请试用页：https://john-sh.github.io/MiduGuanWang/apply/
 - 订单与发票中心：https://john-sh.github.io/MiduGuanWang/orders/
+- BOSS 原型入口：https://john-sh.github.io/MiduGuanWang/boss/
+- 线上订单：https://john-sh.github.io/MiduGuanWang/boss/order.html
+- 线上订单发票：https://john-sh.github.io/MiduGuanWang/boss/invoice.html
 
 ## 本地运行
 
