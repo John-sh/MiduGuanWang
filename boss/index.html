@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>蜜度BOSS系统原型</title>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+    body { background: #eef2f5; }
+    .topbar {
+      height: 50px; background: #00c4d6; color: #fff;
+      display: flex; align-items: center; padding: 0 18px; font-size: 18px; font-weight: 600;
+    }
+    .wrap { max-width: 880px; margin: 48px auto; padding: 0 20px; }
+    h1 { font-size: 22px; color: #303133; font-weight: 600; margin: 0 0 8px; }
+    .sub { color: #909399; font-size: 13px; margin-bottom: 28px; }
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    a.card {
+      display: block; background: #fff; border-radius: 4px; padding: 28px 24px;
+      text-decoration: none; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      border: 1px solid #e8eef2; color: #303133;
+    }
+    a.card:hover { border-color: #00c4d6; box-shadow: 0 4px 12px rgba(0,196,214,.12); }
+    .tag { display: inline-block; font-size: 12px; color: #00c4d6; background: #e6f9fb; padding: 2px 8px; border-radius: 2px; margin-bottom: 12px; }
+    .card h2 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: #909399; font-size: 13px; line-height: 1.6; }
+    .go { margin-top: 16px; color: #00c4d6; font-size: 13px; }
+    @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="topbar">蜜度BOSS系统 · 原型</div>
+  <div class="wrap">
+    <h1>线上订单相关原型</h1>
+    <p class="sub">点击进入对应页面，可在系统左侧菜单切换模块。</p>
+    <div class="cards">
+      <a class="card" href="order.html">
+        <span class="tag">订单管理</span>
+        <h2>线上订单</h2>
+        <p>官网下单列表、订单详情、开票、到账流水、退单与作废重下。</p>
+        <div class="go">打开原型 →</div>
+      </a>
+      <a class="card" href="invoice.html">
+        <span class="tag">收支管理</span>
+        <h2>线上订单发票</h2>
+        <p>发票列表、开票详情、附件、作废重开与退票。</p>
+        <div class="go">打开原型 →</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>蜜度BOSS系统 - 线上订单发票</title>
+  <link rel="stylesheet" href="vendor/element-ui.css" />
+  <style>
+    :root {
+      --primary: #00c4d6;
+      --primary-dark: #00b0c0;
+      --primary-light: #e6f9fb;
+      --header-h: 50px;
+      --aside-w: 196px;
+    }
+    [v-cloak] { display: none; }
+    html, body { margin: 0; height: 100%; font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+    #app { height: 100%; }
+
+    .layout { display: flex; flex-direction: column; height: 100%; background: #eef2f5; }
+    .topbar {
+      height: var(--header-h);
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      flex-shrink: 0;
+      z-index: 2;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .logo-mark {
+      width: 28px; height: 28px; border-radius: 4px;
+      background: rgba(255,255,255,.22);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px;
+    }
+    .sys-name { font-size: 18px; font-weight: 600; letter-spacing: .5px; }
+    .sys-slogan { font-size: 12px; opacity: .95; }
+    .topbar-right { display: flex; align-items: center; gap: 18px; font-size: 13px; }
+    .topbar-right a { color: #fff; text-decoration: none; }
+    .topbar-right a:hover { text-decoration: underline; }
+
+    .body { display: flex; flex: 1; min-height: 0; position: relative; }
+    .aside {
+      width: var(--aside-w);
+      background: #fff;
+      border-right: 1px solid #e8eef2;
+      overflow: auto;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .aside.collapsed { width: 16px; overflow: visible; }
+    .aside.collapsed .menu { display: none; }
+    .collapse-btn {
+      position: absolute; right: -16px; top: 10px;
+      width: 16px; height: 36px; background: #fff;
+      border: 1px solid #e4e7ed; border-left: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer; color: #909399; z-index: 6;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+    }
+    .menu { padding: 8px 0 24px; }
+    .menu-item, .menu-parent {
+      display: flex; align-items: center; gap: 8px;
+      height: 40px; padding: 0 16px; font-size: 13px; color: #4a5568;
+      cursor: pointer; position: relative; user-select: none;
+    }
+    .menu-item:hover, .menu-parent:hover { color: var(--primary); background: #f7fbfd; }
+    .menu-item.active {
+      background: var(--primary-light); color: var(--primary); font-weight: 600;
+    }
+    .menu-item.active::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--primary);
+    }
+    .menu-badge {
+      margin-left: auto; min-width: 16px; height: 16px; padding: 0 5px;
+      background: #f56c6c; color: #fff; border-radius: 8px; font-size: 11px;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .sub-menu { background: #fafcfd; }
+    .sub-menu .menu-item { padding-left: 36px; height: 36px; }
+    .menu-arrow { margin-left: auto; font-size: 12px; color: #a0aec0; }
+
+    .main { flex: 1; min-width: 0; overflow: auto; padding: 12px; }
+    .panel {
+      background: #fff; border-radius: 2px;
+      box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      padding: 14px 16px 8px;
+    }
+    .filter-form .el-form-item { margin-bottom: 10px; margin-right: 0; }
+    .filter-form .el-form-item__label { font-size: 13px; color: #606266; padding-right: 6px; }
+    .filter-actions { display: flex; align-items: center; gap: 8px; padding: 4px 0 10px; }
+    .toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 0 10px; gap: 8px; flex-wrap: wrap;
+    }
+    .toolbar-left { display: flex; gap: 8px; flex-wrap: wrap; }
+    .warn-text { color: #f56c6c; font-size: 13px; padding: 2px 0 10px; }
+
+    .el-button--primary { background: var(--primary); border-color: var(--primary); }
+    .el-button--primary:hover, .el-button--primary:focus { background: var(--primary-dark); border-color: var(--primary-dark); }
+    .el-button--text { color: var(--primary); }
+    .el-pagination.is-background .el-pager li.active { background-color: var(--primary); }
+    .el-input__inner:focus, .el-textarea__inner:focus { border-color: var(--primary); }
+    .el-select .el-input.is-focus .el-input__inner { border-color: var(--primary); }
+    .el-checkbox__input.is-checked .el-checkbox__inner,
+    .el-checkbox__input.is-indeterminate .el-checkbox__inner { background-color: var(--primary); border-color: var(--primary); }
+    .el-tabs__active-bar { background-color: var(--primary); }
+    .el-tabs__item.is-active, .el-tabs__item:hover { color: var(--primary); }
+    .el-dialog__headerbtn .el-dialog__close:hover { color: var(--primary); }
+
+    .table-scroll { width: 100%; overflow-x: auto; }
+    .boss-table {
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 2160px;
+      width: 2160px;
+    }
+    .boss-table.full { width: 100%; min-width: 100%; }
+    .boss-table th {
+      background: var(--primary); color: #fff; font-weight: 500;
+      padding: 8px 10px; white-space: nowrap; border: 1px solid #00b3c4;
+      text-align: left;
+    }
+    .boss-table th.center, .boss-table td.center { text-align: center; }
+    .boss-table th.right, .boss-table td.right { text-align: right; }
+    .boss-table td {
+      padding: 8px 10px; border: 1px solid #ebeef5; background: #fff;
+      color: #303133; white-space: nowrap; vertical-align: top;
+    }
+    .boss-table tbody tr:hover td { background: #f5f7fa; }
+    .boss-table .sticky-op {
+      position: sticky; right: 0; background: #fff; z-index: 1;
+      box-shadow: -6px 0 8px -6px rgba(0,0,0,.12);
+    }
+    .boss-table th.sticky-op { background: var(--primary); z-index: 2; }
+    .filter-form .el-date-editor { width: 100%; }
+    .filter-form .el-date-editor.el-input { width: 100%; }
+    .filter-form .el-date-editor--daterange { width: 100%; }
+    .filter-form .el-range-editor.el-input__inner { width: 100%; }
+    .op-col { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.7; min-width: 72px; white-space: nowrap; }
+    .op-col .el-button { padding: 0; margin: 0; font-size: 12px; }
+    .op-col .el-button--text.danger-link { color: #f56c6c; }
+    .op-col .el-button--text.warn-link { color: #e6a23c; }
+    .op-col .el-button.is-disabled { color: #c0c4cc; }
+
+    .el-dialog__wrapper { z-index: 3000 !important; }
+    .detail-dialog .el-dialog__header { padding: 12px 20px 8px; position: relative; }
+    .detail-dialog .el-dialog__body { padding: 0 20px 12px; }
+    .detail-dialog .boss-table { margin-bottom: 8px; }
+    .detail-title {
+      display: flex; align-items: center; gap: 8px; font-size: 16px; color: #303133; font-weight: 600;
+      white-space: nowrap;
+    }
+    .detail-title::before { content: ""; width: 4px; height: 16px; background: var(--primary); border-radius: 1px; }
+    .detail-tag { color: #f56c6c; font-size: 14px; font-weight: 600; }
+    .detail-warn { position: absolute; right: 48px; top: 16px; color: #f56c6c; font-size: 13px; }
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      row-gap: 12px; column-gap: 24px; padding: 8px 4px 16px;
+      font-size: 13px;
+    }
+    .info-item { display: flex; min-width: 0; line-height: 1.6; }
+    .info-item.span-3 { grid-column: 1 / -1; }
+    .info-label { color: #909399; width: 132px; flex-shrink: 0; text-align: right; padding-right: 4px; }
+    .info-value { color: #303133; flex: 1; min-width: 0; word-break: break-all; }
+    .detail-footer { text-align: center; padding: 16px 0 8px; }
+    .proto-tip {
+      margin: 0 0 10px; padding: 8px 12px; background: #f0fbfd; border: 1px dashed #b6eaf0;
+      color: #0e8a97; font-size: 12px; border-radius: 2px;
+    }
+    .rights-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 8px 0 16px; }
+    .rights-card {
+      border: 1px solid #e4e7ed; border-radius: 4px; padding: 14px 16px; background: #fafcfd;
+    }
+    .rights-card .k { color: #909399; font-size: 12px; }
+    .rights-card .v { color: #303133; font-size: 22px; font-weight: 600; padding: 6px 0 2px; }
+    .rights-card .u { color: #606266; font-size: 12px; }
+    .voided { color: #c0c4cc; text-decoration: line-through; }
+    .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+
+    .filter-with-stat { display: flex; gap: 16px; align-items: flex-start; }
+    .filter-main { flex: 1; min-width: 0; }
+    .stat-panel {
+      width: 248px; flex-shrink: 0; margin-top: 4px;
+      background: #f7fbfd; border: 1px solid #d7eef1; padding: 8px 14px 10px;
+      font-size: 12px;
+    }
+    .stat-row {
+      display: flex; justify-content: space-between; align-items: center;
+      line-height: 1.95; color: #606266; border-bottom: 1px dashed #e4eef0;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row b { color: #303133; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .section-hd {
+      font-size: 14px; color: #303133; font-weight: 600;
+      padding: 16px 0 8px; margin: 4px 0 4px;
+    }
+    .boss-table.invoice-table { min-width: 2320px; width: 2320px; }
+    .boss-table tbody tr.row-warn td { background: #fff6ea; }
+    .boss-table tbody tr.row-warn:hover td { background: #ffefd6; }
+    .boss-table tbody tr.row-warn td.sticky-op { background: #fff6ea; }
+    .boss-table tbody tr.row-warn:hover td.sticky-op { background: #ffefd6; }
+    .boss-table tbody tr.row-mute td { color: #a0a4aa; }
+    .clip { max-width: 220px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; }
+  </style>
+</head>
+<body>
+<div id="app" v-cloak>
+  <div class="layout">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="logo-mark">蜜</div>
+        <span class="sys-name">蜜度BOSS系统</span>
+        <span class="sys-slogan">一切源于客户，解决客户问题是我们在一起工作的唯一理由</span>
+      </div>
+      <div class="topbar-right">
+        <a href="javascript:;">更多系统</a>
+        <a href="javascript:;">协议问答</a>
+        <span>欢迎您: WIKI</span>
+        <a href="javascript:;">OA系统</a>
+        <a href="javascript:;">安全退出</a>
+      </div>
+    </header>
+
+    <div class="body">
+      <aside class="aside" :class="{ collapsed: collapsed }">
+        <div class="menu">
+          <div v-for="item in menus" :key="item.name">
+            <div
+              v-if="item.children"
+              class="menu-parent"
+              @click="item.open = !item.open"
+            >
+              <i :class="item.icon"></i>
+              <span>{{ item.name }}</span>
+              <i class="menu-arrow el-icon-arrow-down" v-if="item.open"></i>
+              <i class="menu-arrow el-icon-arrow-right" v-else></i>
+            </div>
+            <div v-if="item.children && item.open" class="sub-menu">
+              <div
+                v-for="child in item.children"
+                :key="child.name"
+                class="menu-item"
+                :class="{ active: currentMenu === child.name }"
+                @click="selectMenu(child.name)"
+              >
+                {{ child.name }}
+              </div>
+            </div>
+            <div
+              v-else-if="!item.children"
+              class="menu-item"
+              :class="{ active: currentMenu === item.name }"
+              @click="selectMenu(item.name)"
+            >
+              <i :class="item.icon"></i>
+              <span>{{ item.name }}</span>
+              <span v-if="item.badge" class="menu-badge">{{ item.badge }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-btn" @click="collapsed = !collapsed">
+          <i :class="collapsed ? 'el-icon-arrow-right' : 'el-icon-arrow-left'"></i>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div v-if="currentMenu !== '线上订单' && currentMenu !== '线上订单发票'" class="panel" style="padding:40px;text-align:center;color:#909399;">
+          此为原型演示，请点击左侧 <b style="color:#00c4d6">收支管理 / 线上订单发票</b> 或 <b style="color:#00c4d6">订单管理 / 线上订单</b>
+        </div>
+
+        <div v-else-if="currentMenu === '线上订单发票'">
+          <div class="panel">
+            <div class="filter-with-stat">
+              <div class="filter-main">
+                <el-form :model="invQuery" label-width="108px" size="small" class="filter-form">
+                  <el-row :gutter="12">
+                    <el-col :span="6">
+                      <el-form-item label="产品">
+                        <el-select v-model="invQuery.product" placeholder="请选择" clearable style="width:100%">
+                          <el-option v-for="p in productOptions" :key="p" :label="p" :value="p" />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="订单编号">
+                        <el-input v-model="invQuery.orderNo" placeholder="官网统一订单号" clearable />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="套餐名称">
+                        <el-input v-model="invQuery.packageName" placeholder="请输入" clearable />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="发票状态">
+                        <el-select v-model="invQuery.invoiceStatus" placeholder="全部" clearable style="width:100%">
+                          <el-option label="待开票" value="待开票" />
+                          <el-option label="开票中" value="开票中" />
+                          <el-option label="已开票" value="已开票" />
+                          <el-option label="已作废" value="已作废" />
+                          <el-option label="已退票" value="已退票" />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="开票主体">
+                        <el-select v-model="invQuery.invoiceEntity" placeholder="请选择" clearable style="width:100%">
+                          <el-option v-for="e in entityOptions" :key="e" :label="e" :value="e" />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="发票号">
+                        <el-input v-model="invQuery.invoiceNo" placeholder="请输入" clearable />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="发票类型">
+                        <el-select v-model="invQuery.invoiceType" placeholder="全部" clearable style="width:100%">
+                          <el-option label="专票电子票" value="专票电子票" />
+                          <el-option label="普票电子票" value="普票电子票" />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="下单时间">
+                        <el-date-picker
+                          v-model="invQuery.orderTime"
+                          type="daterange"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd"
+                          unlink-panels
+                          style="width:100%"
+                        />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="服务开始日期">
+                        <el-date-picker v-model="invQuery.serviceStart" type="date" placeholder="请选择" value-format="yyyy-MM-dd" style="width:100%" />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="服务终止日期">
+                        <el-date-picker v-model="invQuery.serviceEnd" type="date" placeholder="请选择" value-format="yyyy-MM-dd" style="width:100%" />
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                </el-form>
+                <div class="filter-actions">
+                  <el-button type="primary" size="small" icon="el-icon-search" @click="onInvSearch">查询</el-button>
+                  <el-button size="small" icon="el-icon-refresh" @click="onInvReset">重置</el-button>
+                  <el-button size="small" icon="el-icon-download">导出</el-button>
+                </div>
+              </div>
+              <div class="stat-panel">
+                <div class="stat-row"><span>待开票金额</span><b>{{ money(invStats.pending) }}</b></div>
+                <div class="stat-row"><span>开票中金额</span><b>{{ money(invStats.processing) }}</b></div>
+                <div class="stat-row"><span>已开票金额</span><b>{{ money(invStats.issued) }}</b></div>
+                <div class="stat-row"><span>已退票金额</span><b>{{ money(invStats.returned) }}</b></div>
+                <div class="stat-row"><span>已作废金额</span><b>{{ money(invStats.voided) }}</b></div>
+                <div class="stat-row"><span>到账金额</span><b>{{ money(invStats.received) }}</b></div>
+                <div class="stat-row"><span>发票总数</span><b>{{ invFiltered.length }}</b></div>
+              </div>
+            </div>
+            <div class="warn-text">*线上订单发票来源于官网支付订单。已开票可作废重开或退票；待开票/开票中不可退票。</div>
+            <div class="toolbar">
+              <div class="toolbar-left">
+                <el-button type="success" size="small" plain>导出开票信息</el-button>
+              </div>
+              <el-pagination
+                background
+                layout="total, prev, pager, next, jumper"
+                :total="invFiltered.length"
+                :page-size="invPageSize"
+                :current-page.sync="invPage"
+                small
+              />
+            </div>
+            <div class="table-scroll">
+              <table class="boss-table invoice-table">
+                <thead>
+                  <tr>
+                    <th class="center"><input type="checkbox" :checked="invAllChecked" @change="toggleInvAll" /></th>
+                    <th class="center">#</th>
+                    <th>产品</th>
+                    <th>订单编号</th>
+                    <th>套餐名称</th>
+                    <th>套餐权益</th>
+                    <th class="right">订购数量</th>
+                    <th class="right">单价</th>
+                    <th class="right">价格</th>
+                    <th>服务开始日期</th>
+                    <th>服务终止日期</th>
+                    <th>下单时间</th>
+                    <th>发票状态</th>
+                    <th>开票主体</th>
+                    <th>发票号</th>
+                    <th class="right">开票金额</th>
+                    <th>发票类型</th>
+                    <th class="sticky-op" style="min-width:108px">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(row, idx) in invPaged"
+                    :key="row.orderNo"
+                    :class="{ 'row-warn': row.invoiceStatus === '待开票' || row.invoiceStatus === '开票中', 'row-mute': row.invoiceStatus === '已作废' || row.invoiceStatus === '已退票' }"
+                  >
+                    <td class="center"><input type="checkbox" :value="row.orderNo" v-model="invSels" /></td>
+                    <td class="center">{{ idx + 1 }}</td>
+                    <td>{{ row.product }}</td>
+                    <td>{{ row.orderNo }}</td>
+                    <td>{{ row.packageName }}</td>
+                    <td><span class="clip" :title="row.rights">{{ row.rights }}</span></td>
+                    <td class="right">{{ row.qty }}</td>
+                    <td class="right">{{ money(row.unitPrice) }}</td>
+                    <td class="right">{{ money(row.amount) }}</td>
+                    <td>{{ row.serviceStart }}</td>
+                    <td>{{ row.serviceEnd }}</td>
+                    <td>{{ row.orderTime }}</td>
+                    <td>
+                      <span class="status-dot" :style="{ background: invoiceColor(row.invoiceStatus) }"></span>{{ row.invoiceStatus }}
+                    </td>
+                    <td>{{ row.invoiceEntity }}</td>
+                    <td>{{ row.invoiceNo || '-' }}</td>
+                    <td class="right">{{ money(row.invoiceAmount) }}</td>
+                    <td>{{ row.invoiceType }}</td>
+                    <td class="sticky-op">
+                      <div class="op-col">
+                        <el-button type="text" @click="openInvDetail(row)">详情</el-button>
+                        <el-button type="text" @click="openInvFiles(row)">附件</el-button>
+                        <el-button type="text" class="warn-link" :disabled="row.invoiceStatus !== '已开票'" @click="onInvVoid(row)">作废重开</el-button>
+                        <el-button type="text" class="danger-link" :disabled="row.invoiceStatus !== '已开票'" @click="onInvRefund(row)">退票</el-button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div v-else>
+          <div class="panel">
+            <el-form :model="query" label-width="108px" size="small" class="filter-form">
+              <el-row :gutter="12">
+                <el-col :span="6">
+                  <el-form-item label="产品">
+                    <el-select v-model="query.product" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="p in productOptions" :key="p" :label="p" :value="p" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="订单编号">
+                    <el-input v-model="query.orderNo" placeholder="官网统一订单号" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="套餐名称">
+                    <el-input v-model="query.packageName" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="用户名">
+                    <el-input v-model="query.userName" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="账号（手机号）">
+                    <el-input v-model="query.mobile" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="发票抬头">
+                    <el-input v-model="query.invoiceTitle" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="订单状态">
+                    <el-select v-model="query.status" placeholder="全部" clearable style="width:100%">
+                      <el-option label="正常" value="正常" />
+                      <el-option label="退单" value="退单" />
+                      <el-option label="作废" value="作废" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="下单时间">
+                    <el-date-picker
+                      v-model="query.orderTime"
+                      type="daterange"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      value-format="yyyy-MM-dd"
+                      unlink-panels
+                      style="width:100%"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="服务开始日期">
+                    <el-date-picker v-model="query.serviceStart" type="date" placeholder="请选择" value-format="yyyy-MM-dd" style="width:100%" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="服务终止日期">
+                    <el-date-picker v-model="query.serviceEnd" type="date" placeholder="请选择" value-format="yyyy-MM-dd" style="width:100%" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+            <div class="filter-actions">
+              <el-button type="primary" size="small" icon="el-icon-search" @click="onSearch">查询</el-button>
+              <el-button size="small" icon="el-icon-refresh" @click="onReset">重置</el-button>
+            </div>
+            <div class="warn-text">*下单需谨慎，所有订单都需计收开票。线上订单退款请走退单，作废重下请注明原因。</div>
+            <div class="toolbar">
+              <div class="toolbar-left">
+                <el-button type="success" size="small" plain>批量开票</el-button>
+              </div>
+              <el-pagination
+                background
+                layout="total, prev, pager, next, jumper"
+                :total="filtered.length"
+                :page-size="pageSize"
+                :current-page.sync="page"
+                small
+              />
+            </div>
+
+            <div class="table-scroll">
+              <table class="boss-table">
+                <thead>
+                  <tr>
+                    <th class="center"><input type="checkbox" :checked="allChecked" @change="toggleAll" /></th>
+                    <th class="center">#</th>
+                    <th>产品</th>
+                    <th>订单编号</th>
+                    <th>套餐名称</th>
+                    <th>套餐权益</th>
+                    <th class="right">订购数量</th>
+                    <th class="right">单价</th>
+                    <th class="right">价格（总价）</th>
+                    <th>服务开始日期</th>
+                    <th>服务终止日期</th>
+                    <th>下单时间</th>
+                    <th>用户名</th>
+                    <th>账号（手机号）</th>
+                    <th>微信支付付款编号</th>
+                    <th>发票抬头</th>
+                    <th class="sticky-op" style="min-width:88px">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row, idx) in paged" :key="row.orderNo">
+                    <td class="center"><input type="checkbox" :value="row.orderNo" v-model="sels" /></td>
+                    <td class="center">{{ idx + 1 }}</td>
+                    <td>{{ row.product }}</td>
+                    <td>{{ row.orderNo }}</td>
+                    <td>{{ row.packageName }}</td>
+                    <td :title="row.rights">{{ row.rights }}</td>
+                    <td class="right">{{ row.qty }}</td>
+                    <td class="right">{{ money(row.unitPrice) }}</td>
+                    <td class="right">{{ money(row.amount) }}</td>
+                    <td>{{ row.serviceStart }}</td>
+                    <td>{{ row.serviceEnd }}</td>
+                    <td>{{ row.orderTime }}</td>
+                    <td>{{ row.userName }}</td>
+                    <td>{{ row.mobile }}</td>
+                    <td>{{ row.wxPayNo }}</td>
+                    <td>{{ row.invoiceTitle }}</td>
+                    <td class="sticky-op">
+                      <div class="op-col">
+                        <el-button type="text" @click="openDetail(row)">详情</el-button>
+                        <el-button type="text" :disabled="row.status === '作废' || row.status === '退单'" @click="openInvoice(row)">开票</el-button>
+                        <el-button type="text" @click="openFlow(row)">到账流水</el-button>
+                        <el-button type="text" class="warn-link" :disabled="row.status !== '正常'" @click="onRefund(row)">退单</el-button>
+                        <el-button type="text" class="danger-link" :disabled="row.status === '作废'" @click="onVoid(row)">作废重下</el-button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 订单详情 -->
+  <el-dialog
+    :visible.sync="detailVisible"
+    width="92%"
+    top="3vh"
+    custom-class="detail-dialog"
+    :close-on-click-modal="false"
+    append-to-body
+  >
+    <div slot="title" class="detail-title">
+      订单详情 【{{ current.orderNo }}】
+      <span class="detail-tag">（{{ current.status }}）</span>
+    </div>
+    <div class="detail-warn">*下单需谨慎，所有订单需计收开票</div>
+
+    <div class="info-grid" v-if="current.orderNo">
+      <div class="info-item"><span class="info-label">产品：</span><span class="info-value">{{ current.product }}</span></div>
+      <div class="info-item"><span class="info-label">订单编号：</span><span class="info-value">{{ current.orderNo }}</span></div>
+      <div class="info-item"><span class="info-label">套餐名称：</span><span class="info-value">{{ current.packageName }}</span></div>
+      <div class="info-item span-3"><span class="info-label">套餐权益：</span><span class="info-value">{{ current.rights }}</span></div>
+      <div class="info-item"><span class="info-label">订购数量：</span><span class="info-value">{{ current.qty }}</span></div>
+      <div class="info-item"><span class="info-label">单价：</span><span class="info-value">{{ money(current.unitPrice) }}</span></div>
+      <div class="info-item"><span class="info-label">价格（总价）：</span><span class="info-value">{{ money(current.amount) }}</span></div>
+      <div class="info-item"><span class="info-label">服务开始日期：</span><span class="info-value">{{ current.serviceStart }}</span></div>
+      <div class="info-item">
+        <span class="info-label">服务终止日期：</span>
+        <span class="info-value">{{ current.serviceEnd }}（{{ daysBetween(current.serviceStart, current.serviceEnd) }}天）</span>
+      </div>
+      <div class="info-item"><span class="info-label">下单时间：</span><span class="info-value">{{ current.orderTime }}</span></div>
+      <div class="info-item"><span class="info-label">用户名：</span><span class="info-value">{{ current.userName }}</span></div>
+      <div class="info-item"><span class="info-label">账号（手机号）：</span><span class="info-value">{{ current.mobile }}</span></div>
+      <div class="info-item"><span class="info-label">微信支付付款编号：</span><span class="info-value">{{ current.wxPayNo }}</span></div>
+      <div class="info-item"><span class="info-label">发票抬头：</span><span class="info-value">{{ current.invoiceTitle }}</span></div>
+      <div class="info-item"><span class="info-label">订单状态：</span><span class="info-value">{{ current.status }}</span></div>
+    </div>
+    <p v-if="current.voidRemark" style="font-size:13px;color:#606266;margin:0 0 10px;">
+      原订单（{{ current.originOrderNo }}）作废，原订单金额：{{ money(current.amount) }}，原因：{{ current.voidRemark }}
+    </p>
+
+    <el-tabs v-model="detailTab">
+      <el-tab-pane label="订单明细" name="items">
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th class="center">序号</th>
+                <th>产品</th>
+                <th>套餐名称</th>
+                <th>套餐权益</th>
+                <th class="right">数量</th>
+                <th class="right">单价</th>
+                <th class="right">小计</th>
+                <th>服务周期</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, i) in current.items" :key="i">
+                <td class="center">{{ i + 1 }}</td>
+                <td>{{ row.product }}</td>
+                <td>{{ row.packageName }}</td>
+                <td>{{ row.rights }}</td>
+                <td class="right">{{ row.qty }}</td>
+                <td class="right">{{ money(row.unitPrice) }}</td>
+                <td class="right">{{ money(row.amount) }}</td>
+                <td>{{ current.serviceStart }} ~ {{ current.serviceEnd }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="附件信息" name="files">
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th class="center">序号</th>
+                <th>附件名</th>
+                <th>附件类型</th>
+                <th>备注</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!current.files || !current.files.length">
+                <td colspan="5" class="center" style="color:#909399;">暂无附件</td>
+              </tr>
+              <tr v-for="(row, i) in current.files" :key="i">
+                <td class="center">{{ i + 1 }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.type }}</td>
+                <td>{{ row.remark }}</td>
+                <td>
+                  <el-button type="text" @click="$message.success('预览：' + row.name)">预览</el-button>
+                  <el-button type="text" @click="$message.success('下载：' + row.name)">下载</el-button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="开票信息" name="invoice">
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th>发票提交时间</th>
+                <th>开票时间</th>
+                <th class="right">开票金额</th>
+                <th>发票状态</th>
+                <th>发票抬头</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!current.invoices || !current.invoices.length">
+                <td colspan="5" class="center" style="color:#909399;">暂无开票信息</td>
+              </tr>
+              <tr v-for="(row, i) in current.invoices" :key="i">
+                <td>{{ row.submitTime }}</td>
+                <td>{{ row.invoiceTime || '-' }}</td>
+                <td class="right">{{ money(row.amount) }}</td>
+                <td><span class="status-dot" :style="{ background: invoiceColor(row.status) }"></span>{{ row.status }}</td>
+                <td>{{ row.title }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="到账流水" name="flow">
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th>到账时间</th>
+                <th class="right">到账金额</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!current.flows || !current.flows.length">
+                <td colspan="3" class="center" style="color:#909399;">暂无到账流水</td>
+              </tr>
+              <tr v-for="(row, i) in current.flows" :key="i">
+                <td>{{ row.time }}</td>
+                <td class="right">{{ money(row.amount) }}</td>
+                <td>{{ row.remark }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="累计权益总量" name="rights">
+        <div class="rights-cards">
+          <div class="rights-card" v-for="r in current.totalRights" :key="r.name">
+            <div class="k">{{ r.name }}</div>
+            <div class="v">{{ r.total.toLocaleString() }}</div>
+            <div class="u">{{ r.unit }} · 已用 {{ r.used.toLocaleString() }} · 剩余 {{ (r.total - r.used).toLocaleString() }}</div>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th>权益项目</th>
+                <th class="right">累计总量</th>
+                <th class="right">已用</th>
+                <th class="right">剩余</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in current.totalRights" :key="row.name">
+                <td>{{ row.name }}</td>
+                <td class="right">{{ row.total.toLocaleString() }} {{ row.unit }}</td>
+                <td class="right">{{ row.used.toLocaleString() }}</td>
+                <td class="right">{{ (row.total - row.used).toLocaleString() }}</td>
+                <td>{{ row.remark }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="操作记录" name="logs">
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th class="center">序号</th>
+                <th>操作人</th>
+                <th>操作类型</th>
+                <th>操作时间</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, i) in current.logs" :key="i">
+                <td class="center">{{ i + 1 }}</td>
+                <td>{{ row.operator }}</td>
+                <td>{{ row.type }}</td>
+                <td>{{ row.time }}</td>
+                <td>{{ row.desc }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+
+    <div class="detail-footer">
+      <el-button @click="detailVisible = false">关闭</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 开票 -->
+  <el-dialog title="开票" :visible.sync="invoiceVisible" width="560px" append-to-body>
+    <el-form :model="invoiceForm" label-width="110px" size="small">
+      <el-form-item label="订单编号">{{ current.orderNo }}</el-form-item>
+      <el-form-item label="发票抬头">
+        <el-input v-model="invoiceForm.title" />
+      </el-form-item>
+      <el-form-item label="开票金额">
+        <el-input v-model="invoiceForm.amount" />
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input type="textarea" v-model="invoiceForm.remark" :rows="3" placeholder="选填" />
+      </el-form-item>
+    </el-form>
+    <div slot="footer">
+      <el-button size="small" @click="invoiceVisible = false">取消</el-button>
+      <el-button type="primary" size="small" @click="submitInvoice">提交开票</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 到账流水 -->
+  <el-dialog title="到账流水" :visible.sync="flowVisible" width="720px" append-to-body>
+    <p style="margin:0 0 10px;font-size:13px;color:#606266;">订单 {{ current.orderNo }} · 微信支付付款编号 {{ current.wxPayNo }}</p>
+    <table class="boss-table full">
+      <thead>
+        <tr>
+          <th>到账时间</th>
+          <th class="right">到账金额</th>
+          <th>备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row, i) in current.flows" :key="i">
+          <td>{{ row.time }}</td>
+          <td class="right">{{ money(row.amount) }}</td>
+          <td>{{ row.remark }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div slot="footer">
+      <el-button size="small" @click="flowVisible = false">关闭</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 退单 -->
+  <el-dialog title="退单" :visible.sync="refundVisible" width="520px" append-to-body>
+    <el-form label-width="90px" size="small">
+      <el-form-item label="订单编号">{{ current.orderNo }}</el-form-item>
+      <el-form-item label="退单金额">{{ money(current.amount) }}</el-form-item>
+      <el-form-item label="退单原因">
+        <el-input type="textarea" v-model="refundReason" :rows="3" placeholder="请填写退单原因" />
+      </el-form-item>
+    </el-form>
+    <div slot="footer">
+      <el-button size="small" @click="refundVisible = false">取消</el-button>
+      <el-button type="warning" size="small" @click="submitRefund">确认退单</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 作废重下 -->
+  <el-dialog title="作废重下" :visible.sync="voidVisible" width="520px" append-to-body>
+    <el-alert title="作废后原订单失效，需按官网规则重新下单。请谨慎操作。" type="warning" :closable="false" show-icon style="margin-bottom:14px;"></el-alert>
+    <el-form label-width="90px" size="small">
+      <el-form-item label="原订单">{{ current.orderNo }}</el-form-item>
+      <el-form-item label="原订单金额">{{ money(current.amount) }}</el-form-item>
+      <el-form-item label="作废原因">
+        <el-input type="textarea" v-model="voidReason" :rows="3" placeholder="例如：账号错误请重新下单" />
+      </el-form-item>
+    </el-form>
+    <div slot="footer">
+      <el-button size="small" @click="voidVisible = false">取消</el-button>
+      <el-button type="danger" size="small" @click="submitVoid">确认作废重下</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 线上订单发票 · 开票详情 -->
+  <el-dialog
+    :visible.sync="invDetailVisible"
+    width="92%"
+    top="3vh"
+    custom-class="detail-dialog"
+    :close-on-click-modal="false"
+    append-to-body
+  >
+    <div slot="title" class="detail-title">
+      开票详情 【{{ invCurrent.orderNo }}】
+      <span class="detail-tag">-{{ invCurrent.invoiceStatus }}</span>
+    </div>
+
+    <el-tabs v-model="invDetailTab">
+      <el-tab-pane label="发票信息" name="info">
+        <div class="section-hd">订单信息</div>
+        <div class="info-grid" v-if="invCurrent.orderNo">
+          <div class="info-item"><span class="info-label">产品：</span><span class="info-value">{{ invCurrent.product }}</span></div>
+          <div class="info-item"><span class="info-label">订单编号：</span><span class="info-value">{{ invCurrent.orderNo }}</span></div>
+          <div class="info-item"><span class="info-label">套餐名称：</span><span class="info-value">{{ invCurrent.packageName }}</span></div>
+          <div class="info-item span-3"><span class="info-label">套餐权益：</span><span class="info-value">{{ invCurrent.rights }}</span></div>
+          <div class="info-item"><span class="info-label">订购数量：</span><span class="info-value">{{ invCurrent.qty }}</span></div>
+          <div class="info-item"><span class="info-label">单价：</span><span class="info-value">{{ money(invCurrent.unitPrice) }}</span></div>
+          <div class="info-item"><span class="info-label">价格：</span><span class="info-value">{{ money(invCurrent.amount) }}</span></div>
+          <div class="info-item"><span class="info-label">服务开始日期：</span><span class="info-value">{{ invCurrent.serviceStart }}</span></div>
+          <div class="info-item"><span class="info-label">服务终止日期：</span><span class="info-value">{{ invCurrent.serviceEnd }}</span></div>
+          <div class="info-item"><span class="info-label">下单时间：</span><span class="info-value">{{ invCurrent.orderTime }}</span></div>
+          <div class="info-item"><span class="info-label">发票状态：</span><span class="info-value">{{ invCurrent.invoiceStatus }}</span></div>
+          <div class="info-item"><span class="info-label">开票主体：</span><span class="info-value">{{ invCurrent.invoiceEntity }}</span></div>
+          <div class="info-item"><span class="info-label">发票号：</span><span class="info-value">{{ invCurrent.invoiceNo || '-' }}</span></div>
+          <div class="info-item"><span class="info-label">开票金额：</span><span class="info-value">{{ money(invCurrent.invoiceAmount) }}</span></div>
+          <div class="info-item"><span class="info-label">发票类型：</span><span class="info-value">{{ invCurrent.invoiceType }}</span></div>
+        </div>
+
+        <div class="section-hd">开票信息</div>
+        <div class="info-grid" v-if="invCurrent.orderNo">
+          <div class="info-item"><span class="info-label">开票状态：</span><span class="info-value">{{ invCurrent.invoiceStatus }}</span></div>
+          <div class="info-item"><span class="info-label">开票抬头：</span><span class="info-value">{{ invCurrent.invoiceTitle }}</span></div>
+          <div class="info-item"><span class="info-label">纳税人识别号：</span><span class="info-value">{{ invCurrent.taxNo }}</span></div>
+          <div class="info-item"><span class="info-label">税率：</span><span class="info-value">{{ invCurrent.taxRate }}</span></div>
+          <div class="info-item"><span class="info-label">开户行：</span><span class="info-value">{{ invCurrent.bankName }}</span></div>
+          <div class="info-item"><span class="info-label">银行账号：</span><span class="info-value">{{ invCurrent.bankAccount }}</span></div>
+          <div class="info-item"><span class="info-label">开票电话：</span><span class="info-value">{{ invCurrent.invoicePhone }}</span></div>
+          <div class="info-item"><span class="info-label">开票地址：</span><span class="info-value">{{ invCurrent.invoiceAddress }}</span></div>
+          <div class="info-item"><span class="info-label">开票类型：</span><span class="info-value">{{ invCurrent.issueType }}</span></div>
+          <div class="info-item span-3"><span class="info-label">开票内容：</span><span class="info-value">{{ invCurrent.invoiceContent }}</span></div>
+          <div class="info-item"><span class="info-label">开票金额：</span><span class="info-value">{{ money(invCurrent.invoiceAmount) }}</span></div>
+          <div class="info-item"><span class="info-label">发票收件人：</span><span class="info-value">{{ invCurrent.receiver }}</span></div>
+          <div class="info-item"><span class="info-label">发票收件人电话：</span><span class="info-value">{{ invCurrent.receiverPhone }}</span></div>
+          <div class="info-item span-3"><span class="info-label">收件人地址：</span><span class="info-value">{{ invCurrent.receiverAddress }}</span></div>
+          <div class="info-item"><span class="info-label">发票收件人邮箱：</span><span class="info-value">{{ invCurrent.receiverEmail }}</span></div>
+          <div class="info-item"><span class="info-label">开票主体：</span><span class="info-value">{{ invCurrent.invoiceEntity }}</span></div>
+          <div class="info-item"><span class="info-label">开票提交时间：</span><span class="info-value">{{ invCurrent.submitTime || '-' }}</span></div>
+          <div class="info-item"><span class="info-label">开票时间：</span><span class="info-value">{{ invCurrent.invoiceTime || '-' }}</span></div>
+          <div class="info-item"><span class="info-label">到账金额：</span><span class="info-value">{{ money(invCurrent.receivedAmount) }}</span></div>
+        </div>
+
+        <div class="section-hd">到账流水</div>
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th>到账时间</th>
+                <th class="right">到账金额</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!invCurrent.flows || !invCurrent.flows.length">
+                <td colspan="3" class="center" style="color:#909399;">暂无到账流水</td>
+              </tr>
+              <tr v-for="(row, i) in invCurrent.flows" :key="i">
+                <td>{{ row.time }}</td>
+                <td class="right">{{ money(row.amount) }}</td>
+                <td>{{ row.remark }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+
+      <el-tab-pane label="操作记录" name="logs">
+        <div class="table-scroll">
+          <table class="boss-table full">
+            <thead>
+              <tr>
+                <th class="center">序号</th>
+                <th>操作人</th>
+                <th>操作类型</th>
+                <th>操作时间</th>
+                <th>描述</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!invCurrent.logs || !invCurrent.logs.length">
+                <td colspan="5" class="center" style="color:#909399;">暂无操作记录</td>
+              </tr>
+              <tr v-for="(row, i) in invCurrent.logs" :key="i">
+                <td class="center">{{ i + 1 }}</td>
+                <td>{{ row.operator }}</td>
+                <td>{{ row.type }}</td>
+                <td>{{ row.time }}</td>
+                <td>{{ row.desc }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
+
+    <div class="detail-footer">
+      <el-button @click="invDetailVisible = false">取消</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 线上订单发票 · 附件 -->
+  <el-dialog title="附件" :visible.sync="invFileVisible" width="720px" append-to-body>
+    <p style="margin:0 0 10px;font-size:13px;color:#606266;">订单 {{ invCurrent.orderNo }} · 发票号 {{ invCurrent.invoiceNo || '-' }}</p>
+    <table class="boss-table full">
+      <thead>
+        <tr>
+          <th class="center">序号</th>
+          <th>附件名</th>
+          <th>附件类型</th>
+          <th>备注</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="!invCurrent.files || !invCurrent.files.length">
+          <td colspan="5" class="center" style="color:#909399;">暂无附件</td>
+        </tr>
+        <tr v-for="(row, i) in invCurrent.files" :key="i">
+          <td class="center">{{ i + 1 }}</td>
+          <td>{{ row.name }}</td>
+          <td>{{ row.type }}</td>
+          <td>{{ row.remark }}</td>
+          <td>
+            <el-button type="text" @click="$message.success('预览：' + row.name)">预览</el-button>
+            <el-button type="text" @click="$message.success('下载：' + row.name)">下载</el-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div slot="footer">
+      <el-button size="small" @click="invFileVisible = false">关闭</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 线上订单发票 · 作废重开 -->
+  <el-dialog title="作废重开" :visible.sync="invVoidVisible" width="520px" append-to-body>
+    <el-alert title="作废后原发票失效，系统将按原开票信息重新提交开票。请谨慎操作。" type="warning" :closable="false" show-icon style="margin-bottom:14px;"></el-alert>
+    <el-form label-width="90px" size="small">
+      <el-form-item label="订单编号">{{ invCurrent.orderNo }}</el-form-item>
+      <el-form-item label="原发票号">{{ invCurrent.invoiceNo || '-' }}</el-form-item>
+      <el-form-item label="开票金额">{{ money(invCurrent.invoiceAmount) }}</el-form-item>
+      <el-form-item label="作废原因">
+        <el-input type="textarea" v-model="invVoidReason" :rows="3" placeholder="例如：抬头错误，作废后重开" />
+      </el-form-item>
+    </el-form>
+    <div slot="footer">
+      <el-button size="small" @click="invVoidVisible = false">取消</el-button>
+      <el-button type="danger" size="small" @click="submitInvVoid">确认作废重开</el-button>
+    </div>
+  </el-dialog>
+
+  <!-- 线上订单发票 · 退票 -->
+  <el-dialog title="退票" :visible.sync="invRefundVisible" width="520px" append-to-body>
+    <el-alert title="退票后发票作废且不再重开，请确认客户已退款或无需继续开票。" type="warning" :closable="false" show-icon style="margin-bottom:14px;"></el-alert>
+    <el-form label-width="90px" size="small">
+      <el-form-item label="订单编号">{{ invCurrent.orderNo }}</el-form-item>
+      <el-form-item label="发票号">{{ invCurrent.invoiceNo || '-' }}</el-form-item>
+      <el-form-item label="开票金额">{{ money(invCurrent.invoiceAmount) }}</el-form-item>
+      <el-form-item label="退票原因">
+        <el-input type="textarea" v-model="invRefundReason" :rows="3" placeholder="请填写退票原因" />
+      </el-form-item>
+    </el-form>
+    <div slot="footer">
+      <el-button size="small" @click="invRefundVisible = false">取消</el-button>
+      <el-button type="warning" size="small" @click="submitInvRefund">确认退票</el-button>
+    </div>
+  </el-dialog>
+</div>
+
+<script src="vendor/vue.js"></script>
+<script src="vendor/element-ui.js"></script>
+<script>
+
+function money(n) {
+  if (n == null || n === '') return '';
+  return Number(n).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function daysBetween(a, b) {
+  if (!a || !b) return '-';
+  return Math.round((new Date(b) - new Date(a)) / 86400000);
+}
+
+function pageFromQuery() {
+  const p = new URLSearchParams(location.search).get('page');
+  if (p === 'order' || p === '线上订单') return '线上订单';
+  return '线上订单发票';
+}
+
+const MOCK = [
+  {
+    product: '舆情平台',
+    orderNo: 'OL202608280017',
+    packageName: '舆情通专业版 · 年包',
+    rights: '监测信息 50,000 条/年；报告导出 120 次；账号席位 5 个',
+    qty: 1,
+    unitPrice: 29800,
+    amount: 29800,
+    serviceStart: '2026-09-01',
+    serviceEnd: '2027-08-31',
+    orderTime: '2026-08-28 10:21:36',
+    userName: '张伟',
+    mobile: '1381678****',
+    wxPayNo: '4200002631202608281088212345',
+    invoiceTitle: '上海蜜度信息技术有限公司',
+    status: '正常',
+    originOrderNo: '',
+    voidRemark: '',
+    items: [
+      { product: '舆情平台', packageName: '舆情通专业版 · 年包', rights: '监测信息 50,000 条/年；报告导出 120 次；账号席位 5 个', qty: 1, unitPrice: 29800, amount: 29800 }
+    ],
+    files: [
+      { name: '官网订单确认单-OL202608280017.pdf', type: '订单确认单', remark: '官网同步' },
+      { name: '增值税开票信息.png', type: '开票资料', remark: '用户上传' }
+    ],
+    invoices: [
+      { submitTime: '2026-08-28 14:02:11', invoiceTime: '2026-08-29 09:40:18', amount: 29800, status: '已开票', title: '上海蜜度信息技术有限公司' }
+    ],
+    flows: [
+      { time: '2026-08-28 10:21:48', amount: 29800, remark: '微信支付到账，付款编号 4200002631202608281088212345' }
+    ],
+    totalRights: [
+      { name: '监测信息', total: 50000, used: 1260, unit: '条', remark: '本年度配额' },
+      { name: '报告导出', total: 120, used: 8, unit: '次', remark: '' },
+      { name: '账号席位', total: 5, used: 2, unit: '个', remark: '含主账号' },
+      { name: '预警规则', total: 30, used: 6, unit: '条', remark: '' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-08-28 10:21:36', desc: '官网下单成功，等待微信支付' },
+      { operator: '系统', type: '支付', time: '2026-08-28 10:21:48', desc: '微信支付成功，订单生效' },
+      { operator: '张伟', type: '提交开票', time: '2026-08-28 14:02:11', desc: '提交发票抬头：上海蜜度信息技术有限公司' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-29 09:40:18', desc: '开具增值税普通发票，金额 29,800.00' }
+    ]
+  },
+  {
+    product: '蜜度DataQ',
+    orderNo: 'OL202609010008',
+    packageName: '传播分析基础版 · 季包',
+    rights: '传播分析报告 12 份；账号席位 2 个；数据导出 30 次',
+    qty: 2,
+    unitPrice: 6800,
+    amount: 13600,
+    serviceStart: '2026-09-02',
+    serviceEnd: '2026-12-01',
+    orderTime: '2026-09-01 16:08:02',
+    userName: '李娜',
+    mobile: '1860210****',
+    wxPayNo: '4200002631202609011677098821',
+    invoiceTitle: '北京双杰电气股份有限公司',
+    status: '正常',
+    originOrderNo: '',
+    voidRemark: '',
+    items: [
+      { product: '蜜度DataQ', packageName: '传播分析基础版 · 季包', rights: '传播分析报告 12 份；账号席位 2 个；数据导出 30 次', qty: 2, unitPrice: 6800, amount: 13600 }
+    ],
+    files: [
+      { name: '营业执照.jpg', type: '资质文件', remark: '开票备用' }
+    ],
+    invoices: [],
+    flows: [
+      { time: '2026-09-01 16:08:19', amount: 13600, remark: '微信支付到账' }
+    ],
+    totalRights: [
+      { name: '传播分析报告', total: 24, used: 0, unit: '份', remark: '数量 2 × 套餐配额 12' },
+      { name: '账号席位', total: 4, used: 1, unit: '个', remark: '' },
+      { name: '数据导出', total: 60, used: 0, unit: '次', remark: '' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-09-01 16:08:02', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-09-01 16:08:19', desc: '微信支付成功' }
+    ]
+  },
+  {
+    product: '校对通',
+    orderNo: 'OL202609020003',
+    packageName: '校对通专业版 · 月包',
+    rights: '校对字数 500 万字/月；账号席位 3 个',
+    qty: 1,
+    unitPrice: 1980,
+    amount: 1980,
+    serviceStart: '2026-09-02',
+    serviceEnd: '2026-10-01',
+    orderTime: '2026-09-02 09:12:44',
+    userName: '王强',
+    mobile: '1391744****',
+    wxPayNo: '4200002631202609020913445566',
+    invoiceTitle: '宁波市公安局',
+    status: '正常',
+    originOrderNo: 'OL202608150021',
+    voidRemark: '账号错误请重新下单-测试',
+    items: [
+      { product: '校对通', packageName: '校对通专业版 · 月包', rights: '校对字数 500 万字/月；账号席位 3 个', qty: 1, unitPrice: 1980, amount: 1980 }
+    ],
+    files: [],
+    invoices: [],
+    flows: [
+      { time: '2026-09-02 09:13:01', amount: 1980, remark: '微信支付到账（作废重下后新单）' }
+    ],
+    totalRights: [
+      { name: '校对字数', total: 5000000, used: 128000, unit: '字', remark: '月度配额' },
+      { name: '账号席位', total: 3, used: 1, unit: '个', remark: '' }
+    ],
+    logs: [
+      { operator: 'WIKI', type: '作废重下', time: '2026-09-02 09:10:18', desc: '原订单 OL202608150021 作废，原因：账号错误请重新下单-测试' },
+      { operator: '系统', type: '下单', time: '2026-09-02 09:12:44', desc: '官网重新下单成功' },
+      { operator: '系统', type: '支付', time: '2026-09-02 09:13:01', desc: '微信支付成功' }
+    ]
+  },
+  {
+    product: '蜜度GEO',
+    orderNo: 'OL202608200044',
+    packageName: 'GEO监测旗舰版 · 年包',
+    rights: '生成式引擎监测；专项报告 24 份；品牌可见度追踪',
+    qty: 1,
+    unitPrice: 88000,
+    amount: 88000,
+    serviceStart: '2026-09-01',
+    serviceEnd: '2027-08-31',
+    orderTime: '2026-08-20 11:33:09',
+    userName: '陈静',
+    mobile: '1582199****',
+    wxPayNo: '4200002631202608201133887701',
+    invoiceTitle: '毕加索小镇二期项目部',
+    status: '退单',
+    originOrderNo: '',
+    voidRemark: '',
+    items: [
+      { product: '蜜度GEO', packageName: 'GEO监测旗舰版 · 年包', rights: '生成式引擎监测；专项报告 24 份；品牌可见度追踪', qty: 1, unitPrice: 88000, amount: 88000 }
+    ],
+    files: [
+      { name: '退款说明.docx', type: '其他', remark: '客户申请退款' }
+    ],
+    invoices: [
+      { submitTime: '2026-08-20 15:00:00', invoiceTime: '', amount: 88000, status: '已作废', title: '毕加索小镇二期项目部' }
+    ],
+    flows: [
+      { time: '2026-08-20 11:33:22', amount: 88000, remark: '微信支付到账' },
+      { time: '2026-08-25 16:20:08', amount: -88000, remark: '退单原路退回微信支付' }
+    ],
+    totalRights: [
+      { name: '专项报告', total: 24, used: 0, unit: '份', remark: '退单后权益失效' },
+      { name: '预警推送', total: 1, used: 0, unit: '项', remark: '已关闭' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-08-20 11:33:09', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-08-20 11:33:22', desc: '微信支付成功' },
+      { operator: '陈静', type: '退单', time: '2026-08-25 16:18:40', desc: '客户申请退单：重复购买' },
+      { operator: 'WIKI', type: '退款', time: '2026-08-25 16:20:08', desc: '原路退回 88,000.00' }
+    ]
+  },
+  {
+    product: '模力通',
+    orderNo: 'OL202608180009',
+    packageName: '模力通标准版 · 年包',
+    rights: '大模型调用 100 万 tokens/年；知识库 5 个；账号席位 10 个',
+    qty: 1,
+    unitPrice: 19900,
+    amount: 19900,
+    serviceStart: '2026-08-18',
+    serviceEnd: '2027-08-17',
+    orderTime: '2026-08-18 19:44:10',
+    userName: '赵敏',
+    mobile: '1370166****',
+    wxPayNo: '4200002631202608181944102233',
+    invoiceTitle: '上海蜜度信息技术有限公司',
+    status: '作废',
+    originOrderNo: '',
+    voidRemark: '下错套餐，作废后重新下单',
+    items: [
+      { product: '模力通', packageName: '模力通标准版 · 年包', rights: '大模型调用 100 万 tokens/年；知识库 5 个；账号席位 10 个', qty: 1, unitPrice: 19900, amount: 19900 }
+    ],
+    files: [],
+    invoices: [],
+    flows: [
+      { time: '2026-08-18 19:44:28', amount: 19900, remark: '微信支付到账' }
+    ],
+    totalRights: [
+      { name: '模型调用', total: 1000000, used: 0, unit: 'tokens', remark: '作废后权益失效' },
+      { name: '知识库', total: 5, used: 0, unit: '个', remark: '' },
+      { name: '账号席位', total: 10, used: 0, unit: '个', remark: '' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-08-18 19:44:10', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-08-18 19:44:28', desc: '微信支付成功' },
+      { operator: 'WIKI', type: '作废重下', time: '2026-08-19 10:02:16', desc: '下错套餐，作废后重新下单' }
+    ]
+  }
+];
+
+const INV_MOCK = [
+  {
+    product: '舆情平台',
+    orderNo: 'OL202608280017',
+    packageName: '舆情通专业版 · 年包',
+    rights: '监测信息 50,000 条/年；报告导出 120 次；账号席位 5 个',
+    qty: 1,
+    unitPrice: 29800,
+    amount: 29800,
+    serviceStart: '2026-09-01',
+    serviceEnd: '2027-08-31',
+    orderTime: '2026-08-28 10:21:36',
+    invoiceStatus: '已开票',
+    invoiceEntity: '蜜度科技股份有限公司',
+    invoiceNo: '25312000000123456789',
+    invoiceAmount: 29800,
+    invoiceType: '普票电子票',
+    invoiceTitle: '上海蜜度信息技术有限公司',
+    taxNo: '91310115MA1K3XXXXX',
+    taxRate: '6%',
+    bankName: '中国工商银行上海分行',
+    bankAccount: '1001234009012345678',
+    invoicePhone: '021-58888888',
+    invoiceAddress: '上海市浦东新区张江高科技园区科苑路88号',
+    issueType: '普票电子票',
+    invoiceContent: '*信息技术服务*软件服务费',
+    receiver: '张伟',
+    receiverPhone: '13816781234',
+    receiverAddress: '上海市浦东新区张江高科技园区科苑路88号',
+    receiverEmail: 'zhangwei@midu.com',
+    submitTime: '2026-08-28 14:02:11',
+    invoiceTime: '2026-08-29 09:40:18',
+    receivedAmount: 29800,
+    files: [
+      { name: '电子发票-25312000000123456789.pdf', type: '电子发票', remark: '已开具' },
+      { name: '增值税开票信息.png', type: '开票资料', remark: '用户上传' }
+    ],
+    flows: [
+      { time: '2026-08-28 10:21:48', amount: 29800, remark: '微信支付到账，付款编号 4200002631202608281088212345' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-08-28 10:21:36', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-08-28 10:21:48', desc: '微信支付成功，订单生效' },
+      { operator: '张伟', type: '提交开票', time: '2026-08-28 14:02:11', desc: '提交发票抬头：上海蜜度信息技术有限公司' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-29 09:40:18', desc: '开具普票电子票，发票号 25312000000123456789，金额 29,800.00' }
+    ]
+  },
+  {
+    product: '蜜度DataQ',
+    orderNo: 'OL202609010008',
+    packageName: '传播分析基础版 · 季包',
+    rights: '传播分析报告 12 份；账号席位 2 个；数据导出 30 次',
+    qty: 2,
+    unitPrice: 6800,
+    amount: 13600,
+    serviceStart: '2026-09-02',
+    serviceEnd: '2026-12-01',
+    orderTime: '2026-09-01 16:08:02',
+    invoiceStatus: '待开票',
+    invoiceEntity: '蜜度科技股份有限公司',
+    invoiceNo: '',
+    invoiceAmount: 13600,
+    invoiceType: '专票电子票',
+    invoiceTitle: '北京双杰电气股份有限公司',
+    taxNo: '91110108MA01XXXXXX',
+    taxRate: '6%',
+    bankName: '招商银行北京分行',
+    bankAccount: '110912345678901',
+    invoicePhone: '010-58886666',
+    invoiceAddress: '北京市海淀区中关村南大街5号',
+    issueType: '专票电子票',
+    invoiceContent: '*信息技术服务*技术服务费',
+    receiver: '李娜',
+    receiverPhone: '18602108821',
+    receiverAddress: '北京市海淀区中关村南大街5号',
+    receiverEmail: 'lina@example.com',
+    submitTime: '',
+    invoiceTime: '',
+    receivedAmount: 13600,
+    files: [
+      { name: '营业执照.jpg', type: '资质文件', remark: '开票备用' },
+      { name: '一般纳税人证明.pdf', type: '开票资料', remark: '专票所需' }
+    ],
+    flows: [
+      { time: '2026-09-01 16:08:19', amount: 13600, remark: '微信支付到账' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-09-01 16:08:02', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-09-01 16:08:19', desc: '微信支付成功' }
+    ]
+  },
+  {
+    product: '校对通',
+    orderNo: 'OL202609020003',
+    packageName: '校对通专业版 · 月包',
+    rights: '校对字数 500 万字/月；账号席位 3 个',
+    qty: 1,
+    unitPrice: 1980,
+    amount: 1980,
+    serviceStart: '2026-09-02',
+    serviceEnd: '2026-10-01',
+    orderTime: '2026-09-02 09:12:44',
+    invoiceStatus: '开票中',
+    invoiceEntity: '蜜度科技股份有限公司',
+    invoiceNo: '',
+    invoiceAmount: 1980,
+    invoiceType: '普票电子票',
+    invoiceTitle: '宁波市公安局',
+    taxNo: '12330200MB1XXXXXXX',
+    taxRate: '6%',
+    bankName: '中国银行宁波分行',
+    bankAccount: '23',
+    invoicePhone: '23',
+    invoiceAddress: '浙江省宁波市海曙区县前街19号',
+    issueType: '普票电子票',
+    invoiceContent: '*生产生活服务*新闻舆情通报技术服务',
+    receiver: '王强',
+    receiverPhone: '13917445566',
+    receiverAddress: '浙江省宁波市海曙区县前街19号',
+    receiverEmail: '1728711544@qq.com',
+    submitTime: '2026-09-02 10:18:22',
+    invoiceTime: '',
+    receivedAmount: 1980,
+    files: [
+      { name: '开票申请单-OL202609020003.pdf', type: '开票申请', remark: '已提交税控' }
+    ],
+    flows: [
+      { time: '2026-09-02 09:13:01', amount: 1980, remark: '微信支付到账（作废重下后新单）' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-09-02 09:12:44', desc: '官网重新下单成功' },
+      { operator: '系统', type: '支付', time: '2026-09-02 09:13:01', desc: '微信支付成功' },
+      { operator: '王强', type: '提交开票', time: '2026-09-02 10:18:22', desc: '提交发票抬头：宁波市公安局' }
+    ]
+  },
+  {
+    product: '蜜度GEO',
+    orderNo: 'OL202608200044',
+    packageName: 'GEO监测旗舰版 · 年包',
+    rights: '生成式引擎监测；专项报告 24 份；品牌可见度追踪',
+    qty: 1,
+    unitPrice: 88000,
+    amount: 88000,
+    serviceStart: '2026-09-01',
+    serviceEnd: '2027-08-31',
+    orderTime: '2026-08-20 11:33:09',
+    invoiceStatus: '已退票',
+    invoiceEntity: '蜜度科技股份有限公司',
+    invoiceNo: '25312000000987654321',
+    invoiceAmount: 88000,
+    invoiceType: '专票电子票',
+    invoiceTitle: '毕加索小镇二期项目部',
+    taxNo: '91330100MA2XXXXXXX',
+    taxRate: '6%',
+    bankName: '建设银行杭州分行',
+    bankAccount: '33050161660800001234',
+    invoicePhone: '0571-88880000',
+    invoiceAddress: '杭州市西湖区文三路259号',
+    issueType: '专票电子票',
+    invoiceContent: '*信息技术服务*技术服务费',
+    receiver: '陈静',
+    receiverPhone: '15821997701',
+    receiverAddress: '杭州市西湖区文三路259号',
+    receiverEmail: 'chenjing@example.com',
+    submitTime: '2026-08-20 15:00:00',
+    invoiceTime: '2026-08-21 11:12:08',
+    receivedAmount: 0,
+    files: [
+      { name: '电子发票-25312000000987654321.pdf', type: '电子发票', remark: '已退票作废' },
+      { name: '退款说明.docx', type: '其他', remark: '客户申请退款' }
+    ],
+    flows: [
+      { time: '2026-08-20 11:33:22', amount: 88000, remark: '微信支付到账' },
+      { time: '2026-08-25 16:20:08', amount: -88000, remark: '退单原路退回微信支付' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-08-20 11:33:09', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-08-20 11:33:22', desc: '微信支付成功' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-21 11:12:08', desc: '开具专票电子票，发票号 25312000000987654321' },
+      { operator: '陈静', type: '退单', time: '2026-08-25 16:18:40', desc: '客户申请退单：重复购买' },
+      { operator: 'WIKI', type: '退票', time: '2026-08-25 16:22:11', desc: '订单退款，发票退票作废' }
+    ]
+  },
+  {
+    product: '模力通',
+    orderNo: 'OL202608180009',
+    packageName: '模力通标准版 · 年包',
+    rights: '大模型调用 100 万 tokens/年；知识库 5 个；账号席位 10 个',
+    qty: 1,
+    unitPrice: 19900,
+    amount: 19900,
+    serviceStart: '2026-08-18',
+    serviceEnd: '2027-08-17',
+    orderTime: '2026-08-18 19:44:10',
+    invoiceStatus: '已作废',
+    invoiceEntity: '蜜度科技股份有限公司',
+    invoiceNo: '25312000000555666777',
+    invoiceAmount: 19900,
+    invoiceType: '普票电子票',
+    invoiceTitle: '上海蜜度信息技术有限公司',
+    taxNo: '91310115MA1K3XXXXX',
+    taxRate: '6%',
+    bankName: '中国工商银行上海分行',
+    bankAccount: '1001234009012345678',
+    invoicePhone: '021-58888888',
+    invoiceAddress: '上海市浦东新区张江高科技园区科苑路88号',
+    issueType: '普票电子票',
+    invoiceContent: '*信息技术服务*软件服务费',
+    receiver: '赵敏',
+    receiverPhone: '13701662233',
+    receiverAddress: '上海市浦东新区科苑路88号',
+    receiverEmail: 'zhaomin@midu.com',
+    submitTime: '2026-08-18 20:10:00',
+    invoiceTime: '2026-08-19 09:06:44',
+    receivedAmount: 19900,
+    files: [
+      { name: '电子发票-25312000000555666777.pdf', type: '电子发票', remark: '已作废' }
+    ],
+    flows: [
+      { time: '2026-08-18 19:44:28', amount: 19900, remark: '微信支付到账' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-08-18 19:44:10', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-08-18 19:44:28', desc: '微信支付成功' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-19 09:06:44', desc: '开具普票电子票，发票号 25312000000555666777' },
+      { operator: 'WIKI', type: '作废重开', time: '2026-08-19 10:02:16', desc: '抬头与订单主体不一致，作废后重开' }
+    ]
+  },
+  {
+    product: '舆情平台',
+    orderNo: 'OL202609020118',
+    packageName: '舆情通旗舰版 · 年包',
+    rights: '监测信息 200,000 条/年；报告导出 360 次；账号席位 20 个；专项简报 52 期',
+    qty: 1,
+    unitPrice: 128000,
+    amount: 128000,
+    serviceStart: '2026-09-05',
+    serviceEnd: '2027-09-04',
+    orderTime: '2026-09-02 11:06:18',
+    invoiceStatus: '已开票',
+    invoiceEntity: '蜜度科技股份有限公司',
+    invoiceNo: '25312000000888111222',
+    invoiceAmount: 128000,
+    invoiceType: '专票电子票',
+    invoiceTitle: '宁德市公安局',
+    taxNo: '12350900MB2XXXXXXX',
+    taxRate: '6%',
+    bankName: '中国农业银行宁德分行',
+    bankAccount: '6228480400000001234',
+    invoicePhone: '0593-2820000',
+    invoiceAddress: '福建省宁德市蕉城区蕉城南路17号',
+    issueType: '专票电子票',
+    invoiceContent: '*生产生活服务*新闻舆情通报技术服务',
+    receiver: '林晓',
+    receiverPhone: '13905031234',
+    receiverAddress: '福建省宁德市蕉城区蕉城南路17号',
+    receiverEmail: 'linxiao@ningde.gov.cn',
+    submitTime: '2026-09-02 11:40:00',
+    invoiceTime: '2026-09-02 15:22:41',
+    receivedAmount: 128000,
+    files: [
+      { name: '电子发票-25312000000888111222.pdf', type: '电子发票', remark: '已开具' },
+      { name: '一般纳税人证明.pdf', type: '开票资料', remark: '专票所需' }
+    ],
+    flows: [
+      { time: '2026-09-02 11:06:33', amount: 128000, remark: '微信支付到账' }
+    ],
+    logs: [
+      { operator: '系统', type: '下单', time: '2026-09-02 11:06:18', desc: '官网下单成功' },
+      { operator: '系统', type: '支付', time: '2026-09-02 11:06:33', desc: '微信支付成功' },
+      { operator: '林晓', type: '提交开票', time: '2026-09-02 11:40:00', desc: '提交发票抬头：宁德市公安局' },
+      { operator: 'WIKI', type: '开票', time: '2026-09-02 15:22:41', desc: '开具专票电子票，发票号 25312000000888111222，金额 128,000.00' }
+    ]
+  }
+];
+
+new Vue({
+  el: '#app',
+  data() {
+    return {
+      collapsed: false,
+      currentMenu: pageFromQuery(),
+      menus: [
+        { name: '我的工作台', icon: 'el-icon-s-home' },
+        { name: '仪表盘', icon: 'el-icon-data-analysis' },
+        { name: '信息运营管理', icon: 'el-icon-s-operation' },
+        { name: '线索统计', icon: 'el-icon-s-data' },
+        { name: '行业管理', icon: 'el-icon-office-building' },
+        { name: '线索管理', icon: 'el-icon-connection' },
+        { name: '客户管理', icon: 'el-icon-user', badge: 1 },
+        { name: '合作伙伴管理', icon: 'el-icon-s-custom' },
+        { name: '日报管理', icon: 'el-icon-date' },
+        { name: '商机管理', icon: 'el-icon-s-flag' },
+        { name: '项目管理', icon: 'el-icon-folder' },
+        { name: '报价管理', icon: 'el-icon-s-ticket' },
+        { name: '投标管理', icon: 'el-icon-document' },
+        { name: '协议管理', icon: 'el-icon-notebook-2', badge: 12 },
+        {
+          name: '订单管理',
+          icon: 'el-icon-s-order',
+          open: pageFromQuery() === '线上订单',
+          children: [
+            { name: '订单列表' },
+            { name: '线上订单' }
+          ]
+        },
+        {
+          name: '收支管理',
+          icon: 'el-icon-wallet',
+          open: pageFromQuery() === '线上订单发票',
+          children: [
+            { name: '开票管理' },
+            { name: '线上订单发票' }
+          ]
+        },
+        { name: '采购管理', icon: 'el-icon-shopping-cart-2', badge: 11 },
+        { name: '资产管理', icon: 'el-icon-box' },
+        { name: '费用管理', icon: 'el-icon-money' },
+        { name: '预算与支付', icon: 'el-icon-s-finance', badge: 1 },
+        { name: '成本费用核算', icon: 'el-icon-s-marketing' },
+        { name: '激励点学校', icon: 'el-icon-school' },
+        { name: '报告系统', icon: 'el-icon-s-claim' },
+        { name: '智能系统', icon: 'el-icon-cpu' },
+        { name: '企业服务系统', icon: 'el-icon-s-cooperation' },
+        { name: '出场服务系统', icon: 'el-icon-s-promotion' },
+        { name: '产品运维管理', icon: 'el-icon-setting' }
+      ],
+      productOptions: ['蜜度GEO', '蜜度DataQ', '舆情平台', '校对通', '模力通'],
+      entityOptions: ['蜜度科技股份有限公司'],
+      query: {
+        product: '', orderNo: '', packageName: '', userName: '', mobile: '',
+        invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: ''
+      },
+      list: JSON.parse(JSON.stringify(MOCK)),
+      page: 1,
+      pageSize: 10,
+      sels: [],
+      detailVisible: false,
+      invoiceVisible: false,
+      flowVisible: false,
+      refundVisible: false,
+      voidVisible: false,
+      detailTab: 'items',
+      current: {},
+      invoiceForm: { title: '', amount: '', remark: '' },
+      refundReason: '',
+      voidReason: '',
+      invQuery: {
+        product: '', orderNo: '', packageName: '', invoiceStatus: '',
+        invoiceEntity: '', invoiceNo: '', invoiceType: '',
+        orderTime: [], serviceStart: '', serviceEnd: ''
+      },
+      invList: JSON.parse(JSON.stringify(INV_MOCK)),
+      invPage: 1,
+      invPageSize: 10,
+      invSels: [],
+      invDetailVisible: false,
+      invFileVisible: false,
+      invVoidVisible: false,
+      invRefundVisible: false,
+      invDetailTab: 'info',
+      invCurrent: {},
+      invVoidReason: '',
+      invRefundReason: ''
+    };
+  },
+  created() {
+    document.title = this.currentMenu === '线上订单' ? '蜜度BOSS系统 - 线上订单' : '蜜度BOSS系统 - 线上订单发票';
+  },
+  computed: {
+    filtered() {
+      const q = this.query;
+      return this.list.filter(row => {
+        if (q.product && row.product !== q.product) return false;
+        if (q.orderNo && !row.orderNo.includes(q.orderNo)) return false;
+        if (q.packageName && !row.packageName.includes(q.packageName)) return false;
+        if (q.userName && !row.userName.includes(q.userName)) return false;
+        if (q.mobile && !row.mobile.includes(q.mobile)) return false;
+        if (q.invoiceTitle && !row.invoiceTitle.includes(q.invoiceTitle)) return false;
+        if (q.status && row.status !== q.status) return false;
+        if (q.serviceStart && row.serviceStart < q.serviceStart) return false;
+        if (q.serviceEnd && row.serviceEnd > q.serviceEnd) return false;
+        if (q.orderTime && q.orderTime.length === 2) {
+          const d = row.orderTime.slice(0, 10);
+          if (d < q.orderTime[0] || d > q.orderTime[1]) return false;
+        }
+        return true;
+      });
+    },
+    paged() {
+      const start = (this.page - 1) * this.pageSize;
+      return this.filtered.slice(start, start + this.pageSize);
+    },
+    allChecked() {
+      return this.paged.length > 0 && this.paged.every(r => this.sels.indexOf(r.orderNo) !== -1);
+    },
+    invFiltered() {
+      const q = this.invQuery;
+      return this.invList.filter(row => {
+        if (q.product && row.product !== q.product) return false;
+        if (q.orderNo && !row.orderNo.includes(q.orderNo)) return false;
+        if (q.packageName && !row.packageName.includes(q.packageName)) return false;
+        if (q.invoiceStatus && row.invoiceStatus !== q.invoiceStatus) return false;
+        if (q.invoiceEntity && row.invoiceEntity !== q.invoiceEntity) return false;
+        if (q.invoiceNo && !(row.invoiceNo || '').includes(q.invoiceNo)) return false;
+        if (q.invoiceType && row.invoiceType !== q.invoiceType) return false;
+        if (q.serviceStart && row.serviceStart < q.serviceStart) return false;
+        if (q.serviceEnd && row.serviceEnd > q.serviceEnd) return false;
+        if (q.orderTime && q.orderTime.length === 2) {
+          const d = row.orderTime.slice(0, 10);
+          if (d < q.orderTime[0] || d > q.orderTime[1]) return false;
+        }
+        return true;
+      });
+    },
+    invPaged() {
+      const start = (this.invPage - 1) * this.invPageSize;
+      return this.invFiltered.slice(start, start + this.invPageSize);
+    },
+    invAllChecked() {
+      return this.invPaged.length > 0 && this.invPaged.every(r => this.invSels.indexOf(r.orderNo) !== -1);
+    },
+    invStats() {
+      const sum = (st) => this.invFiltered.filter(r => r.invoiceStatus === st).reduce((s, r) => s + Number(r.invoiceAmount || 0), 0);
+      return {
+        pending: sum('待开票'),
+        processing: sum('开票中'),
+        issued: sum('已开票'),
+        returned: sum('已退票'),
+        voided: sum('已作废'),
+        received: this.invFiltered.reduce((s, r) => s + Number(r.receivedAmount || 0), 0)
+      };
+    }
+  },
+  methods: {
+    money,
+    daysBetween,
+    selectMenu(name) {
+      this.currentMenu = name;
+      this.menus.forEach(m => {
+        if (m.children) m.open = m.children.some(c => c.name === name);
+      });
+      const page = name === '线上订单' ? 'order' : name === '线上订单发票' ? 'invoice' : '';
+      if (page) {
+        const url = new URL(location.href);
+        url.searchParams.set('page', page);
+        history.replaceState(null, '', url);
+        document.title = name === '线上订单' ? '蜜度BOSS系统 - 线上订单' : '蜜度BOSS系统 - 线上订单发票';
+      }
+    },
+    invoiceColor(st) {
+      return { '已开票': '#67c23a', '开票中': '#e6a23c', '已作废': '#c0c4cc', '待开票': '#409eff', '已退票': '#f56c6c' }[st] || '#909399';
+    },
+    onSearch() { this.page = 1; this.$message.success('已按条件筛选'); },
+    onReset() {
+      this.query = { product: '', orderNo: '', packageName: '', userName: '', mobile: '', invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: '' };
+      this.page = 1;
+    },
+    toggleAll(e) {
+      if (e.target.checked) this.sels = this.paged.map(r => r.orderNo);
+      else this.sels = [];
+    },
+    openDetail(row) {
+      this.current = row;
+      this.detailTab = 'items';
+      this.detailVisible = true;
+    },
+    openInvoice(row) {
+      this.current = row;
+      this.invoiceForm = { title: row.invoiceTitle, amount: row.amount, remark: '' };
+      this.invoiceVisible = true;
+    },
+    openFlow(row) {
+      this.current = row;
+      this.flowVisible = true;
+    },
+    onRefund(row) {
+      this.current = row;
+      this.refundReason = '';
+      this.refundVisible = true;
+    },
+    onVoid(row) {
+      this.current = row;
+      this.voidReason = '';
+      this.voidVisible = true;
+    },
+    submitInvoice() {
+      const now = this.now();
+      this.current.invoices.unshift({
+        submitTime: now, invoiceTime: '', amount: Number(this.invoiceForm.amount), status: '开票中', title: this.invoiceForm.title
+      });
+      this.current.logs.unshift({ operator: 'WIKI', type: '提交开票', time: now, desc: '提交发票抬头：' + this.invoiceForm.title });
+      this.invoiceVisible = false;
+      this.$message.success('已提交开票');
+    },
+    submitRefund() {
+      if (!this.refundReason) return this.$message.warning('请填写退单原因');
+      const now = this.now();
+      this.current.status = '退单';
+      this.current.flows.push({ time: now, amount: -this.current.amount, remark: '退单原路退回微信支付' });
+      this.current.logs.push({ operator: 'WIKI', type: '退单', time: now, desc: this.refundReason });
+      this.refundVisible = false;
+      this.$message.success('退单成功（原型）');
+    },
+    submitVoid() {
+      if (!this.voidReason) return this.$message.warning('请填写作废原因');
+      const now = this.now();
+      this.current.status = '作废';
+      this.current.logs.push({ operator: 'WIKI', type: '作废重下', time: now, desc: this.voidReason });
+      this.voidVisible = false;
+      this.$message.success('原单已作废，请引导用户在官网重新下单（原型）');
+    },
+    now() {
+      const d = new Date();
+      const p = n => String(n).padStart(2, '0');
+      return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    },
+    onInvSearch() { this.invPage = 1; this.$message.success('已按条件筛选'); },
+    onInvReset() {
+      this.invQuery = {
+        product: '', orderNo: '', packageName: '', invoiceStatus: '',
+        invoiceEntity: '', invoiceNo: '', invoiceType: '',
+        orderTime: [], serviceStart: '', serviceEnd: ''
+      };
+      this.invPage = 1;
+    },
+    toggleInvAll(e) {
+      if (e.target.checked) this.invSels = this.invPaged.map(r => r.orderNo);
+      else this.invSels = [];
+    },
+    openInvDetail(row) {
+      this.invCurrent = row;
+      this.invDetailTab = 'info';
+      this.invDetailVisible = true;
+    },
+    openInvFiles(row) {
+      this.invCurrent = row;
+      this.invFileVisible = true;
+    },
+    onInvVoid(row) {
+      this.invCurrent = row;
+      this.invVoidReason = '';
+      this.invVoidVisible = true;
+    },
+    onInvRefund(row) {
+      this.invCurrent = row;
+      this.invRefundReason = '';
+      this.invRefundVisible = true;
+    },
+    submitInvVoid() {
+      if (!this.invVoidReason) return this.$message.warning('请填写作废原因');
+      const now = this.now();
+      this.invCurrent.invoiceStatus = '开票中';
+      this.invCurrent.invoiceNo = '';
+      this.invCurrent.invoiceTime = '';
+      this.invCurrent.submitTime = now;
+      this.invCurrent.logs.push({ operator: 'WIKI', type: '作废重开', time: now, desc: this.invVoidReason });
+      this.invVoidVisible = false;
+      this.$message.success('原发票已作废，已重新提交开票（原型）');
+    },
+    submitInvRefund() {
+      if (!this.invRefundReason) return this.$message.warning('请填写退票原因');
+      const now = this.now();
+      this.invCurrent.invoiceStatus = '已退票';
+      this.invCurrent.logs.push({ operator: 'WIKI', type: '退票', time: now, desc: this.invRefundReason });
+      this.invRefundVisible = false;
+      this.$message.success('退票成功（原型）');
+    }
+  }
+});
+</script>
+</body>
+</html>
