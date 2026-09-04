@@ -7,46 +7,53 @@
   <link rel="stylesheet" href="vendor/element-ui.css" />
   <style>
     :root {
-      --primary: #00c4d6;
-      --primary-dark: #00b0c0;
-      --primary-light: #e6f9fb;
-      --header-h: 50px;
-      --aside-w: 196px;
+      --primary: #1677ff;
+      --primary-dark: #0958d9;
+      --primary-soft: #e8f3ff;
+      --text: #303133;
+      --text-secondary: #606266;
+      --text-muted: #909399;
+      --line: #ebeef5;
+      --bg: #f3f5f8;
+      --header-h: 52px;
+      --aside-w: 200px;
     }
     [v-cloak] { display: none; }
-    html, body { margin: 0; height: 100%; font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--text); }
     #app { height: 100%; }
 
-    .layout { display: flex; flex-direction: column; height: 100%; background: #eef2f5; }
+    .layout { display: flex; flex-direction: column; height: 100%; background: var(--bg); }
     .topbar {
       height: var(--header-h);
-      background: var(--primary);
+      background: linear-gradient(90deg, #0e5ce0 0%, #1677ff 52%, #3b8bff 100%);
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 18px;
+      padding: 0 20px;
       flex-shrink: 0;
       z-index: 2;
+      box-shadow: 0 1px 4px rgba(22, 119, 255, .22);
     }
-    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
     .logo-mark {
-      width: 28px; height: 28px; border-radius: 4px;
-      background: rgba(255,255,255,.22);
+      width: 30px; height: 30px; border-radius: 8px;
+      background: rgba(255,255,255,.2);
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 14px;
     }
-    .sys-name { font-size: 18px; font-weight: 600; letter-spacing: .5px; }
-    .sys-slogan { font-size: 12px; opacity: .95; }
-    .topbar-right { display: flex; align-items: center; gap: 18px; font-size: 13px; }
-    .topbar-right a { color: #fff; text-decoration: none; }
-    .topbar-right a:hover { text-decoration: underline; }
+    .sys-name { font-size: 17px; font-weight: 600; letter-spacing: .4px; }
+    .sys-slogan { font-size: 12px; opacity: .88; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; font-size: 13px; }
+    .topbar-right a { color: #fff; text-decoration: none; opacity: .92; }
+    .topbar-right a:hover { opacity: 1; text-decoration: underline; }
 
     .body { display: flex; flex: 1; min-height: 0; position: relative; }
     .aside {
       width: var(--aside-w);
       background: #fff;
-      border-right: 1px solid #e8eef2;
+      border-right: 1px solid var(--line);
       overflow: auto;
       flex-shrink: 0;
       position: relative;
@@ -54,163 +61,281 @@
     .aside.collapsed { width: 16px; overflow: visible; }
     .aside.collapsed .menu { display: none; }
     .collapse-btn {
-      position: absolute; right: -16px; top: 10px;
-      width: 16px; height: 36px; background: #fff;
-      border: 1px solid #e4e7ed; border-left: none;
-      border-radius: 0 4px 4px 0;
-      cursor: pointer; color: #909399; z-index: 6;
+      position: absolute; right: -14px; top: 12px;
+      width: 14px; height: 40px; background: #fff;
+      border: 1px solid var(--line); border-left: none;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer; color: var(--text-muted); z-index: 6;
       display: flex; align-items: center; justify-content: center;
       font-size: 12px;
     }
-    .menu { padding: 8px 0 24px; }
+    .menu { padding: 10px 8px 24px; }
     .menu-item, .menu-parent {
       display: flex; align-items: center; gap: 8px;
-      height: 40px; padding: 0 16px; font-size: 13px; color: #4a5568;
-      cursor: pointer; position: relative; user-select: none;
+      height: 38px; padding: 0 12px; font-size: 13px; color: var(--text-secondary);
+      cursor: pointer; position: relative; user-select: none; border-radius: 8px;
     }
-    .menu-item:hover, .menu-parent:hover { color: var(--primary); background: #f7fbfd; }
+    .menu-item:hover, .menu-parent:hover { color: var(--primary); background: var(--primary-soft); }
     .menu-item.active {
-      background: var(--primary-light); color: var(--primary); font-weight: 600;
+      background: var(--primary-soft); color: var(--primary); font-weight: 600;
     }
     .menu-item.active::before {
-      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--primary);
+      content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+      background: var(--primary); border-radius: 0 3px 3px 0;
     }
     .menu-badge {
       margin-left: auto; min-width: 16px; height: 16px; padding: 0 5px;
-      background: #f56c6c; color: #fff; border-radius: 8px; font-size: 11px;
+      background: #ff6b6b; color: #fff; border-radius: 8px; font-size: 11px;
       display: inline-flex; align-items: center; justify-content: center;
     }
-    .sub-menu { background: #fafcfd; }
-    .sub-menu .menu-item { padding-left: 36px; height: 36px; }
-    .menu-arrow { margin-left: auto; font-size: 12px; color: #a0aec0; }
+    .sub-menu { padding: 2px 0 6px; }
+    .sub-menu .menu-item { padding-left: 32px; height: 34px; font-size: 13px; }
+    .menu-arrow { margin-left: auto; font-size: 12px; color: #c0c4cc; }
 
-    .main { flex: 1; min-width: 0; overflow: auto; padding: 12px; }
+    .main { flex: 1; min-width: 0; overflow: auto; padding: 16px 18px 20px; }
     .panel {
-      background: #fff; border-radius: 2px;
-      box-shadow: 0 1px 2px rgba(0,0,0,.04);
-      padding: 14px 16px 8px;
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 8px rgba(31, 45, 61, .04);
+      padding: 18px 18px 12px;
     }
-    .filter-form .el-form-item { margin-bottom: 10px; margin-right: 0; }
-    .filter-form .el-form-item__label { font-size: 13px; color: #606266; padding-right: 6px; }
-    .filter-actions { display: flex; align-items: center; gap: 8px; padding: 4px 0 10px; }
+    .filter-form .el-form-item { margin-bottom: 12px; margin-right: 0; }
+    .filter-form .el-form-item__label { font-size: 13px; color: var(--text-secondary); padding-right: 8px; }
+    .filter-actions { display: flex; align-items: center; gap: 8px; padding: 2px 0 4px; }
     .toolbar {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 6px 0 10px; gap: 8px; flex-wrap: wrap;
+      padding: 10px 0 12px; gap: 8px; flex-wrap: wrap;
     }
     .toolbar-left { display: flex; gap: 8px; flex-wrap: wrap; }
-    .warn-text { color: #f56c6c; font-size: 13px; padding: 2px 0 10px; }
+    .warn-text {
+      color: #d48806; font-size: 12px; padding: 8px 12px; margin: 10px 0 4px;
+      background: #fffbe6; border: 1px solid #ffe58f; border-radius: 6px;
+    }
 
-    .el-button--primary { background: var(--primary); border-color: var(--primary); }
+    .el-button--primary { background: var(--primary); border-color: var(--primary); border-radius: 4px; }
     .el-button--primary:hover, .el-button--primary:focus { background: var(--primary-dark); border-color: var(--primary-dark); }
+    .el-button--success, .el-button--small { border-radius: 4px; }
     .el-button--text { color: var(--primary); }
+    .el-pagination.is-background .el-pager li { border-radius: 4px; }
     .el-pagination.is-background .el-pager li.active { background-color: var(--primary); }
+    .el-input__inner, .el-textarea__inner { border-radius: 6px; }
     .el-input__inner:focus, .el-textarea__inner:focus { border-color: var(--primary); }
     .el-select .el-input.is-focus .el-input__inner { border-color: var(--primary); }
     .el-checkbox__input.is-checked .el-checkbox__inner,
     .el-checkbox__input.is-indeterminate .el-checkbox__inner { background-color: var(--primary); border-color: var(--primary); }
     .el-tabs__active-bar { background-color: var(--primary); }
+    .el-tabs__item { font-size: 14px; }
     .el-tabs__item.is-active, .el-tabs__item:hover { color: var(--primary); }
     .el-dialog__headerbtn .el-dialog__close:hover { color: var(--primary); }
+    .el-dialog { border-radius: 12px; overflow: hidden; }
 
-    .table-scroll { width: 100%; overflow-x: auto; }
+    .table-scroll {
+      width: 100%; overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
     .boss-table {
       border-collapse: collapse;
       font-size: 12px;
-      min-width: 2160px;
-      width: 2160px;
+      min-width: 2600px;
+      width: 2600px;
     }
     .boss-table.full { width: 100%; min-width: 100%; }
     .boss-table th {
-      background: var(--primary); color: #fff; font-weight: 500;
-      padding: 8px 10px; white-space: nowrap; border: 1px solid #00b3c4;
+      background: #f7f8fa; color: var(--text-secondary); font-weight: 600;
+      padding: 10px 12px; white-space: nowrap;
+      border: none; border-bottom: 1px solid var(--line);
       text-align: left;
     }
     .boss-table th.center, .boss-table td.center { text-align: center; }
     .boss-table th.right, .boss-table td.right { text-align: right; }
     .boss-table td {
-      padding: 8px 10px; border: 1px solid #ebeef5; background: #fff;
-      color: #303133; white-space: nowrap; vertical-align: top;
+      padding: 10px 12px; border: none; border-bottom: 1px solid #f0f2f5;
+      background: #fff; color: var(--text); white-space: nowrap; vertical-align: middle;
     }
-    .boss-table tbody tr:hover td { background: #f5f7fa; }
+    .boss-table tbody tr:nth-child(even) td { background: #fcfdfe; }
+    .boss-table tbody tr:hover td { background: #f3f7ff; }
     .boss-table .sticky-op {
       position: sticky; right: 0; background: #fff; z-index: 1;
-      box-shadow: -6px 0 8px -6px rgba(0,0,0,.12);
+      box-shadow: -8px 0 12px -10px rgba(0,0,0,.12);
     }
-    .boss-table th.sticky-op { background: var(--primary); z-index: 2; }
-    .filter-form .el-date-editor { width: 100%; }
-    .filter-form .el-date-editor.el-input { width: 100%; }
+    .boss-table th.sticky-op { background: #f7f8fa; z-index: 2; }
+    .boss-table tbody tr:nth-child(even) td.sticky-op { background: #fcfdfe; }
+    .boss-table tbody tr:hover td.sticky-op { background: #f3f7ff; }
+    .filter-form .el-date-editor,
+    .filter-form .el-date-editor.el-input,
     .filter-form .el-date-editor--daterange { width: 100%; }
     .filter-form .el-range-editor.el-input__inner { width: 100%; }
-    .op-col { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.7; min-width: 72px; white-space: nowrap; }
+
+    .attach-panel {
+      border: 1px solid #e6edf2; border-radius: 8px; overflow: hidden; background: #fff;
+      margin: 4px 0 8px;
+    }
+    .attach-toolbar {
+      display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px 16px;
+      padding: 14px 16px; background: #f7fafc; border-bottom: 1px solid #e6edf2;
+    }
+    .attach-field { display: flex; flex-direction: column; gap: 6px; }
+    .attach-field label { font-size: 12px; color: #667085; line-height: 1; font-weight: 500; }
+    .attach-field .el-input, .attach-field .el-select { width: 100%; }
+    .attach-field .el-input__inner, .attach-toolbar .el-input__inner {
+      height: 32px; line-height: 32px; border-color: #d5dee8; border-radius: 4px;
+    }
+    .file-combo { display: flex; width: 240px; }
+    .file-combo .el-input { flex: 1; }
+    .file-combo .el-input .el-input__inner { border-right: 0; border-radius: 4px 0 0 4px; }
+    .file-combo-btn {
+      width: 32px; height: 32px; flex-shrink: 0; border: 0; cursor: pointer;
+      background: var(--primary); color: #fff; border-radius: 0 4px 4px 0;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 16px;
+    }
+    .file-combo-btn:hover { background: var(--primary-dark); }
+    .attach-actions { display: flex; align-items: center; gap: 8px; padding-bottom: 1px; }
+    .attach-actions .el-button--primary { height: 32px; padding: 0 14px; border-radius: 4px; font-weight: 500; }
+    .attach-table-wrap { overflow-x: auto; }
+    .attach-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 860px; }
+    .attach-table th {
+      background: #f7f8fa; color: #5c6b7a; font-weight: 600;
+      padding: 9px 12px; text-align: left; white-space: nowrap;
+      border-bottom: 1px solid #e1e8ee; border-right: 1px solid #e8eef2;
+    }
+    .attach-table th:last-child { border-right: none; }
+    .attach-table td {
+      padding: 10px 12px; border-bottom: 1px solid #eef2f5; color: #344054;
+      white-space: nowrap; background: #fff; vertical-align: middle;
+    }
+    .attach-table tbody tr:hover td { background: #f3f7ff; }
+    .attach-table .empty { text-align: center; color: #98a2b3; padding: 28px 12px; }
+    .attach-type {
+      display: inline-block; padding: 2px 8px; border-radius: 10px;
+      background: var(--primary-soft); color: var(--primary-dark); font-size: 12px; line-height: 18px;
+    }
+    .attach-ops .el-button { padding: 0 6px; margin: 0; font-size: 13px; }
+    .attach-ops .el-button + .el-button { margin-left: 2px; }
+    .attach-ops .el-button--text.danger-link { color: #f56c6c; }
+    .el-button--text.danger-link { color: #f56c6c; }
+
+    .op-col {
+      display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;
+      min-width: 108px; white-space: nowrap;
+    }
     .op-col .el-button { padding: 0; margin: 0; font-size: 12px; }
+    .op-col .el-button + .el-button::before {
+      content: ""; display: inline-block; width: 1px; height: 10px;
+      background: #dcdfe6; margin: 0 8px 0 6px; vertical-align: middle;
+    }
+    .op-col .el-button--text.warn-link { color: #d48806; }
     .op-col .el-button--text.danger-link { color: #f56c6c; }
-    .op-col .el-button--text.warn-link { color: #e6a23c; }
     .op-col .el-button.is-disabled { color: #c0c4cc; }
 
     .el-dialog__wrapper { z-index: 3000 !important; }
-    .detail-dialog .el-dialog__header { padding: 12px 20px 8px; position: relative; }
-    .detail-dialog .el-dialog__body { padding: 0 20px 12px; }
+    .detail-dialog .el-dialog__header { padding: 16px 24px 10px; position: relative; border-bottom: 1px solid var(--line); }
+    .detail-dialog .el-dialog__body { padding: 8px 24px 12px; }
     .detail-dialog .boss-table { margin-bottom: 8px; }
     .detail-title {
-      display: flex; align-items: center; gap: 8px; font-size: 16px; color: #303133; font-weight: 600;
+      display: flex; align-items: center; gap: 10px; font-size: 16px; color: var(--text); font-weight: 600;
       white-space: nowrap;
     }
-    .detail-title::before { content: ""; width: 4px; height: 16px; background: var(--primary); border-radius: 1px; }
-    .detail-tag { color: #f56c6c; font-size: 14px; font-weight: 600; }
-    .detail-warn { position: absolute; right: 48px; top: 16px; color: #f56c6c; font-size: 13px; }
+    .detail-title::before { content: ""; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
+    .detail-tag { font-size: 12px; font-weight: 500; }
+    .detail-warn { position: absolute; right: 48px; top: 18px; color: #d48806; font-size: 12px; }
     .info-grid {
       display: grid; grid-template-columns: 1fr 1fr 1fr;
-      row-gap: 12px; column-gap: 24px; padding: 8px 4px 16px;
+      row-gap: 10px; column-gap: 20px; padding: 4px 0 8px;
       font-size: 13px;
     }
-    .info-item { display: flex; min-width: 0; line-height: 1.6; }
+    .info-item { display: flex; min-width: 0; line-height: 1.7; }
     .info-item.span-3 { grid-column: 1 / -1; }
     .info-item.row-start { grid-column-start: 1; }
-    .info-label { color: #909399; width: 132px; flex-shrink: 0; text-align: right; padding-right: 4px; }
-    .info-value { color: #303133; flex: 1; min-width: 0; word-break: break-all; }
-    .detail-footer { text-align: center; padding: 16px 0 8px; }
-    .proto-tip {
-      margin: 0 0 10px; padding: 8px 12px; background: #f0fbfd; border: 1px dashed #b6eaf0;
-      color: #0e8a97; font-size: 12px; border-radius: 2px;
+    .info-label { color: var(--text-muted); width: 132px; flex-shrink: 0; text-align: right; padding-right: 8px; }
+    .info-value { color: var(--text); flex: 1; min-width: 0; word-break: break-all; }
+    .detail-footer { text-align: center; padding: 12px 0 8px; }
+    .section-hd {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: #1d2939; font-weight: 600;
+      padding: 16px 0 10px; margin: 0;
     }
+    .section-hd::before {
+      content: ""; width: 3px; height: 14px; border-radius: 2px; background: var(--primary);
+    }
+    .info-block { margin: 8px 0 16px; padding: 0; }
     .rights-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 8px 0 16px; }
     .rights-card {
-      border: 1px solid #e4e7ed; border-radius: 4px; padding: 14px 16px; background: #fafcfd;
+      border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; background: #fafcfd;
     }
-    .rights-card .k { color: #909399; font-size: 12px; }
-    .rights-card .v { color: #303133; font-size: 22px; font-weight: 600; padding: 6px 0 2px; }
-    .rights-card .u { color: #606266; font-size: 12px; }
+    .rights-card .k { color: var(--text-muted); font-size: 12px; }
+    .rights-card .v { color: var(--text); font-size: 22px; font-weight: 600; padding: 6px 0 2px; }
+    .rights-card .u { color: var(--text-secondary); font-size: 12px; }
     .voided { color: #c0c4cc; text-decoration: line-through; }
-    .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
 
-    .filter-with-stat { display: flex; gap: 16px; align-items: flex-start; }
+    .tag {
+      display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
+      border-radius: 11px; font-size: 12px; line-height: 22px; white-space: nowrap;
+    }
+    .tag-ok { background: #e8f8ef; color: #2d9a5b; }
+    .tag-info { background: #e8f3ff; color: #1677ff; }
+    .tag-warn { background: #fff7e6; color: #d48806; }
+    .tag-mute { background: #f4f4f5; color: #909399; }
+    .tag-danger { background: #ffecec; color: #e05252; }
+
+    .filter-with-stat { display: flex; gap: 16px; align-items: stretch; }
     .filter-main { flex: 1; min-width: 0; }
     .stat-panel {
-      width: 248px; flex-shrink: 0; margin-top: 4px;
-      background: #f7fbfd; border: 1px solid #d7eef1; padding: 8px 14px 10px;
-      font-size: 12px;
+      width: 232px; flex-shrink: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      align-content: start;
     }
     .stat-row {
-      display: flex; justify-content: space-between; align-items: center;
-      line-height: 1.95; color: #606266; border-bottom: 1px dashed #e4eef0;
+      background: #f5f8ff; border: 1px solid #dce8fb; border-radius: 8px;
+      padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;
     }
-    .stat-row:last-child { border-bottom: none; }
-    .stat-row b { color: #303133; font-weight: 600; font-variant-numeric: tabular-nums; }
-    .section-hd {
-      font-size: 14px; color: #303133; font-weight: 600;
-      padding: 16px 0 8px; margin: 4px 0 4px;
+    .stat-row span { color: var(--text-muted); font-size: 12px; }
+    .stat-row b { color: var(--text); font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums; }
+    .stat-row.s-pending { background: #e8f3ff; border-color: #cddfff; }
+    .stat-row.s-pending b { color: #1677ff; }
+    .stat-row.s-process { background: #fff8eb; border-color: #f3e2b8; }
+    .stat-row.s-process b { color: #d48806; }
+    .stat-row.s-issued { background: #eef9f2; border-color: #cdebd8; }
+    .stat-row.s-issued b { color: #2d9a5b; }
+    .stat-row.s-void { background: #f6f7f9; border-color: #e6e8ed; }
+    .stat-row.s-void b { color: #909399; }
+    .stat-row.s-recv { background: #eef4ff; border-color: #d4e4ff; }
+    .stat-row.s-recv b { color: #1677ff; }
+    .stat-row.s-total { background: #fff; border-color: #e6e8ed; }
+    .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
+    .boss-table tbody tr.row-mute td { color: var(--text-muted); }
+    .boss-table input[type="checkbox"] {
+      appearance: none; -webkit-appearance: none;
+      width: 14px; height: 14px; margin: 0;
+      border: 1px solid #c9cdd4; border-radius: 3px; background: #fff;
+      vertical-align: middle; cursor: pointer; position: relative;
     }
-    .info-block {
-      margin: 4px 0 12px; padding: 0 4px 8px;
-      border-bottom: 1px solid #ebeef5;
+    .boss-table input[type="checkbox"]:checked {
+      background: var(--primary); border-color: var(--primary);
     }
-    .boss-table.invoice-table { min-width: 2320px; width: 2320px; }
-    .boss-table tbody tr.row-warn td { background: #fff6ea; }
-    .boss-table tbody tr.row-warn:hover td { background: #ffefd6; }
-    .boss-table tbody tr.row-warn td.sticky-op { background: #fff6ea; }
-    .boss-table tbody tr.row-warn:hover td.sticky-op { background: #ffefd6; }
-    .boss-table tbody tr.row-mute td { color: #a0a4aa; }
-    .clip { max-width: 220px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; }
+    .boss-table input[type="checkbox"]:checked::after {
+      content: ""; position: absolute; left: 3px; top: 0;
+      width: 6px; height: 9px; border: 2px solid #fff;
+      border-top: 0; border-left: 0; transform: rotate(45deg);
+    }
+    .clip { max-width: 240px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: bottom; }
+    .page-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin: 0 2px 14px;
+    }
+    .page-head h2 { margin: 0; font-size: 18px; font-weight: 600; color: #1d2939; letter-spacing: .2px; }
+    .page-head .crumb { font-size: 12px; color: var(--text-muted); }
+    .user-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.16); border-radius: 16px; padding: 4px 10px 4px 4px;
+    }
+    .user-chip .avatar {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(255,255,255,.28); display: inline-flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+    }
+    .boss-table td.right, .stat-row b { font-variant-numeric: tabular-nums; }
+    .info-value .tag { vertical-align: middle; }
+    .detail-title .tag { margin-left: 2px; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -225,7 +350,7 @@
       <div class="topbar-right">
         <a href="javascript:;">更多系统</a>
         <a href="javascript:;">协议问答</a>
-        <span>欢迎您: WIKI</span>
+        <span class="user-chip"><span class="avatar">W</span>欢迎您: WIKI</span>
         <a href="javascript:;">OA系统</a>
         <a href="javascript:;">安全退出</a>
       </div>
@@ -275,10 +400,14 @@
 
       <main class="main">
         <div v-if="currentMenu !== '线上订单' && currentMenu !== '线上订单发票'" class="panel" style="padding:40px;text-align:center;color:#909399;">
-          此为原型演示，请点击左侧 <b style="color:#00c4d6">收支管理 / 线上订单发票</b> 或 <b style="color:#00c4d6">订单管理 / 线上订单</b>
+          此为原型演示，请点击左侧 <b style="color:var(--primary)">收支管理 / 线上订单发票</b> 或 <b style="color:var(--primary)">订单管理 / 线上订单</b>
         </div>
 
         <div v-else-if="currentMenu === '线上订单发票'">
+          <div class="page-head">
+            <h2>线上订单发票</h2>
+            <span class="crumb">收支管理 / 线上订单发票</span>
+          </div>
           <div class="panel">
             <div class="filter-with-stat">
               <div class="filter-main">
@@ -287,41 +416,30 @@
                     <el-col :span="6">
                       <el-form-item label="产品">
                         <el-select v-model="invQuery.product" placeholder="请选择" clearable style="width:100%">
-                          <el-option v-for="p in productOptions" :key="p" :label="p" :value="p" />
-                        </el-select>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="订单编号">
-                        <el-input v-model="invQuery.orderNo" placeholder="官网统一订单号" clearable />
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="套餐名称">
-                        <el-input v-model="invQuery.packageName" placeholder="请输入" clearable />
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="发票状态">
-                        <el-select v-model="invQuery.invoiceStatus" placeholder="全部" clearable style="width:100%">
-                          <el-option label="待开票" value="待开票" />
-                          <el-option label="开票中" value="开票中" />
-                          <el-option label="已开票" value="已开票" />
-                          <el-option label="已作废" value="已作废" />
-                          <el-option label="已退票" value="已退票" />
-                        </el-select>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="开票主体">
-                        <el-select v-model="invQuery.invoiceEntity" placeholder="请选择" clearable style="width:100%">
-                          <el-option v-for="e in entityOptions" :key="e" :label="e" :value="e" />
+                          <el-option v-for="p in invProductOptions" :key="p" :label="p" :value="p" />
                         </el-select>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
                       <el-form-item label="发票号">
                         <el-input v-model="invQuery.invoiceNo" placeholder="请输入" clearable />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="开票状态">
+                        <el-select v-model="invQuery.invoiceStatus" placeholder="全部" clearable style="width:100%">
+                          <el-option label="已开票" value="已开票" />
+                          <el-option label="待开票" value="待开票" />
+                          <el-option label="开票中" value="开票中" />
+                          <el-option label="已作废" value="已作废" />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="公司">
+                        <el-select v-model="invQuery.invoiceEntity" placeholder="请选择" clearable style="width:100%">
+                          <el-option v-for="e in entityOptions" :key="e" :label="e" :value="e" />
+                        </el-select>
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
@@ -333,9 +451,30 @@
                       </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                      <el-form-item label="下单时间">
+                      <el-form-item label="支付方式">
+                        <el-select v-model="invQuery.payMethod" placeholder="全部" clearable style="width:100%">
+                          <el-option label="微信" value="微信" />
+                          <el-option label="支付宝" value="支付宝" />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="单位属性">
+                        <el-select v-model="invQuery.unitType" placeholder="全部" clearable style="width:100%">
+                          <el-option label="企业单位" value="企业单位" />
+                          <el-option label="非企业单位" value="非企业单位" />
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-form-item label="发票抬头">
+                        <el-input v-model="invQuery.invoiceTitle" placeholder="请输入" clearable />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-form-item label="开票提交时间">
                         <el-date-picker
-                          v-model="invQuery.orderTime"
+                          v-model="invQuery.submitTime"
                           type="daterange"
                           start-placeholder="开始日期"
                           end-placeholder="结束日期"
@@ -345,14 +484,17 @@
                         />
                       </el-form-item>
                     </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="服务开始日期">
-                        <el-date-picker v-model="invQuery.serviceStart" type="date" placeholder="请选择" value-format="yyyy-MM-dd" style="width:100%" />
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="服务终止日期">
-                        <el-date-picker v-model="invQuery.serviceEnd" type="date" placeholder="请选择" value-format="yyyy-MM-dd" style="width:100%" />
+                    <el-col :span="12">
+                      <el-form-item label="开票日期">
+                        <el-date-picker
+                          v-model="invQuery.invoiceDate"
+                          type="daterange"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期"
+                          value-format="yyyy-MM-dd"
+                          unlink-panels
+                          style="width:100%"
+                        />
                       </el-form-item>
                     </el-col>
                   </el-row>
@@ -364,16 +506,15 @@
                 </div>
               </div>
               <div class="stat-panel">
-                <div class="stat-row"><span>待开票金额</span><b>{{ money(invStats.pending) }}</b></div>
-                <div class="stat-row"><span>开票中金额</span><b>{{ money(invStats.processing) }}</b></div>
-                <div class="stat-row"><span>已开票金额</span><b>{{ money(invStats.issued) }}</b></div>
-                <div class="stat-row"><span>已退票金额</span><b>{{ money(invStats.returned) }}</b></div>
-                <div class="stat-row"><span>已作废金额</span><b>{{ money(invStats.voided) }}</b></div>
-                <div class="stat-row"><span>到账金额</span><b>{{ money(invStats.received) }}</b></div>
-                <div class="stat-row"><span>发票总数</span><b>{{ invFiltered.length }}</b></div>
+                <div class="stat-row s-pending"><span>待开票金额</span><b>{{ money(invStats.pending) }}</b></div>
+                <div class="stat-row s-process"><span>开票中金额</span><b>{{ money(invStats.processing) }}</b></div>
+                <div class="stat-row s-issued"><span>已开票金额</span><b>{{ money(invStats.issued) }}</b></div>
+                <div class="stat-row s-void"><span>已作废金额</span><b>{{ money(invStats.voided) }}</b></div>
+                <div class="stat-row s-recv"><span>到账金额</span><b>{{ money(invStats.received) }}</b></div>
+                <div class="stat-row s-total"><span>发票总数</span><b>{{ invFiltered.length }}</b></div>
               </div>
             </div>
-            <div class="warn-text">*线上订单发票来源于官网支付订单。已开票可作废重开或退票；待开票/开票中不可退票。</div>
+            <div class="warn-text">*线上订单发票来源于官网支付订单。</div>
             <div class="toolbar">
               <div class="toolbar-left">
                 <el-button type="success" size="small" plain>导出开票信息</el-button>
@@ -394,54 +535,63 @@
                     <th class="center"><input type="checkbox" :checked="invAllChecked" @change="toggleInvAll" /></th>
                     <th class="center">#</th>
                     <th>产品</th>
-                    <th>订单编号</th>
-                    <th>套餐名称</th>
-                    <th>套餐权益</th>
-                    <th class="right">订购数量</th>
-                    <th class="right">单价</th>
-                    <th class="right">价格</th>
-                    <th>服务开始日期</th>
-                    <th>服务终止日期</th>
-                    <th>下单时间</th>
-                    <th>发票状态</th>
-                    <th>开票主体</th>
                     <th>发票号</th>
+                    <th>开票状态</th>
+                    <th>公司</th>
+                    <th>支付方式</th>
+                    <th>支付时间</th>
+                    <th>开票提交时间</th>
+                    <th>单位属性</th>
+                    <th>发票抬头</th>
+                    <th>纳税人识别号</th>
+                    <th>注册地址</th>
+                    <th>注册电话</th>
+                    <th>开户银行</th>
+                    <th>银行账号</th>
+                    <th>发票内容</th>
+                    <th>开票日期</th>
                     <th class="right">开票金额</th>
                     <th>发票类型</th>
-                    <th class="sticky-op" style="min-width:108px">操作</th>
+                    <th class="right">到账金额</th>
+                    <th>到账日期</th>
+                    <th class="right">未到账金额</th>
+                    <th class="sticky-op" style="min-width:72px">操作</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
                     v-for="(row, idx) in invPaged"
                     :key="row.orderNo"
-                    :class="{ 'row-warn': row.invoiceStatus === '待开票' || row.invoiceStatus === '开票中', 'row-mute': row.invoiceStatus === '已作废' || row.invoiceStatus === '已退票' }"
+                    :class="{ 'row-mute': row.invoiceStatus === '已作废' }"
                   >
                     <td class="center"><input type="checkbox" :value="row.orderNo" v-model="invSels" /></td>
                     <td class="center">{{ idx + 1 }}</td>
                     <td>{{ row.product }}</td>
-                    <td>{{ row.orderNo }}</td>
-                    <td>{{ row.packageName }}</td>
-                    <td><span class="clip" :title="row.rights">{{ row.rights }}</span></td>
-                    <td class="right">{{ row.qty }}</td>
-                    <td class="right">{{ money(row.unitPrice) }}</td>
-                    <td class="right">{{ money(row.amount) }}</td>
-                    <td>{{ row.serviceStart }}</td>
-                    <td>{{ row.serviceEnd }}</td>
-                    <td>{{ row.orderTime }}</td>
+                    <td>{{ row.invoiceNo || '-' }}</td>
                     <td>
-                      <span class="status-dot" :style="{ background: invoiceColor(row.invoiceStatus) }"></span>{{ row.invoiceStatus }}
+                      <span class="tag" :class="tagClass(row.invoiceStatus)">{{ row.invoiceStatus }}</span>
                     </td>
                     <td>{{ row.invoiceEntity }}</td>
-                    <td>{{ row.invoiceNo || '-' }}</td>
+                    <td>{{ row.payMethod }}</td>
+                    <td>{{ row.payTime || '-' }}</td>
+                    <td>{{ row.submitTime || '-' }}</td>
+                    <td>{{ row.unitType }}</td>
+                    <td>{{ row.invoiceTitle }}</td>
+                    <td>{{ row.taxNo }}</td>
+                    <td><span class="clip" :title="row.invoiceAddress">{{ row.invoiceAddress }}</span></td>
+                    <td>{{ row.invoicePhone }}</td>
+                    <td>{{ row.bankName }}</td>
+                    <td>{{ row.bankAccount }}</td>
+                    <td><span class="clip" :title="row.invoiceContent">{{ row.invoiceContent }}</span></td>
+                    <td>{{ row.invoiceTime || '-' }}</td>
                     <td class="right">{{ money(row.invoiceAmount) }}</td>
                     <td>{{ row.invoiceType }}</td>
+                    <td class="right">{{ money(row.receivedAmount) }}</td>
+                    <td>{{ row.receivedDate || '-' }}</td>
+                    <td class="right">{{ money(unpaidAmount(row)) }}</td>
                     <td class="sticky-op">
                       <div class="op-col">
                         <el-button type="text" @click="openInvDetail(row)">详情</el-button>
-                        <el-button type="text" @click="openInvFiles(row)">附件</el-button>
-                        <el-button type="text" class="warn-link" :disabled="row.invoiceStatus !== '已开票'" @click="onInvVoid(row)">作废重开</el-button>
-                        <el-button type="text" class="danger-link" :disabled="row.invoiceStatus !== '已开票'" @click="onInvRefund(row)">退票</el-button>
                       </div>
                     </td>
                   </tr>
@@ -452,6 +602,10 @@
         </div>
 
         <div v-else>
+          <div class="page-head">
+            <h2>线上订单</h2>
+            <span class="crumb">订单管理 / 线上订单</span>
+          </div>
           <div class="panel">
             <el-form :model="query" label-width="108px" size="small" class="filter-form">
               <el-row :gutter="12">
@@ -491,8 +645,15 @@
                   <el-form-item label="订单状态">
                     <el-select v-model="query.status" placeholder="全部" clearable style="width:100%">
                       <el-option label="正常" value="正常" />
-                      <el-option label="退单" value="退单" />
                       <el-option label="作废" value="作废" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="单位属性">
+                    <el-select v-model="query.unitType" placeholder="全部" clearable style="width:100%">
+                      <el-option label="企业单位" value="企业单位" />
+                      <el-option label="非企业单位" value="非企业单位" />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -525,11 +686,9 @@
               <el-button type="primary" size="small" icon="el-icon-search" @click="onSearch">查询</el-button>
               <el-button size="small" icon="el-icon-refresh" @click="onReset">重置</el-button>
             </div>
-            <div class="warn-text">*下单需谨慎，所有订单都需计收开票。线上订单退款请走退单，作废重下请注明原因。</div>
+            <div class="warn-text">*下单需谨慎，所有订单都需计收开票。示例数据为蜜度GEO小程序评估套餐订单。</div>
             <div class="toolbar">
-              <div class="toolbar-left">
-                <el-button type="success" size="small" plain>批量开票</el-button>
-              </div>
+              <div class="toolbar-left"></div>
               <el-pagination
                 background
                 layout="total, prev, pager, next, jumper"
@@ -549,7 +708,7 @@
                     <th>产品</th>
                     <th>订单编号</th>
                     <th>套餐名称</th>
-                    <th>套餐权益</th>
+                    <th>套餐描述</th>
                     <th class="right">订购数量</th>
                     <th class="right">单价</th>
                     <th class="right">价格（总价）</th>
@@ -558,8 +717,12 @@
                     <th>下单时间</th>
                     <th>用户名</th>
                     <th>账号（手机号）</th>
-                    <th>微信支付付款编号</th>
+                    <th>支付方式</th>
+                    <th>付款编号</th>
+                    <th>单位属性</th>
                     <th>发票抬头</th>
+                    <th>发票号</th>
+                    <th>订单状态</th>
                     <th class="sticky-op" style="min-width:88px">操作</th>
                   </tr>
                 </thead>
@@ -570,7 +733,7 @@
                     <td>{{ row.product }}</td>
                     <td>{{ row.orderNo }}</td>
                     <td>{{ row.packageName }}</td>
-                    <td :title="row.rights">{{ row.rights }}</td>
+                    <td><span class="clip" :title="row.packageDesc">{{ row.packageDesc }}</span></td>
                     <td class="right">{{ row.qty }}</td>
                     <td class="right">{{ money(row.unitPrice) }}</td>
                     <td class="right">{{ money(row.amount) }}</td>
@@ -579,15 +742,15 @@
                     <td>{{ row.orderTime }}</td>
                     <td>{{ row.userName }}</td>
                     <td>{{ row.mobile }}</td>
-                    <td>{{ row.wxPayNo }}</td>
+                    <td>{{ row.payMethod }}</td>
+                    <td>{{ row.payNo }}</td>
+                    <td>{{ row.unitType }}</td>
                     <td>{{ row.invoiceTitle }}</td>
+                    <td>{{ orderInvoiceNo(row) }}</td>
+                    <td><span class="tag" :class="tagClass(row.status)">{{ row.status }}</span></td>
                     <td class="sticky-op">
                       <div class="op-col">
                         <el-button type="text" @click="openDetail(row)">详情</el-button>
-                        <el-button type="text" :disabled="row.status === '作废' || row.status === '退单'" @click="openInvoice(row)">开票</el-button>
-                        <el-button type="text" @click="openFlow(row)">到账流水</el-button>
-                        <el-button type="text" class="warn-link" :disabled="row.status !== '正常'" @click="onRefund(row)">退单</el-button>
-                        <el-button type="text" class="danger-link" :disabled="row.status === '作废'" @click="onVoid(row)">作废重下</el-button>
                       </div>
                     </td>
                   </tr>
@@ -611,7 +774,7 @@
   >
     <div slot="title" class="detail-title">
       订单详情 【{{ current.orderNo }}】
-      <span class="detail-tag">（{{ current.status }}）</span>
+      <span class="tag" :class="tagClass(current.status)">{{ current.status }}</span>
     </div>
     <div class="detail-warn">*下单需谨慎，所有订单需计收开票</div>
 
@@ -619,7 +782,7 @@
       <div class="info-item"><span class="info-label">产品：</span><span class="info-value">{{ current.product }}</span></div>
       <div class="info-item"><span class="info-label">订单编号：</span><span class="info-value">{{ current.orderNo }}</span></div>
       <div class="info-item"><span class="info-label">套餐名称：</span><span class="info-value">{{ current.packageName }}</span></div>
-      <div class="info-item span-3"><span class="info-label">套餐权益：</span><span class="info-value">{{ current.rights }}</span></div>
+      <div class="info-item span-3"><span class="info-label">套餐描述：</span><span class="info-value">{{ current.packageDesc }}</span></div>
       <div class="info-item"><span class="info-label">订购数量：</span><span class="info-value">{{ current.qty }}</span></div>
       <div class="info-item"><span class="info-label">单价：</span><span class="info-value">{{ money(current.unitPrice) }}</span></div>
       <div class="info-item"><span class="info-label">价格（总价）：</span><span class="info-value">{{ money(current.amount) }}</span></div>
@@ -631,9 +794,12 @@
       <div class="info-item"><span class="info-label">下单时间：</span><span class="info-value">{{ current.orderTime }}</span></div>
       <div class="info-item"><span class="info-label">用户名：</span><span class="info-value">{{ current.userName }}</span></div>
       <div class="info-item"><span class="info-label">账号（手机号）：</span><span class="info-value">{{ current.mobile }}</span></div>
-      <div class="info-item"><span class="info-label">微信支付付款编号：</span><span class="info-value">{{ current.wxPayNo }}</span></div>
+      <div class="info-item"><span class="info-label">支付方式：</span><span class="info-value">{{ current.payMethod }}</span></div>
+      <div class="info-item"><span class="info-label">付款编号：</span><span class="info-value">{{ current.payNo }}</span></div>
+      <div class="info-item"><span class="info-label">单位属性：</span><span class="info-value">{{ current.unitType }}</span></div>
       <div class="info-item"><span class="info-label">发票抬头：</span><span class="info-value">{{ current.invoiceTitle }}</span></div>
-      <div class="info-item"><span class="info-label">订单状态：</span><span class="info-value">{{ current.status }}</span></div>
+      <div class="info-item"><span class="info-label">发票号：</span><span class="info-value">{{ orderInvoiceNo(current) }}</span></div>
+      <div class="info-item"><span class="info-label">订单状态：</span><span class="info-value"><span class="tag" :class="tagClass(current.status)">{{ current.status }}</span></span></div>
     </div>
     <p v-if="current.voidRemark" style="font-size:13px;color:#606266;margin:0 0 10px;">
       原订单（{{ current.originOrderNo }}）作废，原订单金额：{{ money(current.amount) }}，原因：{{ current.voidRemark }}
@@ -648,7 +814,7 @@
                 <th class="center">序号</th>
                 <th>产品</th>
                 <th>套餐名称</th>
-                <th>套餐权益</th>
+                <th>套餐描述</th>
                 <th class="right">数量</th>
                 <th class="right">单价</th>
                 <th class="right">小计</th>
@@ -660,7 +826,7 @@
                 <td class="center">{{ i + 1 }}</td>
                 <td>{{ row.product }}</td>
                 <td>{{ row.packageName }}</td>
-                <td>{{ row.rights }}</td>
+                <td>{{ row.packageDesc || row.rights }}</td>
                 <td class="right">{{ row.qty }}</td>
                 <td class="right">{{ money(row.unitPrice) }}</td>
                 <td class="right">{{ money(row.amount) }}</td>
@@ -671,59 +837,44 @@
         </div>
       </el-tab-pane>
 
-      <el-tab-pane label="附件信息" name="files">
-        <div class="table-scroll">
-          <table class="boss-table full">
-            <thead>
-              <tr>
-                <th class="center">序号</th>
-                <th>附件名</th>
-                <th>附件类型</th>
-                <th>备注</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="!current.files || !current.files.length">
-                <td colspan="5" class="center" style="color:#909399;">暂无附件</td>
-              </tr>
-              <tr v-for="(row, i) in current.files" :key="i">
-                <td class="center">{{ i + 1 }}</td>
-                <td>{{ row.name }}</td>
-                <td>{{ row.type }}</td>
-                <td>{{ row.remark }}</td>
-                <td>
-                  <el-button type="text" @click="$message.success('预览：' + row.name)">预览</el-button>
-                  <el-button type="text" @click="$message.success('下载：' + row.name)">下载</el-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </el-tab-pane>
-
       <el-tab-pane label="开票信息" name="invoice">
         <div class="table-scroll">
-          <table class="boss-table full">
+          <table class="boss-table" style="min-width:1980px;width:1980px;">
             <thead>
               <tr>
                 <th>发票提交时间</th>
                 <th>开票时间</th>
                 <th class="right">开票金额</th>
-                <th>发票状态</th>
+                <th>开票状态</th>
+                <th>发票号</th>
                 <th>发票抬头</th>
+                <th>纳税人识别号</th>
+                <th>注册地址</th>
+                <th>注册电话</th>
+                <th>开户银行</th>
+                <th>银行账号</th>
+                <th>发票内容</th>
+                <th>备注</th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="!current.invoices || !current.invoices.length">
-                <td colspan="5" class="center" style="color:#909399;">暂无开票信息</td>
+                <td colspan="13" class="center" style="color:#909399;">暂无开票信息</td>
               </tr>
               <tr v-for="(row, i) in current.invoices" :key="i">
-                <td>{{ row.submitTime }}</td>
+                <td>{{ row.submitTime || '-' }}</td>
                 <td>{{ row.invoiceTime || '-' }}</td>
                 <td class="right">{{ money(row.amount) }}</td>
-                <td><span class="status-dot" :style="{ background: invoiceColor(row.status) }"></span>{{ row.status }}</td>
-                <td>{{ row.title }}</td>
+                <td><span class="tag" :class="tagClass(row.status)">{{ row.status }}</span></td>
+                <td>{{ row.invoiceNo || '-' }}</td>
+                <td>{{ row.title || '-' }}</td>
+                <td>{{ row.taxNo || '-' }}</td>
+                <td>{{ row.regAddress || '-' }}</td>
+                <td>{{ row.regPhone || '-' }}</td>
+                <td>{{ row.bankName || '-' }}</td>
+                <td>{{ row.bankAccount || '-' }}</td>
+                <td>{{ row.content || '-' }}</td>
+                <td>{{ row.remark || '-' }}</td>
               </tr>
             </tbody>
           </table>
@@ -839,7 +990,7 @@
 
   <!-- 到账流水 -->
   <el-dialog title="到账流水" :visible.sync="flowVisible" width="720px" append-to-body>
-    <p style="margin:0 0 10px;font-size:13px;color:#606266;">订单 {{ current.orderNo }} · 微信支付付款编号 {{ current.wxPayNo }}</p>
+    <p style="margin:0 0 10px;font-size:13px;color:#606266;">订单 {{ current.orderNo }} · {{ current.payMethod }}付款编号 {{ current.payNo }}</p>
     <table class="boss-table full">
       <thead>
         <tr>
@@ -903,7 +1054,7 @@
   >
     <div slot="title" class="detail-title">
       开票详情 【{{ invCurrent.orderNo }}】
-      <span class="detail-tag">-{{ invCurrent.invoiceStatus }}</span>
+      <span class="tag" :class="tagClass(invCurrent.invoiceStatus)">{{ invCurrent.invoiceStatus }}</span>
     </div>
 
     <el-tabs v-model="invDetailTab">
@@ -920,18 +1071,14 @@
           <div class="info-item"><span class="info-label">服务开始日期：</span><span class="info-value">{{ invCurrent.serviceStart }}</span></div>
           <div class="info-item"><span class="info-label">服务终止日期：</span><span class="info-value">{{ invCurrent.serviceEnd }}</span></div>
           <div class="info-item"><span class="info-label">下单时间：</span><span class="info-value">{{ invCurrent.orderTime }}</span></div>
-          <div class="info-item"><span class="info-label">发票状态：</span><span class="info-value">{{ invCurrent.invoiceStatus }}</span></div>
-          <div class="info-item"><span class="info-label">开票主体：</span><span class="info-value">{{ invCurrent.invoiceEntity }}</span></div>
-          <div class="info-item"><span class="info-label">发票号：</span><span class="info-value">{{ invCurrent.invoiceNo || '-' }}</span></div>
-          <div class="info-item"><span class="info-label">开票金额：</span><span class="info-value">{{ money(invCurrent.invoiceAmount) }}</span></div>
-          <div class="info-item"><span class="info-label">发票类型：</span><span class="info-value">{{ invCurrent.invoiceType }}</span></div>
         </div>
 
         <div class="info-block">
           <div class="section-hd">开票信息</div>
           <div class="info-grid" v-if="invCurrent.orderNo">
-            <div class="info-item"><span class="info-label">开票状态：</span><span class="info-value">{{ invCurrent.invoiceStatus }}</span></div>
+            <div class="info-item"><span class="info-label">开票状态：</span><span class="info-value"><span class="tag" :class="tagClass(invCurrent.invoiceStatus)">{{ invCurrent.invoiceStatus }}</span></span></div>
             <div class="info-item"><span class="info-label">开票抬头：</span><span class="info-value">{{ invCurrent.invoiceTitle }}</span></div>
+            <div class="info-item"><span class="info-label">发票号：</span><span class="info-value">{{ invCurrent.invoiceNo || '-' }}</span></div>
             <div class="info-item"><span class="info-label">纳税人识别号：</span><span class="info-value">{{ invCurrent.taxNo }}</span></div>
             <div class="info-item"><span class="info-label">税率：</span><span class="info-value">{{ invCurrent.taxRate }}</span></div>
             <div class="info-item"><span class="info-label">开户行：</span><span class="info-value">{{ invCurrent.bankName }}</span></div>
@@ -940,8 +1087,9 @@
             <div class="info-item"><span class="info-label">开票地址：</span><span class="info-value">{{ invCurrent.invoiceAddress }}</span></div>
             <div class="info-item"><span class="info-label">开票类型：</span><span class="info-value">{{ invCurrent.issueType }}</span></div>
             <div class="info-item span-3"><span class="info-label">开票内容：</span><span class="info-value">{{ invCurrent.invoiceContent }}</span></div>
+            <div class="info-item span-3"><span class="info-label">备注：</span><span class="info-value">{{ invCurrent.remark || '-' }}</span></div>
             <div class="info-item"><span class="info-label">开票金额：</span><span class="info-value">{{ money(invCurrent.invoiceAmount) }}</span></div>
-            <div class="info-item row-start"><span class="info-label">开票主体：</span><span class="info-value">{{ invCurrent.invoiceEntity }}</span></div>
+            <div class="info-item row-start"><span class="info-label">公司：</span><span class="info-value">{{ invCurrent.invoiceEntity }}</span></div>
             <div class="info-item"><span class="info-label">开票提交时间：</span><span class="info-value">{{ invCurrent.submitTime || '-' }}</span></div>
             <div class="info-item"><span class="info-label">开票时间：</span><span class="info-value">{{ invCurrent.invoiceTime || '-' }}</span></div>
             <div class="info-item"><span class="info-label">到账金额：</span><span class="info-value">{{ money(invCurrent.receivedAmount) }}</span></div>
@@ -982,6 +1130,76 @@
         </div>
       </el-tab-pane>
 
+      <el-tab-pane label="附件信息" name="files">
+        <div class="attach-panel">
+          <div class="attach-toolbar">
+            <div class="attach-field" style="width:150px">
+              <label>附件类型</label>
+              <el-select v-model="invUpload.type" placeholder="请选择" size="small" clearable>
+                <el-option label="电子发票" value="电子发票" />
+                <el-option label="开票资料" value="开票资料" />
+                <el-option label="资质文件" value="资质文件" />
+                <el-option label="开票申请" value="开票申请" />
+                <el-option label="其他" value="其他" />
+              </el-select>
+            </div>
+            <div class="attach-field">
+              <label>上传文件</label>
+              <div class="file-combo">
+                <el-input v-model="invUpload.fileName" size="small" readonly placeholder="请选择文件" />
+                <button type="button" class="file-combo-btn" title="选择文件" @click="pickInvFile">
+                  <i class="el-icon-folder"></i>
+                </button>
+              </div>
+            </div>
+            <div class="attach-field" style="width:200px">
+              <label>备注</label>
+              <el-input v-model="invUpload.remark" size="small" placeholder="选填" />
+            </div>
+            <div class="attach-actions">
+              <el-button type="primary" size="small" icon="el-icon-upload2" @click="uploadInvFile(false)">上传</el-button>
+              <el-button type="primary" size="small" icon="el-icon-upload2" @click="uploadInvFile(true)">上传并填写下一个</el-button>
+            </div>
+            <input ref="invFileInput" type="file" style="display:none" @change="onInvFilePicked" />
+          </div>
+          <div class="attach-table-wrap">
+            <table class="attach-table">
+              <thead>
+                <tr>
+                  <th>附件ID</th>
+                  <th>类型</th>
+                  <th>附件名</th>
+                  <th>上传人</th>
+                  <th>上传时间</th>
+                  <th>签收时间</th>
+                  <th>备注</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="!invCurrent.files || !invCurrent.files.length">
+                  <td class="empty" colspan="8">暂无附件</td>
+                </tr>
+                <tr v-for="(row, i) in invCurrent.files" :key="row.id || i">
+                  <td>{{ row.id }}</td>
+                  <td><span class="attach-type">{{ row.type }}</span></td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ row.uploader }}</td>
+                  <td>{{ row.uploadTime }}</td>
+                  <td>{{ row.signTime || '-' }}</td>
+                  <td>{{ row.remark || '-' }}</td>
+                  <td class="attach-ops">
+                    <el-button type="text" @click="$message.success('预览：' + row.name)">预览</el-button>
+                    <el-button type="text" @click="$message.success('下载：' + row.name)">下载</el-button>
+                    <el-button type="text" class="danger-link" @click="removeInvFile(i)">删除</el-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </el-tab-pane>
+
       <el-tab-pane label="操作记录" name="logs">
         <div class="table-scroll">
           <table class="boss-table full">
@@ -1015,74 +1233,6 @@
       <el-button @click="invDetailVisible = false">取消</el-button>
     </div>
   </el-dialog>
-
-  <!-- 线上订单发票 · 附件 -->
-  <el-dialog title="附件" :visible.sync="invFileVisible" width="720px" append-to-body>
-    <p style="margin:0 0 10px;font-size:13px;color:#606266;">订单 {{ invCurrent.orderNo }} · 发票号 {{ invCurrent.invoiceNo || '-' }}</p>
-    <table class="boss-table full">
-      <thead>
-        <tr>
-          <th class="center">序号</th>
-          <th>附件名</th>
-          <th>附件类型</th>
-          <th>备注</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-if="!invCurrent.files || !invCurrent.files.length">
-          <td colspan="5" class="center" style="color:#909399;">暂无附件</td>
-        </tr>
-        <tr v-for="(row, i) in invCurrent.files" :key="i">
-          <td class="center">{{ i + 1 }}</td>
-          <td>{{ row.name }}</td>
-          <td>{{ row.type }}</td>
-          <td>{{ row.remark }}</td>
-          <td>
-            <el-button type="text" @click="$message.success('预览：' + row.name)">预览</el-button>
-            <el-button type="text" @click="$message.success('下载：' + row.name)">下载</el-button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div slot="footer">
-      <el-button size="small" @click="invFileVisible = false">关闭</el-button>
-    </div>
-  </el-dialog>
-
-  <!-- 线上订单发票 · 作废重开 -->
-  <el-dialog title="作废重开" :visible.sync="invVoidVisible" width="520px" append-to-body>
-    <el-alert title="作废后原发票失效，系统将按原开票信息重新提交开票。请谨慎操作。" type="warning" :closable="false" show-icon style="margin-bottom:14px;"></el-alert>
-    <el-form label-width="90px" size="small">
-      <el-form-item label="订单编号">{{ invCurrent.orderNo }}</el-form-item>
-      <el-form-item label="原发票号">{{ invCurrent.invoiceNo || '-' }}</el-form-item>
-      <el-form-item label="开票金额">{{ money(invCurrent.invoiceAmount) }}</el-form-item>
-      <el-form-item label="作废原因">
-        <el-input type="textarea" v-model="invVoidReason" :rows="3" placeholder="例如：抬头错误，作废后重开" />
-      </el-form-item>
-    </el-form>
-    <div slot="footer">
-      <el-button size="small" @click="invVoidVisible = false">取消</el-button>
-      <el-button type="danger" size="small" @click="submitInvVoid">确认作废重开</el-button>
-    </div>
-  </el-dialog>
-
-  <!-- 线上订单发票 · 退票 -->
-  <el-dialog title="退票" :visible.sync="invRefundVisible" width="520px" append-to-body>
-    <el-alert title="退票后发票作废且不再重开，请确认客户已退款或无需继续开票。" type="warning" :closable="false" show-icon style="margin-bottom:14px;"></el-alert>
-    <el-form label-width="90px" size="small">
-      <el-form-item label="订单编号">{{ invCurrent.orderNo }}</el-form-item>
-      <el-form-item label="发票号">{{ invCurrent.invoiceNo || '-' }}</el-form-item>
-      <el-form-item label="开票金额">{{ money(invCurrent.invoiceAmount) }}</el-form-item>
-      <el-form-item label="退票原因">
-        <el-input type="textarea" v-model="invRefundReason" :rows="3" placeholder="请填写退票原因" />
-      </el-form-item>
-    </el-form>
-    <div slot="footer">
-      <el-button size="small" @click="invRefundVisible = false">取消</el-button>
-      <el-button type="warning" size="small" @click="submitInvRefund">确认退票</el-button>
-    </div>
-  </el-dialog>
 </div>
 
 <script src="vendor/vue.js"></script>
@@ -1105,204 +1255,230 @@ function pageFromQuery() {
   return '线上订单发票';
 }
 
+const GEO_PKG = '蜜度GEO小程序评估套餐';
+const GEO_DESC = '采样模型：DeepSeek、豆包、元宝、Kimi、千问、文心一言；问题数量：6 个；含 6 个评估问题，覆盖 6 大模型采样分析，输出 AI 搜索竞争力诊断报告。';
+const GEO_UNIT = 9.9;
+
+function geoInvoice(extra) {
+  return Object.assign({
+    invoiceNo: '',
+    taxNo: '91310115MA1K4GEO88',
+    regAddress: '上海市浦东新区张江路 88 号',
+    regPhone: '021-58881234',
+    bankName: '中国工商银行上海张江支行',
+    bankAccount: '1212022210100056789',
+    content: '*信息技术服务*平台服务费',
+    remark: ''
+  }, extra || {});
+}
+
+function geoOrder(o) {
+  const qty = o.qty;
+  const used = o.used || 0;
+  const rightsRemark = o.rightsRemark || '购买后即时到账，可在小程序发起评估任务';
+  const extra = Object.assign({}, o);
+  delete extra.used;
+  delete extra.rightsRemark;
+  const amount = Number((GEO_UNIT * qty).toFixed(2));
+  const item = {
+    product: '蜜度GEO',
+    packageName: GEO_PKG,
+    packageDesc: GEO_DESC,
+    qty: qty,
+    unitPrice: GEO_UNIT,
+    amount: amount
+  };
+  return Object.assign({
+    product: '蜜度GEO',
+    packageName: GEO_PKG,
+    packageDesc: GEO_DESC,
+    unitPrice: GEO_UNIT,
+    amount: amount,
+    originOrderNo: '',
+    voidRemark: '',
+    unitType: '企业单位',
+    items: [item],
+    invoices: [],
+    flows: [],
+    totalRights: [{
+      name: '小程序评估次数',
+      total: qty,
+      used: used,
+      unit: '次',
+      remark: rightsRemark
+    }],
+    logs: []
+  }, extra, {
+    product: '蜜度GEO',
+    packageName: GEO_PKG,
+    packageDesc: GEO_DESC,
+    unitPrice: GEO_UNIT,
+    amount: amount,
+    items: [item]
+  });
+}
+
 const MOCK = [
-  {
-    product: '舆情平台',
-    orderNo: 'OL202608280017',
-    packageName: '舆情通专业版 · 年包',
-    rights: '监测信息 50,000 条/年；报告导出 120 次；账号席位 5 个',
-    qty: 1,
-    unitPrice: 9800,
-    amount: 9800,
-    serviceStart: '2026-09-01',
-    serviceEnd: '2027-08-31',
-    orderTime: '2026-08-28 10:21:36',
+  geoOrder({
+    orderNo: 'GEO202608050019',
+    qty: 3,
+    used: 1,
+    serviceStart: '2026-08-05',
+    serviceEnd: '2027-08-05',
+    orderTime: '2026-08-05 10:24:00',
     userName: '张伟',
     mobile: '1381678****',
-    wxPayNo: '4200002631202608281088212345',
-    invoiceTitle: '上海蜜度信息技术有限公司',
+    payMethod: '微信',
+    payNo: '4200002631202608051088212345',
+    invoiceTitle: '瑞幸咖啡（中国）有限公司',
+    unitType: '企业单位',
     status: '正常',
-    originOrderNo: '',
-    voidRemark: '',
-    items: [
-      { product: '舆情平台', packageName: '舆情通专业版 · 年包', rights: '监测信息 50,000 条/年；报告导出 120 次；账号席位 5 个', qty: 1, unitPrice: 9800, amount: 9800 }
-    ],
-    files: [
-      { name: '官网订单确认单-OL202608280017.pdf', type: '订单确认单', remark: '官网同步' },
-      { name: '增值税开票信息.png', type: '开票资料', remark: '用户上传' }
-    ],
-    invoices: [
-      { submitTime: '2026-08-28 14:02:11', invoiceTime: '2026-08-29 09:40:18', amount: 9800, status: '已开票', title: '上海蜜度信息技术有限公司' }
-    ],
+    invoices: [],
     flows: [
-      { time: '2026-08-28 10:21:48', amount: 9800, remark: '微信支付到账，付款编号 4200002631202608281088212345' }
-    ],
-    totalRights: [
-      { name: '监测信息', total: 50000, used: 1260, unit: '条', remark: '本年度配额' },
-      { name: '报告导出', total: 120, used: 8, unit: '次', remark: '' },
-      { name: '账号席位', total: 5, used: 2, unit: '个', remark: '含主账号' },
-      { name: '预警规则', total: 30, used: 6, unit: '条', remark: '' }
+      { time: '2026-08-05 10:24:18', amount: 29.7, remark: '微信支付到账，付款编号 4200002631202608051088212345' }
     ],
     logs: [
-      { operator: '系统', type: '下单', time: '2026-08-28 10:21:36', desc: '官网下单成功，等待微信支付' },
-      { operator: '系统', type: '支付', time: '2026-08-28 10:21:48', desc: '微信支付成功，订单生效' },
-      { operator: '张伟', type: '提交开票', time: '2026-08-28 14:02:11', desc: '提交发票抬头：上海蜜度信息技术有限公司' },
-      { operator: 'WIKI', type: '开票', time: '2026-08-29 09:40:18', desc: '开具增值税普通发票，金额 9,800.00' }
+      { operator: '系统', type: '下单', time: '2026-08-05 10:24:00', desc: '蜜度GEO小程序下单成功，等待微信支付' },
+      { operator: '系统', type: '支付', time: '2026-08-05 10:24:18', desc: '微信支付成功，3 次小程序评估次数到账' }
     ]
-  },
-  {
-    product: '蜜度DataQ',
-    orderNo: 'OL202609010008',
-    packageName: '传播分析基础版 · 季包',
-    rights: '传播分析报告 12 份；账号席位 2 个；数据导出 30 次',
-    qty: 2,
-    unitPrice: 3980,
-    amount: 7960,
-    serviceStart: '2026-09-02',
-    serviceEnd: '2026-12-01',
-    orderTime: '2026-09-01 16:08:02',
+  }),
+  geoOrder({
+    orderNo: 'GEO202608040083',
+    qty: 5,
+    used: 2,
+    serviceStart: '2026-08-04',
+    serviceEnd: '2027-08-04',
+    orderTime: '2026-08-04 16:12:00',
     userName: '李娜',
     mobile: '1860210****',
-    wxPayNo: '4200002631202609011677098821',
-    invoiceTitle: '北京双杰电气股份有限公司',
+    payMethod: '支付宝',
+    payNo: '2026080422001478901234567890',
+    invoiceTitle: '上海蜜度云科技有限公司',
+    unitType: '企业单位',
     status: '正常',
-    originOrderNo: '',
-    voidRemark: '',
-    items: [
-      { product: '蜜度DataQ', packageName: '传播分析基础版 · 季包', rights: '传播分析报告 12 份；账号席位 2 个；数据导出 30 次', qty: 2, unitPrice: 3980, amount: 7960 }
+    invoices: [
+      geoInvoice({
+        submitTime: '2026-08-04 18:20:00',
+        invoiceTime: '',
+        amount: 49.5,
+        status: '开票中',
+        title: '上海蜜度云科技有限公司',
+        remark: '专票待税控开具'
+      })
     ],
-    files: [
-      { name: '营业执照.jpg', type: '资质文件', remark: '开票备用' }
-    ],
-    invoices: [],
     flows: [
-      { time: '2026-09-01 16:08:19', amount: 7960, remark: '微信支付到账' }
-    ],
-    totalRights: [
-      { name: '传播分析报告', total: 24, used: 0, unit: '份', remark: '数量 2 × 套餐配额 12' },
-      { name: '账号席位', total: 4, used: 1, unit: '个', remark: '' },
-      { name: '数据导出', total: 60, used: 0, unit: '次', remark: '' }
+      { time: '2026-08-04 16:12:22', amount: 49.5, remark: '支付宝支付到账，付款编号 2026080422001478901234567890' }
     ],
     logs: [
-      { operator: '系统', type: '下单', time: '2026-09-01 16:08:02', desc: '官网下单成功' },
-      { operator: '系统', type: '支付', time: '2026-09-01 16:08:19', desc: '微信支付成功' }
+      { operator: '系统', type: '下单', time: '2026-08-04 16:12:00', desc: '蜜度GEO小程序下单成功' },
+      { operator: '系统', type: '支付', time: '2026-08-04 16:12:22', desc: '支付宝支付成功，5 次小程序评估次数到账' },
+      { operator: '李娜', type: '提交开票', time: '2026-08-04 18:20:00', desc: '提交发票抬头：上海蜜度云科技有限公司' }
     ]
-  },
-  {
-    product: '校对通',
-    orderNo: 'OL202609020003',
-    packageName: '校对通专业版 · 月包',
-    rights: '校对字数 500 万字/月；账号席位 3 个',
-    qty: 1,
-    unitPrice: 1980,
-    amount: 1980,
-    serviceStart: '2026-09-02',
-    serviceEnd: '2026-10-01',
-    orderTime: '2026-09-02 09:12:44',
+  }),
+  geoOrder({
+    orderNo: 'GEO202608030057',
+    qty: 2,
+    used: 2,
+    serviceStart: '2026-08-03',
+    serviceEnd: '2027-08-03',
+    orderTime: '2026-08-03 09:35:00',
     userName: '王强',
     mobile: '1391744****',
-    wxPayNo: '4200002631202609020913445566',
-    invoiceTitle: '宁波市公安局',
+    payMethod: '微信',
+    payNo: '4200002631202608030913445566',
+    invoiceTitle: '王强',
+    unitType: '非企业单位',
     status: '正常',
-    originOrderNo: 'OL202608150021',
-    voidRemark: '账号错误请重新下单-测试',
-    items: [
-      { product: '校对通', packageName: '校对通专业版 · 月包', rights: '校对字数 500 万字/月；账号席位 3 个', qty: 1, unitPrice: 1980, amount: 1980 }
+    invoices: [
+      geoInvoice({
+        submitTime: '2026-08-03 11:26:00',
+        invoiceTime: '2026-08-03 15:40:18',
+        amount: 19.8,
+        status: '已开票',
+        invoiceNo: '2026080300010872',
+        title: '王强',
+        taxNo: '',
+        regAddress: '',
+        regPhone: '',
+        bankName: '',
+        bankAccount: '',
+        remark: '电子普票已发送至 wangqiang@example.com'
+      })
     ],
-    files: [],
-    invoices: [],
     flows: [
-      { time: '2026-09-02 09:13:01', amount: 1980, remark: '微信支付到账（作废重下后新单）' }
-    ],
-    totalRights: [
-      { name: '校对字数', total: 5000000, used: 128000, unit: '字', remark: '月度配额' },
-      { name: '账号席位', total: 3, used: 1, unit: '个', remark: '' }
+      { time: '2026-08-03 09:35:16', amount: 19.8, remark: '微信支付到账，付款编号 4200002631202608030913445566' }
     ],
     logs: [
-      { operator: 'WIKI', type: '作废重下', time: '2026-09-02 09:10:18', desc: '原订单 OL202608150021 作废，原因：账号错误请重新下单-测试' },
-      { operator: '系统', type: '下单', time: '2026-09-02 09:12:44', desc: '官网重新下单成功' },
-      { operator: '系统', type: '支付', time: '2026-09-02 09:13:01', desc: '微信支付成功' }
+      { operator: '系统', type: '下单', time: '2026-08-03 09:35:00', desc: '蜜度GEO小程序下单成功' },
+      { operator: '系统', type: '支付', time: '2026-08-03 09:35:16', desc: '微信支付成功，2 次小程序评估次数到账' },
+      { operator: '王强', type: '提交开票', time: '2026-08-03 11:26:00', desc: '提交发票抬头：王强' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-03 15:40:18', desc: '开具增值税普通发票，金额 19.80' }
     ]
-  },
-  {
-    product: '蜜度GEO',
-    orderNo: 'OL202608200044',
-    packageName: 'GEO监测旗舰版 · 年包',
-    rights: '生成式引擎监测；专项报告 24 份；品牌可见度追踪',
-    qty: 1,
-    unitPrice: 9800,
-    amount: 9800,
-    serviceStart: '2026-09-01',
-    serviceEnd: '2027-08-31',
-    orderTime: '2026-08-20 11:33:09',
+  }),
+  geoOrder({
+    orderNo: 'GEO202607280061',
+    qty: 10,
+    used: 0,
+    rightsRemark: '退单后评估次数失效',
+    serviceStart: '2026-07-28',
+    serviceEnd: '2027-07-28',
+    orderTime: '2026-07-28 17:40:00',
     userName: '陈静',
     mobile: '1582199****',
-    wxPayNo: '4200002631202608201133887701',
-    invoiceTitle: '毕加索小镇二期项目部',
-    status: '退单',
-    originOrderNo: '',
-    voidRemark: '',
-    items: [
-      { product: '蜜度GEO', packageName: 'GEO监测旗舰版 · 年包', rights: '生成式引擎监测；专项报告 24 份；品牌可见度追踪', qty: 1, unitPrice: 9800, amount: 9800 }
-    ],
-    files: [
-      { name: '退款说明.docx', type: '其他', remark: '客户申请退款' }
-    ],
+    payMethod: '支付宝',
+    payNo: '2026072822001488012345678901',
+    invoiceTitle: '四川海底捞餐饮股份有限公司',
+    unitType: '企业单位',
+    status: '作废',
     invoices: [
-      { submitTime: '2026-08-20 15:00:00', invoiceTime: '', amount: 9800, status: '已作废', title: '毕加索小镇二期项目部' }
+      geoInvoice({
+        submitTime: '2026-07-28 18:10:00',
+        invoiceTime: '',
+        amount: 99,
+        status: '已作废',
+        invoiceNo: '2026072800010456',
+        title: '四川海底捞餐饮股份有限公司',
+        remark: '退单后发票作废'
+      })
     ],
     flows: [
-      { time: '2026-08-20 11:33:22', amount: 9800, remark: '微信支付到账' },
-      { time: '2026-08-25 16:20:08', amount: -9800, remark: '退单原路退回微信支付' }
-    ],
-    totalRights: [
-      { name: '专项报告', total: 24, used: 0, unit: '份', remark: '退单后权益失效' },
-      { name: '预警推送', total: 1, used: 0, unit: '项', remark: '已关闭' }
+      { time: '2026-07-28 17:40:18', amount: 99, remark: '支付宝支付到账' },
+      { time: '2026-07-30 11:20:08', amount: -99, remark: '退单原路退回支付宝' }
     ],
     logs: [
-      { operator: '系统', type: '下单', time: '2026-08-20 11:33:09', desc: '官网下单成功' },
-      { operator: '系统', type: '支付', time: '2026-08-20 11:33:22', desc: '微信支付成功' },
-      { operator: '陈静', type: '退单', time: '2026-08-25 16:18:40', desc: '客户申请退单：重复购买' },
-      { operator: 'WIKI', type: '退款', time: '2026-08-25 16:20:08', desc: '原路退回 9,800.00' }
+      { operator: '系统', type: '下单', time: '2026-07-28 17:40:00', desc: '蜜度GEO小程序下单成功' },
+      { operator: '系统', type: '支付', time: '2026-07-28 17:40:18', desc: '支付宝支付成功，10 次小程序评估次数到账' },
+      { operator: '陈静', type: '退单', time: '2026-07-30 11:18:40', desc: '客户申请退单：重复购买' },
+      { operator: 'WIKI', type: '退款', time: '2026-07-30 11:20:08', desc: '原路退回 99.00' }
     ]
-  },
-  {
-    product: '模力通',
-    orderNo: 'OL202608180009',
-    packageName: '模力通标准版 · 年包',
-    rights: '大模型调用 100 万 tokens/年；知识库 5 个；账号席位 10 个',
+  }),
+  geoOrder({
+    orderNo: 'GEO202607300027',
     qty: 1,
-    unitPrice: 9900,
-    amount: 9900,
-    serviceStart: '2026-08-18',
-    serviceEnd: '2027-08-17',
-    orderTime: '2026-08-18 19:44:10',
+    used: 0,
+    rightsRemark: '作废后评估次数失效',
+    serviceStart: '2026-07-30',
+    serviceEnd: '2027-07-30',
+    orderTime: '2026-07-30 13:18:00',
     userName: '赵敏',
     mobile: '1370166****',
-    wxPayNo: '4200002631202608181944102233',
-    invoiceTitle: '上海蜜度信息技术有限公司',
+    payMethod: '微信',
+    payNo: '4200002631202607301944102233',
+    invoiceTitle: '赵敏',
+    unitType: '非企业单位',
     status: '作废',
     originOrderNo: '',
-    voidRemark: '下错套餐，作废后重新下单',
-    items: [
-      { product: '模力通', packageName: '模力通标准版 · 年包', rights: '大模型调用 100 万 tokens/年；知识库 5 个；账号席位 10 个', qty: 1, unitPrice: 9900, amount: 9900 }
-    ],
-    files: [],
+    voidRemark: '下错数量，作废后重新下单',
     invoices: [],
     flows: [
-      { time: '2026-08-18 19:44:28', amount: 9900, remark: '微信支付到账' }
-    ],
-    totalRights: [
-      { name: '模型调用', total: 1000000, used: 0, unit: 'tokens', remark: '作废后权益失效' },
-      { name: '知识库', total: 5, used: 0, unit: '个', remark: '' },
-      { name: '账号席位', total: 10, used: 0, unit: '个', remark: '' }
+      { time: '2026-07-30 13:18:22', amount: 9.9, remark: '微信支付到账' }
     ],
     logs: [
-      { operator: '系统', type: '下单', time: '2026-08-18 19:44:10', desc: '官网下单成功' },
-      { operator: '系统', type: '支付', time: '2026-08-18 19:44:28', desc: '微信支付成功' },
-      { operator: 'WIKI', type: '作废重下', time: '2026-08-19 10:02:16', desc: '下错套餐，作废后重新下单' }
+      { operator: '系统', type: '下单', time: '2026-07-30 13:18:00', desc: '蜜度GEO小程序下单成功' },
+      { operator: '系统', type: '支付', time: '2026-07-30 13:18:22', desc: '微信支付成功' },
+      { operator: 'WIKI', type: '作废重下', time: '2026-07-31 10:02:16', desc: '下错数量，作废后重新下单' }
     ]
-  }
+  })
 ];
 
 const INV_MOCK = [
@@ -1331,6 +1507,7 @@ const INV_MOCK = [
     invoiceAddress: '上海市浦东新区张江高科技园区科苑路88号',
     issueType: '普票电子票',
     invoiceContent: '*信息技术服务*软件服务费',
+    remark: '',
     receiver: '张伟',
     receiverPhone: '13816781234',
     receiverAddress: '上海市浦东新区张江高科技园区科苑路88号',
@@ -1338,9 +1515,13 @@ const INV_MOCK = [
     submitTime: '2026-08-28 14:02:11',
     invoiceTime: '2026-08-29 09:40:18',
     receivedAmount: 9800,
+    payMethod: '微信',
+    payTime: '2026-08-28 10:21:48',
+    unitType: '企业单位',
+    receivedDate: '2026-08-28 10:21:48',
     files: [
-      { name: '电子发票-25312000000123456789.pdf', type: '电子发票', remark: '已开具' },
-      { name: '增值税开票信息.png', type: '开票资料', remark: '用户上传' }
+      { id: '10001', type: '电子发票', name: '电子发票-25312000000123456789.pdf', uploader: 'WIKI', uploadTime: '2026-08-29 09:40:18', signTime: '2026-08-29 10:05:22', remark: '已开具' },
+      { id: '10002', type: '开票资料', name: '增值税开票信息.png', uploader: '张伟', uploadTime: '2026-08-28 14:02:11', signTime: '', remark: '用户上传' }
     ],
     flows: [
       { time: '2026-08-28 10:21:48', amount: 9800, remark: '微信支付到账，付款编号 4200002631202608281088212345' }
@@ -1377,6 +1558,7 @@ const INV_MOCK = [
     invoiceAddress: '北京市海淀区中关村南大街5号',
     issueType: '专票电子票',
     invoiceContent: '*信息技术服务*技术服务费',
+    remark: '',
     receiver: '李娜',
     receiverPhone: '18602108821',
     receiverAddress: '北京市海淀区中关村南大街5号',
@@ -1384,9 +1566,13 @@ const INV_MOCK = [
     submitTime: '',
     invoiceTime: '',
     receivedAmount: 7960,
+    payMethod: '支付宝',
+    payTime: '2026-09-01 16:08:19',
+    unitType: '企业单位',
+    receivedDate: '2026-09-01 16:08:19',
     files: [
-      { name: '营业执照.jpg', type: '资质文件', remark: '开票备用' },
-      { name: '一般纳税人证明.pdf', type: '开票资料', remark: '专票所需' }
+      { id: '10011', type: '资质文件', name: '营业执照.jpg', uploader: '李娜', uploadTime: '2026-09-01 16:20:08', signTime: '', remark: '开票备用' },
+      { id: '10012', type: '开票资料', name: '一般纳税人证明.pdf', uploader: '李娜', uploadTime: '2026-09-01 16:21:33', signTime: '', remark: '专票所需' }
     ],
     flows: [
       { time: '2026-09-01 16:08:19', amount: 7960, remark: '微信支付到账' }
@@ -1421,6 +1607,7 @@ const INV_MOCK = [
     invoiceAddress: '浙江省宁波市海曙区县前街19号',
     issueType: '普票电子票',
     invoiceContent: '*生产生活服务*新闻舆情通报技术服务',
+    remark: '专票待税控开具',
     receiver: '王强',
     receiverPhone: '13917445566',
     receiverAddress: '浙江省宁波市海曙区县前街19号',
@@ -1428,8 +1615,12 @@ const INV_MOCK = [
     submitTime: '2026-09-02 10:18:22',
     invoiceTime: '',
     receivedAmount: 1980,
+    payMethod: '微信',
+    payTime: '2026-09-02 09:13:01',
+    unitType: '非企业单位',
+    receivedDate: '2026-09-02 09:13:01',
     files: [
-      { name: '开票申请单-OL202609020003.pdf', type: '开票申请', remark: '已提交税控' }
+      { id: '10021', type: '开票申请', name: '开票申请单-OL202609020003.pdf', uploader: '王强', uploadTime: '2026-09-02 10:18:22', signTime: '', remark: '已提交税控' }
     ],
     flows: [
       { time: '2026-09-02 09:13:01', amount: 1980, remark: '微信支付到账（作废重下后新单）' }
@@ -1451,7 +1642,7 @@ const INV_MOCK = [
     serviceStart: '2026-09-01',
     serviceEnd: '2027-08-31',
     orderTime: '2026-08-20 11:33:09',
-    invoiceStatus: '已退票',
+    invoiceStatus: '已作废',
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '25312000000987654321',
     invoiceAmount: 9800,
@@ -1465,6 +1656,7 @@ const INV_MOCK = [
     invoiceAddress: '杭州市西湖区文三路259号',
     issueType: '专票电子票',
     invoiceContent: '*信息技术服务*技术服务费',
+    remark: '退票后发票作废，不再重开',
     receiver: '陈静',
     receiverPhone: '15821997701',
     receiverAddress: '杭州市西湖区文三路259号',
@@ -1472,9 +1664,13 @@ const INV_MOCK = [
     submitTime: '2026-08-20 15:00:00',
     invoiceTime: '2026-08-21 11:12:08',
     receivedAmount: 0,
+    payMethod: '微信',
+    payTime: '2026-08-20 11:33:22',
+    unitType: '非企业单位',
+    receivedDate: '',
     files: [
-      { name: '电子发票-25312000000987654321.pdf', type: '电子发票', remark: '已退票作废' },
-      { name: '退款说明.docx', type: '其他', remark: '客户申请退款' }
+      { id: '10031', type: '电子发票', name: '电子发票-25312000000987654321.pdf', uploader: 'WIKI', uploadTime: '2026-08-21 11:12:08', signTime: '2026-08-21 11:30:00', remark: '已退票作废' },
+      { id: '10032', type: '其他', name: '退款说明.docx', uploader: '陈静', uploadTime: '2026-08-25 16:18:40', signTime: '', remark: '客户申请退款' }
     ],
     flows: [
       { time: '2026-08-20 11:33:22', amount: 9800, remark: '微信支付到账' },
@@ -1513,6 +1709,7 @@ const INV_MOCK = [
     invoiceAddress: '上海市浦东新区张江高科技园区科苑路88号',
     issueType: '普票电子票',
     invoiceContent: '*信息技术服务*软件服务费',
+    remark: '作废重开，原发票已失效',
     receiver: '赵敏',
     receiverPhone: '13701662233',
     receiverAddress: '上海市浦东新区科苑路88号',
@@ -1520,8 +1717,12 @@ const INV_MOCK = [
     submitTime: '2026-08-18 20:10:00',
     invoiceTime: '2026-08-19 09:06:44',
     receivedAmount: 9900,
+    payMethod: '微信',
+    payTime: '2026-08-18 19:44:28',
+    unitType: '企业单位',
+    receivedDate: '2026-08-18 19:44:28',
     files: [
-      { name: '电子发票-25312000000555666777.pdf', type: '电子发票', remark: '已作废' }
+      { id: '10041', type: '电子发票', name: '电子发票-25312000000555666777.pdf', uploader: 'WIKI', uploadTime: '2026-08-19 09:06:44', signTime: '', remark: '已作废' }
     ],
     flows: [
       { time: '2026-08-18 19:44:28', amount: 9900, remark: '微信支付到账' }
@@ -1558,6 +1759,7 @@ const INV_MOCK = [
     invoiceAddress: '福建省宁德市蕉城区蕉城南路17号',
     issueType: '专票电子票',
     invoiceContent: '*生产生活服务*新闻舆情通报技术服务',
+    remark: '专票电子票已开具',
     receiver: '林晓',
     receiverPhone: '13905031234',
     receiverAddress: '福建省宁德市蕉城区蕉城南路17号',
@@ -1565,9 +1767,13 @@ const INV_MOCK = [
     submitTime: '2026-09-02 11:40:00',
     invoiceTime: '2026-09-02 15:22:41',
     receivedAmount: 8600,
+    payMethod: '支付宝',
+    payTime: '2026-09-02 11:06:33',
+    unitType: '非企业单位',
+    receivedDate: '2026-09-02 11:06:33',
     files: [
-      { name: '电子发票-25312000000888111222.pdf', type: '电子发票', remark: '已开具' },
-      { name: '一般纳税人证明.pdf', type: '开票资料', remark: '专票所需' }
+      { id: '10051', type: '电子发票', name: '电子发票-25312000000888111222.pdf', uploader: 'WIKI', uploadTime: '2026-09-02 15:22:41', signTime: '2026-09-02 15:40:18', remark: '已开具' },
+      { id: '10052', type: '开票资料', name: '一般纳税人证明.pdf', uploader: '林晓', uploadTime: '2026-09-02 11:40:00', signTime: '', remark: '专票所需' }
     ],
     flows: [
       { time: '2026-09-02 11:06:33', amount: 8600, remark: '微信支付到账' }
@@ -1632,11 +1838,12 @@ new Vue({
         { name: '出场服务系统', icon: 'el-icon-s-promotion' },
         { name: '产品运维管理', icon: 'el-icon-setting' }
       ],
-      productOptions: ['蜜度GEO', '蜜度DataQ', '舆情平台', '校对通', '模力通'],
+      productOptions: ['蜜度GEO'],
+      invProductOptions: ['蜜度GEO', '蜜度DataQ', '舆情平台', '校对通', '模力通'],
       entityOptions: ['蜜度科技股份有限公司'],
       query: {
         product: '', orderNo: '', packageName: '', userName: '', mobile: '',
-        invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: ''
+        invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: '', unitType: ''
       },
       list: JSON.parse(JSON.stringify(MOCK)),
       page: 1,
@@ -1653,22 +1860,18 @@ new Vue({
       refundReason: '',
       voidReason: '',
       invQuery: {
-        product: '', orderNo: '', packageName: '', invoiceStatus: '',
-        invoiceEntity: '', invoiceNo: '', invoiceType: '',
-        orderTime: [], serviceStart: '', serviceEnd: ''
+        product: '', invoiceNo: '', invoiceStatus: '',
+        invoiceEntity: '', invoiceType: '', payMethod: '', unitType: '',
+        invoiceTitle: '', submitTime: [], invoiceDate: []
       },
       invList: JSON.parse(JSON.stringify(INV_MOCK)),
       invPage: 1,
       invPageSize: 10,
       invSels: [],
       invDetailVisible: false,
-      invFileVisible: false,
-      invVoidVisible: false,
-      invRefundVisible: false,
       invDetailTab: 'info',
       invCurrent: {},
-      invVoidReason: '',
-      invRefundReason: ''
+      invUpload: { type: '', fileName: '', remark: '' }
     };
   },
   created() {
@@ -1685,6 +1888,7 @@ new Vue({
         if (q.mobile && !row.mobile.includes(q.mobile)) return false;
         if (q.invoiceTitle && !row.invoiceTitle.includes(q.invoiceTitle)) return false;
         if (q.status && row.status !== q.status) return false;
+        if (q.unitType && row.unitType !== q.unitType) return false;
         if (q.serviceStart && row.serviceStart < q.serviceStart) return false;
         if (q.serviceEnd && row.serviceEnd > q.serviceEnd) return false;
         if (q.orderTime && q.orderTime.length === 2) {
@@ -1705,17 +1909,22 @@ new Vue({
       const q = this.invQuery;
       return this.invList.filter(row => {
         if (q.product && row.product !== q.product) return false;
-        if (q.orderNo && !row.orderNo.includes(q.orderNo)) return false;
-        if (q.packageName && !row.packageName.includes(q.packageName)) return false;
+        if (q.invoiceNo && !(row.invoiceNo || '').includes(q.invoiceNo)) return false;
         if (q.invoiceStatus && row.invoiceStatus !== q.invoiceStatus) return false;
         if (q.invoiceEntity && row.invoiceEntity !== q.invoiceEntity) return false;
-        if (q.invoiceNo && !(row.invoiceNo || '').includes(q.invoiceNo)) return false;
         if (q.invoiceType && row.invoiceType !== q.invoiceType) return false;
-        if (q.serviceStart && row.serviceStart < q.serviceStart) return false;
-        if (q.serviceEnd && row.serviceEnd > q.serviceEnd) return false;
-        if (q.orderTime && q.orderTime.length === 2) {
-          const d = row.orderTime.slice(0, 10);
-          if (d < q.orderTime[0] || d > q.orderTime[1]) return false;
+        if (q.payMethod && row.payMethod !== q.payMethod) return false;
+        if (q.unitType && row.unitType !== q.unitType) return false;
+        if (q.invoiceTitle && !(row.invoiceTitle || '').includes(q.invoiceTitle)) return false;
+        if (q.submitTime && q.submitTime.length === 2) {
+          if (!row.submitTime) return false;
+          const d = row.submitTime.slice(0, 10);
+          if (d < q.submitTime[0] || d > q.submitTime[1]) return false;
+        }
+        if (q.invoiceDate && q.invoiceDate.length === 2) {
+          if (!row.invoiceTime) return false;
+          const d = row.invoiceTime.slice(0, 10);
+          if (d < q.invoiceDate[0] || d > q.invoiceDate[1]) return false;
         }
         return true;
       });
@@ -1733,7 +1942,6 @@ new Vue({
         pending: sum('待开票'),
         processing: sum('开票中'),
         issued: sum('已开票'),
-        returned: sum('已退票'),
         voided: sum('已作废'),
         received: this.invFiltered.reduce((s, r) => s + Number(r.receivedAmount || 0), 0)
       };
@@ -1742,6 +1950,10 @@ new Vue({
   methods: {
     money,
     daysBetween,
+    unpaidAmount(row) {
+      const n = Number(row.invoiceAmount || 0) - Number(row.receivedAmount || 0);
+      return n > 0 ? n : 0;
+    },
     selectMenu(name) {
       this.currentMenu = name;
       this.menus.forEach(m => {
@@ -1758,9 +1970,26 @@ new Vue({
     invoiceColor(st) {
       return { '已开票': '#67c23a', '开票中': '#e6a23c', '已作废': '#c0c4cc', '待开票': '#409eff', '已退票': '#f56c6c' }[st] || '#909399';
     },
+    tagClass(st) {
+      return {
+        '已开票': 'tag-ok',
+        '正常': 'tag-ok',
+        '待开票': 'tag-info',
+        '开票中': 'tag-warn',
+        '已作废': 'tag-mute',
+        '作废': 'tag-mute',
+        '退单': 'tag-danger',
+        '已退票': 'tag-danger'
+      }[st] || 'tag-mute';
+    },
+    orderInvoiceNo(row) {
+      if (!row || !row.invoices || !row.invoices.length) return '-';
+      const nos = row.invoices.map(function (inv) { return inv.invoiceNo; }).filter(Boolean);
+      return nos.length ? nos.join('、') : '-';
+    },
     onSearch() { this.page = 1; this.$message.success('已按条件筛选'); },
     onReset() {
-      this.query = { product: '', orderNo: '', packageName: '', userName: '', mobile: '', invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: '' };
+      this.query = { product: '', orderNo: '', packageName: '', userName: '', mobile: '', invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: '', unitType: '' };
       this.page = 1;
     },
     toggleAll(e) {
@@ -1825,9 +2054,9 @@ new Vue({
     onInvSearch() { this.invPage = 1; this.$message.success('已按条件筛选'); },
     onInvReset() {
       this.invQuery = {
-        product: '', orderNo: '', packageName: '', invoiceStatus: '',
-        invoiceEntity: '', invoiceNo: '', invoiceType: '',
-        orderTime: [], serviceStart: '', serviceEnd: ''
+        product: '', invoiceNo: '', invoiceStatus: '',
+        invoiceEntity: '', invoiceType: '', payMethod: '', unitType: '',
+        invoiceTitle: '', submitTime: [], invoiceDate: []
       };
       this.invPage = 1;
     },
@@ -1838,40 +2067,44 @@ new Vue({
     openInvDetail(row) {
       this.invCurrent = row;
       this.invDetailTab = 'info';
+      this.invUpload = { type: '', fileName: '', remark: '' };
       this.invDetailVisible = true;
     },
-    openInvFiles(row) {
-      this.invCurrent = row;
-      this.invFileVisible = true;
+    pickInvFile() {
+      const el = this.$refs.invFileInput;
+      if (el) el.click();
     },
-    onInvVoid(row) {
-      this.invCurrent = row;
-      this.invVoidReason = '';
-      this.invVoidVisible = true;
+    onInvFilePicked(e) {
+      const file = e.target.files && e.target.files[0];
+      this.invUpload.fileName = file ? file.name : '';
+      e.target.value = '';
     },
-    onInvRefund(row) {
-      this.invCurrent = row;
-      this.invRefundReason = '';
-      this.invRefundVisible = true;
+    resetInvUpload(keepType) {
+      this.invUpload = { type: keepType ? this.invUpload.type : '', fileName: '', remark: '' };
     },
-    submitInvVoid() {
-      if (!this.invVoidReason) return this.$message.warning('请填写作废原因');
-      const now = this.now();
-      this.invCurrent.invoiceStatus = '开票中';
-      this.invCurrent.invoiceNo = '';
-      this.invCurrent.invoiceTime = '';
-      this.invCurrent.submitTime = now;
-      this.invCurrent.logs.push({ operator: 'WIKI', type: '作废重开', time: now, desc: this.invVoidReason });
-      this.invVoidVisible = false;
-      this.$message.success('原发票已作废，已重新提交开票（原型）');
+    uploadInvFile(fillNext) {
+      if (!this.invUpload.type) return this.$message.warning('请选择附件类型');
+      if (!this.invUpload.fileName) return this.$message.warning('请选择上传文件');
+      if (!this.invCurrent.files) this.$set(this.invCurrent, 'files', []);
+      const maxId = this.invCurrent.files.reduce(function (m, f) {
+        const n = parseInt(f.id, 10);
+        return isNaN(n) ? m : Math.max(m, n);
+      }, 10000);
+      this.invCurrent.files.push({
+        id: String(maxId + 1),
+        type: this.invUpload.type,
+        name: this.invUpload.fileName,
+        uploader: 'WIKI',
+        uploadTime: this.now(),
+        signTime: '',
+        remark: this.invUpload.remark
+      });
+      this.$message.success('上传成功（原型）');
+      this.resetInvUpload(fillNext);
     },
-    submitInvRefund() {
-      if (!this.invRefundReason) return this.$message.warning('请填写退票原因');
-      const now = this.now();
-      this.invCurrent.invoiceStatus = '已退票';
-      this.invCurrent.logs.push({ operator: 'WIKI', type: '退票', time: now, desc: this.invRefundReason });
-      this.invRefundVisible = false;
-      this.$message.success('退票成功（原型）');
+    removeInvFile(i) {
+      this.invCurrent.files.splice(i, 1);
+      this.$message.success('已删除（原型）');
     }
   }
 });
