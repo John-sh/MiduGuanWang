@@ -14,9 +14,9 @@ const orders = [
 ];
 
 let records = [
-  { id: "INV202608140021", status: "processing", statusText: "开票中", date: "2026-08-14 18:20", amount: 36000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "待发送", invoiceNo: "—", orderIds: ["MD202608140083"] },
-  { id: "INV202608130008", status: "issued", statusText: "已开票", date: "2026-08-13 11:26", amount: 28000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026081300010872", orderIds: ["MD202608130057"] },
-  { id: "INV202608070014", status: "failed", statusText: "开票失败", date: "2026-08-07 18:05", amount: 9800, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "orma***@midu.com", emailStatus: "发送失败", invoiceNo: "—", orderIds: ["MD202608070018"] },
+  { id: "INV202608140021", status: "processing", statusText: "开票中", date: "2026-08-14 18:20", amount: 36000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "待发送", invoiceNo: "—", invoiceKind: "special", orderIds: ["MD202608140083"] },
+  { id: "INV202608130008", status: "issued", statusText: "已开票", date: "2026-08-13 11:26", amount: 28000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026081300010872", invoiceKind: "normal", orderIds: ["MD202608130057"] },
+  { id: "INV202608070014", status: "failed", statusText: "开票失败", date: "2026-08-07 18:05", amount: 9800, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "orma***@midu.com", emailStatus: "发送失败", invoiceNo: "—", invoiceKind: "normal", orderIds: ["MD202608070018"] },
 ];
 
 const PAGE_SIZE = 10;
@@ -25,15 +25,16 @@ const state = {
   module: "orders",
   orderFilter: "all",
   orderPage: 1,
-  invoiceView: "eligible",
   recordFilter: "all",
   selected: new Set(),
   currentOrder: null,
   currentRecord: null,
+  payOrderId: null,
 };
 
 const entity = {
   confirmed: false,
+  invoiceKind: "normal",
   type: "enterprise",
   company: "",
   tax: "",
@@ -42,7 +43,16 @@ const entity = {
   address: "",
   phone: "",
   email: "",
+  remark: "",
 };
+
+const COMPANIES = [
+  { name: "上海示例科技有限公司", tax: "91310000MA1SH0012X" },
+  { name: "北京示例信息技术有限公司", tax: "91110000MA1BJ0013Y" },
+  { name: "深圳示例网络有限公司", tax: "91440300MA1SZ0014Z" },
+];
+
+let companyPicked = false;
 
 function $(id) {
   return document.getElementById(id);
@@ -78,10 +88,32 @@ function invoicePhase(o) {
   return "none";
 }
 
+function isEligible(o) {
+  return Boolean(o && o.canInvoice && !o.invoiced && o.status === "completed" && invoicePhase(o) === "none");
+}
+
 function eligibleOrders() {
-  return orders.filter(
-    (o) => o.canInvoice && !o.invoiced && o.status === "completed" && invoicePhase(o) === "none"
-  );
+  return orders.filter(isEligible);
+}
+
+function selectedEligible() {
+  return eligibleOrders().filter((o) => state.selected.has(o.id));
+}
+
+function pruneSelected() {
+  state.selected = new Set([...state.selected].filter((id) => isEligible(orders.find((o) => o.id === id))));
+}
+
+function pageEligibleOrders() {
+  const data = filteredOrders();
+  const pageData = data.slice((state.orderPage - 1) * PAGE_SIZE, state.orderPage * PAGE_SIZE);
+  return pageData.filter(isEligible);
+}
+
+function invoiceOrderSummary(selected) {
+  if (!selected.length) return "";
+  if (selected.length === 1) return `${selected[0].id} · ${selected[0].product}`;
+  return `共 ${selected.length} 笔 · ${selected.map((o) => o.product).join("、")}`;
 }
 
 function toast(msg) {
@@ -109,9 +141,8 @@ function updateStats() {
   $("countPay").textContent = counts.pending_pay;
   $("countDone").textContent = counts.completed;
   $("countCancel").textContent = counts.cancelled;
-  $("countEligible").textContent = eligibleOrders().length;
   $("navOrderBadge").textContent = counts.all;
-  $("navInvoiceBadge").textContent = eligibleOrders().length;
+  $("navInvoiceBadge").textContent = records.length;
 }
 
 function orderActions(o) {
@@ -198,6 +229,7 @@ function renderOrderPager() {
 }
 
 function renderOrders() {
+  pruneSelected();
   const data = filteredOrders();
   const total = Math.max(1, Math.ceil(data.length / PAGE_SIZE) || 1);
   if (state.orderPage > total) state.orderPage = total;
@@ -205,54 +237,48 @@ function renderOrders() {
   const list = $("orderList");
   list.innerHTML = pageData.length
     ? pageData
-        .map(
-          (o) => `
-      <tr class="order-card" data-order-id="${o.id}">
+        .map((o) => {
+          const eligible = isEligible(o);
+          const checked = state.selected.has(o.id);
+          return `
+      <tr class="order-card${checked ? " row-selected" : ""}" data-order-id="${o.id}">
+        <td class="select-cell${eligible ? "" : " off"}"${eligible ? ` data-select="${o.id}"` : ""}><span class="check"></span></td>
         <td class="num-cell">${o.id}</td>
-        <td><span class="cell-title">${o.product}</span></td>
+        <td class="product-cell">${o.product}</td>
         <td class="amount">¥${money(o.amount)}</td>
         <td><span class="status ${statusClass(o.status)}">${o.statusText}</span></td>
         <td><div class="ops">${orderActions(o)}</div></td>
-      </tr>`
-        )
+      </tr>`;
+        })
         .join("")
-    : `<tr><td colspan="5" class="empty">暂无相关订单</td></tr>`;
+    : `<tr><td colspan="6" class="empty">暂无相关订单</td></tr>`;
   renderOrderPager();
-}
-
-function renderEligible() {
-  const data = eligibleOrders();
-  state.selected = new Set([...state.selected].filter((id) => data.some((o) => o.id === id)));
-  const list = $("eligibleList");
-  list.innerHTML = data.length
-    ? data
-        .map(
-          (o) => `
-      <tr class="${state.selected.has(o.id) ? "row-selected" : ""}" data-select="${o.id}">
-        <td class="select-cell"><span class="check"></span></td>
-        <td class="num-cell">${o.id}</td>
-        <td><span class="cell-title">${o.product}</span></td>
-        <td class="amount">¥${money(o.amount)}</td>
-      </tr>`
-        )
-        .join("")
-    : `<tr><td colspan="4" class="empty">当前没有可开票的已完成订单</td></tr>`;
   updateSelection();
 }
 
+function pageAllSelected() {
+  const data = pageEligibleOrders();
+  return data.length > 0 && data.every((o) => state.selected.has(o.id));
+}
+
+function pageSomeSelected() {
+  const data = pageEligibleOrders();
+  return data.some((o) => state.selected.has(o.id)) && !pageAllSelected();
+}
+
 function updateSelection() {
-  const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
+  const selected = selectedEligible();
   const total = selected.reduce((s, o) => s + o.amount, 0);
   $("selectedCount").textContent = selected.length;
   $("selectedTotal").textContent = money(total);
   $("formTotal").textContent = money(total);
+  $("invoiceOrderText").textContent = invoiceOrderSummary(selected);
   $("goInvoice").disabled = !selected.length;
-  $("selectAll").classList.toggle("on", dataAllSelected());
-}
-
-function dataAllSelected() {
-  const data = eligibleOrders();
-  return data.length > 0 && data.every((o) => state.selected.has(o.id));
+  const allBtn = $("selectAll");
+  const pageData = pageEligibleOrders();
+  allBtn.classList.toggle("on", pageAllSelected());
+  allBtn.classList.toggle("partial", pageSomeSelected());
+  allBtn.classList.toggle("off", !pageData.length);
 }
 
 function recordMonth(date) {
@@ -270,12 +296,12 @@ function renderRecords() {
   list.innerHTML = data
     .map(
       (r) => `
-      <tr>
+      <tr data-record-detail="${r.id}">
         <td>
           <span class="cell-title">${recordProducts(r)}</span>
           <span class="cell-meta">${r.id} · ${r.count > 1 ? `共 ${r.count} 笔订单` : r.company}</span>
         </td>
-        <td class="cell-meta">${r.date}</td>
+        <td class="time-cell">${r.date}</td>
         <td class="amount">¥${money(r.amount)}</td>
         <td><span class="status ${statusClass(r.status)}">${r.statusText}</span></td>
         <td><div class="ops">${
@@ -320,9 +346,12 @@ function syncEntityStatus() {
 
 function readEntityForm() {
   const typeEl = document.querySelector('input[name="entityType"]:checked');
+  const kindEl = document.querySelector('input[name="invoiceKind"]:checked');
   const type = typeEl ? typeEl.value : "enterprise";
+  const invoiceKind = kindEl ? kindEl.value : "normal";
   const enterprise = isEnterprise(type);
   return {
+    invoiceKind,
     type,
     company: $("entityCompany").value.trim(),
     tax: enterprise ? $("entityTax").value.trim().toUpperCase() : "",
@@ -331,6 +360,7 @@ function readEntityForm() {
     address: $("entityAddress").value.trim(),
     phone: $("entityPhone").value.trim(),
     email: $("entityEmail").value.trim(),
+    remark: $("entityRemark").value.trim(),
   };
 }
 
@@ -338,12 +368,47 @@ function isEnterprise(type) {
   return (type || entity.type) === "enterprise";
 }
 
+function invoiceKindLabel(kind) {
+  return kind === "special" ? "专用电子发票" : "普通电子发票";
+}
+
+function setRadioValue(name, value) {
+  document.querySelectorAll(`input[name="${name}"]`).forEach((el) => {
+    el.checked = el.value === value;
+  });
+}
+
 function syncEntityTypeUI() {
-  const enterprise = isEnterprise(readEntityForm().type);
+  const data = readEntityForm();
+  let type = data.type;
+  let invoiceKind = data.invoiceKind;
+  if (invoiceKind === "special" && !isEnterprise(type)) {
+    type = "enterprise";
+    setRadioValue("entityType", "enterprise");
+  }
+  if (!isEnterprise(type) && invoiceKind === "special") {
+    invoiceKind = "normal";
+    setRadioValue("invoiceKind", "normal");
+  }
+  const enterprise = isEnterprise(type);
   $("entityCompanyLabel").innerHTML = enterprise ? "公司名称 <i>*</i>" : "发票抬头 <i>*</i>";
-  $("entityCompany").placeholder = enterprise ? "请输入营业执照上的公司全称" : "请输入发票抬头";
+  $("entityCompany").placeholder = enterprise ? "请输入公司名称搜索并选择" : "请输入发票抬头，不少于4个汉字";
   $("entityTaxRow").classList.toggle("hidden", !enterprise);
   if (!enterprise) $("entityTax").value = "";
+  if (!enterprise) hideCompanyDropdown();
+  const special = invoiceKind === "special";
+  [
+    ["entityBankLabel", "开户银行", "entityBank", "请输入开户银行"],
+    ["entityAccountLabel", "银行账号", "entityAccount", "请输入银行账号"],
+    ["entityAddressLabel", "注册地址", "entityAddress", "请输入注册地址"],
+    ["entityPhoneLabel", "注册电话", "entityPhone", "请输入注册电话"],
+  ].forEach(([labelId, label, inputId, requiredPlaceholder]) => {
+    $(labelId).innerHTML = special ? `${label} <i>*</i>` : label;
+    $(inputId).placeholder = special ? requiredPlaceholder : "选填";
+  });
+  const showService = invoiceKind === "normal" && !enterprise;
+  $("entitySelfServe").classList.toggle("hidden", showService);
+  $("entityServicePanel").classList.toggle("hidden", !showService);
 }
 
 function escapeHtml(s) {
@@ -354,10 +419,73 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+function countHanChars(s) {
+  return (String(s).match(/[\u4e00-\u9fff]/g) || []).length;
+}
+
+function matchCompanies(keyword) {
+  const kw = (keyword || "").trim();
+  if (!kw) return [];
+  return COMPANIES.filter((c) => c.name.includes(kw));
+}
+
+function findCompany(name) {
+  const n = (name || "").trim();
+  return COMPANIES.find((c) => c.name === n) || null;
+}
+
+function isCompanyMatched(name) {
+  return Boolean(findCompany(name));
+}
+
+function applyMatchedCompanyTax(name) {
+  const company = findCompany(name);
+  $("entityTax").value = company ? company.tax : "";
+}
+
+function hideCompanyDropdown() {
+  const el = $("companyDropdown");
+  if (el) el.hidden = true;
+}
+
+function showCompanyDropdown(list) {
+  $("companySuggest").innerHTML = list
+    .map((c) => `<li role="option" data-tax="${escapeHtml(c.tax)}">${escapeHtml(c.name)}</li>`)
+    .join("");
+  $("companyDropdown").hidden = false;
+}
+
+function onCompanyQuery() {
+  if (!isEnterprise(readEntityForm().type)) {
+    hideCompanyDropdown();
+    return;
+  }
+  const keyword = $("entityCompany").value.trim();
+  if (!keyword) {
+    hideCompanyDropdown();
+    return;
+  }
+  showCompanyDropdown(matchCompanies(keyword));
+}
+
 function confirmEntity() {
   const data = readEntityForm();
+  if (!data.invoiceKind) return toast("请选择发票类型");
+  if (data.invoiceKind === "special" && !isEnterprise(data.type)) return toast("专用电子发票仅支持企业单位");
+  if (data.invoiceKind === "normal" && !isEnterprise(data.type)) return toast("请联系客服沟通索要普通电子发票");
   if (!data.company) return toast(isEnterprise(data.type) ? "请填写公司名称" : "请填写发票抬头");
+  if (isEnterprise(data.type) && !isCompanyMatched(data.company)) {
+    onCompanyQuery();
+    return toast("无匹配单位名称，请联系客服获取发票");
+  }
+  if (!isEnterprise(data.type) && countHanChars(data.company) < 4) return toast("发票抬头须不少于4个汉字");
   if (isEnterprise(data.type) && !/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的公司税号");
+  if (data.invoiceKind === "special") {
+    if (!data.bank) return toast("请填写开户银行");
+    if (!data.account) return toast("请填写银行账号");
+    if (!data.address) return toast("请填写注册地址");
+    if (!data.phone) return toast("请填写注册电话");
+  }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return toast("请输入正确的电子邮箱");
   Object.assign(entity, data, { confirmed: true });
   syncEntityStatus();
@@ -378,7 +506,7 @@ function fillInvoiceFromEntity() {
     select.disabled = true;
   }
   select.value = "";
-  $("remark").value = "";
+  $("remark").value = entity.remark || "";
   applySelectedInvoiceTitle();
 }
 
@@ -389,6 +517,7 @@ function applySelectedInvoiceTitle() {
   $("invoiceTaxText").textContent = showTax ? entity.tax : "";
   $("invoiceEmailText").textContent = selected ? entity.email : "";
   const extras = [
+    ["发票类型", selected ? invoiceKindLabel(entity.invoiceKind) : ""],
     ["抬头类型", selected ? (isEnterprise(entity.type) ? "企业单位" : "非企业单位") : ""],
     ["开户银行", entity.bank],
     ["银行账号", entity.account],
@@ -400,21 +529,21 @@ function applySelectedInvoiceTitle() {
     .join("");
 }
 
-function setInvoiceView(view) {
-  state.invoiceView = view;
-  $("eligibleView").classList.toggle("hidden", view !== "eligible");
-  $("recordsView").classList.toggle("hidden", view !== "records");
-  document.querySelectorAll("[data-invoice-view]").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.invoiceView === view);
-  });
-}
-
 function closeOverlays() {
   $("drawerMask").hidden = true;
   $("orderDrawer").hidden = true;
   $("invoiceDrawer").hidden = true;
   $("invoiceFormModal").hidden = true;
   $("confirmModal").hidden = true;
+  $("wecomModal").hidden = true;
+  $("payModal").hidden = true;
+}
+
+function openWecomModal() {
+  hideCompanyDropdown();
+  window.setTimeout(() => {
+    $("wecomModal").hidden = false;
+  }, 0);
 }
 
 function benefitItems(o) {
@@ -445,6 +574,7 @@ function openOrderDetail(id) {
       <div class="info-row"><span>数量</span><b>${o.qty}</b></div>
       <div class="info-row"><span>订单金额</span><b>¥${money(o.amount)}</b></div>
       <div class="info-row"><span>订单状态</span><span class="status ${statusClass(o.status)}">${o.statusText}</span></div>
+      ${o.payMethod ? `<div class="info-row"><span>支付方式</span><b>${escapeHtml(o.payMethod)}</b></div>` : ""}
       <div class="info-row"><span>下单时间</span><b>${escapeHtml(o.date)}</b></div>
     </section>
     <div class="section-title">权益详情</div>
@@ -483,9 +613,11 @@ function openInvoiceDetail(id) {
     <div class="section-title">发票信息</div>
     <section class="info-card">
       <div class="info-row"><span>发票编号</span><b>${escapeHtml(r.invoiceNo)}</b></div>
+      <div class="info-row"><span>发票类型</span><b>${invoiceKindLabel(r.invoiceKind)}</b></div>
       <div class="info-row"><span>单位名称</span><b>${escapeHtml(r.company)}</b></div>
       <div class="info-row"><span>公司税号</span><b>${escapeHtml(r.tax || "—")}</b></div>
       <div class="info-row"><span>发票内容</span><b>${escapeHtml(r.content)}</b></div>
+      ${r.remark ? `<div class="info-row"><span>备注</span><b>${escapeHtml(r.remark)}</b></div>` : ""}
       <div class="info-row"><span>发票格式</span><b>PDF</b></div>
       <div class="info-row"><span>申请时间</span><b>${escapeHtml(r.date)}</b></div>
     </section>
@@ -520,8 +652,8 @@ function startInvoice(id) {
 }
 
 function openInvoiceForm() {
-  const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
-  if (!selected.length) return toast("请先选择可开票订单");
+  const selected = selectedEligible();
+  if (!selected.length) return toast("请先勾选可开票订单");
   updateSelection();
   fillInvoiceFromEntity();
   closeOverlays();
@@ -533,13 +665,38 @@ function goConfirmEntity() {
   setModule("entity");
 }
 
-function payOrder(id) {
+function openPayModal(id) {
+  const o = orders.find((x) => x.id === id);
+  if (!o || o.status !== "pending_pay") return;
+  state.payOrderId = id;
+  $("payOrderId").textContent = o.id;
+  $("payOrderProduct").textContent = o.product;
+  $("payOrderAmount").textContent = money(o.amount);
+  const alipay = document.querySelector('input[name="payMethod"][value="alipay"]');
+  if (alipay) alipay.checked = true;
+  $("payModal").hidden = false;
+}
+
+function payMethodLabel(value) {
+  return value === "wechat" ? "微信支付" : "支付宝";
+}
+
+function confirmPay() {
+  const methodEl = document.querySelector('input[name="payMethod"]:checked');
+  if (!methodEl) return toast("请选择支付方式");
+  payOrder(state.payOrderId, methodEl.value);
+}
+
+function payOrder(id, method) {
   const o = orders.find((x) => x.id === id);
   if (!o || o.status !== "pending_pay") return;
   o.status = "completed";
   o.statusText = "已完成";
   o.canInvoice = true;
-  toast("支付成功，可申请开票");
+  o.payMethod = payMethodLabel(method);
+  $("payModal").hidden = true;
+  state.payOrderId = null;
+  toast(`${o.payMethod}支付成功，可申请开票`);
   refresh();
   if (!$("orderDrawer").hidden && state.currentOrder && state.currentOrder.id === id) openOrderDetail(id);
 }
@@ -564,13 +721,17 @@ function submitInvoice() {
   const tax = entity.tax;
   const email = entity.email;
   if (!email) return toast("请先在开票主体中填写电子邮箱");
-  const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
+  const selected = selectedEligible();
   const total = selected.reduce((s, o) => s + o.amount, 0);
+  const remark = $("remark").value.trim() || entity.remark;
   $("confirmBody").innerHTML = `
+    <div class="info-row"><span>发票类型</span><b>${invoiceKindLabel(entity.invoiceKind)}</b></div>
     <div class="info-row"><span>抬头类型</span><b>${isEnterprise(entity.type) ? "企业单位" : "非企业单位"}</b></div>
     <div class="info-row"><span>${isEnterprise(entity.type) ? "公司名称" : "发票抬头"}</span><b>${escapeHtml(company)}</b></div>
     ${isEnterprise(entity.type) ? `<div class="info-row"><span>公司税号</span><b>${escapeHtml(tax || "—")}</b></div>` : ""}
     <div class="info-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></div>
+    <div class="info-row"><span>开票订单</span><b>${escapeHtml(invoiceOrderSummary(selected))}</b></div>
+    ${remark ? `<div class="info-row"><span>备注</span><b>${escapeHtml(remark)}</b></div>` : ""}
     <div class="info-row"><span>发票金额</span><b>¥${money(total)}</b></div>
     <div class="info-row"><span>电子邮箱</span><b>${escapeHtml(email)}</b></div>
   `;
@@ -578,7 +739,7 @@ function submitInvoice() {
 }
 
 function finishSubmit() {
-  const selected = eligibleOrders().filter((o) => state.selected.has(o.id));
+  const selected = selectedEligible();
   const total = selected.reduce((s, o) => s + o.amount, 0);
   const rec = {
     id: "INV" + Date.now().toString().slice(-12),
@@ -593,6 +754,8 @@ function finishSubmit() {
     email: entity.email,
     emailStatus: "待发送",
     invoiceNo: "—",
+    invoiceKind: entity.invoiceKind,
+    remark: $("remark").value.trim() || entity.remark,
     orderIds: selected.map((s) => s.id),
   };
   records.unshift(rec);
@@ -604,7 +767,6 @@ function finishSubmit() {
   state.selected = new Set();
   closeOverlays();
   setModule("invoice");
-  setInvoiceView("records");
   state.recordFilter = "all";
   document.querySelectorAll("[data-record-filter]").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.recordFilter === "all");
@@ -616,12 +778,11 @@ function finishSubmit() {
 function refresh() {
   updateStats();
   renderOrders();
-  renderEligible();
   renderRecords();
 }
 
 function onClick(e) {
-  const t = e.target.closest("[data-module],[data-order-filter],[data-order-page],[data-invoice-view],[data-record-filter],[data-detail],[data-pay],[data-cancel],[data-invoice],[data-view-invoice],[data-select],[data-record-detail],[data-resend],[data-reopen],[data-retry],[data-close-drawer],[data-close-modal]");
+  const t = e.target.closest("[data-module],[data-order-filter],[data-order-page],[data-record-filter],[data-detail],[data-pay],[data-cancel],[data-invoice],[data-view-invoice],[data-select],[data-record-detail],[data-resend],[data-reopen],[data-retry],[data-close-drawer],[data-close-modal]");
   if (!t) return;
 
   if (t.dataset.module) setModule(t.dataset.module);
@@ -639,7 +800,6 @@ function onClick(e) {
     else if (t.dataset.orderPage === "next") setOrderPage(state.orderPage + 1);
     else setOrderPage(t.dataset.orderPage);
   }
-  if (t.dataset.invoiceView) setInvoiceView(t.dataset.invoiceView);
   if (t.dataset.recordFilter) {
     state.recordFilter = t.dataset.recordFilter;
     document.querySelectorAll("[data-record-filter]").forEach((btn) => {
@@ -648,19 +808,19 @@ function onClick(e) {
     renderRecords();
   }
   if (t.dataset.detail) openOrderDetail(t.dataset.detail);
-  if (t.dataset.pay) payOrder(t.dataset.pay);
+  if (t.dataset.pay) openPayModal(t.dataset.pay);
   if (t.dataset.cancel) cancelOrder(t.dataset.cancel);
   if (t.dataset.invoice) startInvoice(t.dataset.invoice);
-  if (t.dataset.viewInvoice) {
-    const rec = findInvoiceForOrder(orders.find((o) => o.id === t.dataset.viewInvoice));
-    if (rec) openInvoiceDetail(rec.id);
-    else toast("未找到对应发票");
-  }
   if (t.dataset.select) {
     const id = t.dataset.select;
     if (state.selected.has(id)) state.selected.delete(id);
     else state.selected.add(id);
-    renderEligible();
+    renderOrders();
+  }
+  if (t.dataset.viewInvoice) {
+    const rec = findInvoiceForOrder(orders.find((o) => o.id === t.dataset.viewInvoice));
+    if (rec) openInvoiceDetail(rec.id);
+    else toast("未找到对应发票");
   }
   if (t.dataset.recordDetail) openInvoiceDetail(t.dataset.recordDetail);
   if (t.dataset.resend) {
@@ -684,14 +844,28 @@ function onClick(e) {
     }
   }
   if (t.dataset.retry) {
-    setInvoiceView("eligible");
-    closeOverlays();
-    setModule("invoice");
-    toast("请重新选择可开票订单");
+    const rec = records.find((r) => r.id === t.dataset.retry);
+    if (rec) {
+      const ids = Array.isArray(rec.orderIds) ? rec.orderIds.slice() : [];
+      rec.orderIds = [];
+      ids.forEach((id) => {
+        const o = orders.find((x) => x.id === id);
+        if (!o) return;
+        o.invoiced = false;
+        o.canInvoice = true;
+        o.invoiceId = "";
+      });
+      state.selected = new Set(ids);
+      closeOverlays();
+      refresh();
+      openInvoiceForm();
+    }
   }
   if (t.hasAttribute("data-close-drawer") || t.id === "drawerMask") closeOverlays();
   if (t.hasAttribute("data-close-modal")) {
     if (t.closest("#confirmModal")) $("confirmModal").hidden = true;
+    else if (t.closest("#wecomModal")) $("wecomModal").hidden = true;
+    else if (t.closest("#payModal")) $("payModal").hidden = true;
     else closeOverlays();
   }
 }
@@ -701,16 +875,17 @@ document.addEventListener("click", (e) => {
   else onClick(e);
 });
 
-$("selectAll").addEventListener("click", () => {
-  const data = eligibleOrders();
-  if (dataAllSelected()) state.selected = new Set();
-  else state.selected = new Set(data.map((o) => o.id));
-  renderEligible();
+$("selectAll").addEventListener("click", (e) => {
+  e.preventDefault();
+  const data = pageEligibleOrders();
+  if (!data.length) return toast("当前页没有可开票订单");
+  if (pageAllSelected()) data.forEach((o) => state.selected.delete(o.id));
+  else data.forEach((o) => state.selected.add(o.id));
+  renderOrders();
 });
-
 $("goInvoice").addEventListener("click", openInvoiceForm);
 $("submitInvoice").addEventListener("click", submitInvoice);
-$("confirmSubmit").addEventListener("click", finishSubmit);
+$("confirmPay").addEventListener("click", confirmPay);
 $("invoiceTitleSelect").addEventListener("change", applySelectedInvoiceTitle);
 $("goConfirmEntity").addEventListener("click", goConfirmEntity);
 $("confirmEntity").addEventListener("click", confirmEntity);
@@ -718,15 +893,49 @@ $("entityForm").addEventListener("submit", (e) => {
   e.preventDefault();
   confirmEntity();
 });
-["entityCompany", "entityTax", "entityBank", "entityAccount", "entityAddress", "entityPhone", "entityEmail"].forEach((id) => {
+["entityCompany", "entityTax", "entityBank", "entityAccount", "entityAddress", "entityPhone", "entityEmail", "entityRemark"].forEach((id) => {
   $(id).addEventListener("input", () => {
+    if (id === "entityCompany") {
+      companyPicked = false;
+      onCompanyQuery();
+      applyMatchedCompanyTax($("entityCompany").value);
+    }
     if (!entity.confirmed) return;
     entity.confirmed = false;
     syncEntityStatus();
   });
 });
-document.querySelectorAll('input[name="entityType"]').forEach((el) => {
+$("entityCompany").addEventListener("focus", () => {
+  if ($("entityCompany").value.trim() && !companyPicked) onCompanyQuery();
+});
+$("contactServiceLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openWecomModal();
+});
+$("companySuggest").addEventListener("click", (e) => {
+  const li = e.target.closest("li");
+  if (!li) return;
+  $("entityCompany").value = li.textContent;
+  $("entityTax").value = (li.dataset.tax || "").toUpperCase();
+  companyPicked = true;
+  hideCompanyDropdown();
+  if (entity.confirmed) {
+    entity.confirmed = false;
+    syncEntityStatus();
+  }
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".entity-suggest-wrap")) hideCompanyDropdown();
+});
+document.querySelectorAll('input[name="entityType"], input[name="invoiceKind"]').forEach((el) => {
   el.addEventListener("change", () => {
+    if (el.name === "invoiceKind" && el.value === "special") {
+      setRadioValue("entityType", "enterprise");
+    }
+    if (el.name === "entityType" && el.value === "nonenterprise") {
+      setRadioValue("invoiceKind", "normal");
+    }
     syncEntityTypeUI();
     if (!entity.confirmed) return;
     entity.confirmed = false;
@@ -744,7 +953,7 @@ $("orderPageJump").addEventListener("keydown", (e) => {
 
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".order-card");
-  if (card && !e.target.closest("button")) openOrderDetail(card.dataset.orderId);
+  if (card && !e.target.closest("button") && !e.target.closest("[data-select]")) openOrderDetail(card.dataset.orderId);
 });
 
 syncEntityStatus();

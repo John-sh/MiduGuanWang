@@ -6,7 +6,7 @@
   <title>订单与发票中心-蜜度Midu</title>
   <meta name="description" content="蜜度控制台订单与发票中心：订单管理与发票管理。">
   <link rel="icon" type="image/x-icon" href="https://www.midu.com/favicon.ico">
-  <link rel="stylesheet" href="./css/orders.css?v=20260820b">
+  <link rel="stylesheet" href="./css/orders.css?v=20260904n">
 </head>
 <body>
   <header class="console-header">
@@ -50,7 +50,7 @@
               <svg viewBox="0 0 24 24"><path d="M7 8h10M7 12h6M7 16h8"/><path d="M6 3.5h12l2 3.2V20a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 20V6.7Z"/></svg>
             </span>
             <span>发票管理</span>
-            <em id="navInvoiceBadge">7</em>
+            <em id="navInvoiceBadge">3</em>
           </button>
         </nav>
         <p class="side-hint">请先确认开票主体。待支付可继续付款；已完成订单可申请电子发票。</p>
@@ -65,42 +65,68 @@
           <p class="entity-intro">请填写开票主体信息。确认后将用于电子发票开具。企业单位请与营业执照保持一致。</p>
           <form class="entity-form" id="entityForm">
             <div class="entity-field">
+              <span>发票类型 <i>*</i></span>
+              <div class="entity-radios">
+                <label><input type="radio" name="invoiceKind" value="special"> 专用电子发票</label>
+                <label><input type="radio" name="invoiceKind" value="normal" checked> 普通电子发票</label>
+              </div>
+            </div>
+            <div class="entity-field">
               <span>抬头类型 <i>*</i></span>
               <div class="entity-radios">
                 <label><input type="radio" name="entityType" value="enterprise" checked> 企业单位</label>
                 <label><input type="radio" name="entityType" value="nonenterprise"> 非企业单位</label>
               </div>
             </div>
-            <label class="entity-field">
+            <div id="entitySelfServe">
+            <div class="entity-field entity-company-row">
               <span id="entityCompanyLabel">公司名称 <i>*</i></span>
-              <input id="entityCompany" type="text" maxlength="80" value="" placeholder="请输入营业执照上的公司全称">
-            </label>
+              <div class="entity-suggest-wrap">
+                <input id="entityCompany" type="text" maxlength="80" value="" placeholder="请输入公司名称搜索并选择" autocomplete="off">
+                <div class="entity-dropdown" id="companyDropdown" hidden>
+                  <ul class="entity-suggest" id="companySuggest"></ul>
+                  <p class="entity-dropdown-foot">无匹配单位名称，请<button type="button" class="text-link" id="contactServiceLink">联系客服</button>获取发票。</p>
+                </div>
+              </div>
+            </div>
             <label class="entity-field" id="entityTaxRow">
               <span id="entityTaxLabel">公司税号 <i>*</i></span>
               <input id="entityTax" type="text" maxlength="20" value="" placeholder="请输入统一社会信用代码">
             </label>
             <label class="entity-field">
-              <span>开户银行</span>
+              <span id="entityBankLabel">开户银行</span>
               <input id="entityBank" type="text" maxlength="50" placeholder="选填">
             </label>
             <label class="entity-field">
-              <span>银行账号</span>
+              <span id="entityAccountLabel">银行账号</span>
               <input id="entityAccount" type="text" maxlength="30" placeholder="选填">
             </label>
             <label class="entity-field">
-              <span>注册地址</span>
+              <span id="entityAddressLabel">注册地址</span>
               <input id="entityAddress" type="text" maxlength="80" placeholder="选填">
             </label>
             <label class="entity-field">
-              <span>注册电话</span>
+              <span id="entityPhoneLabel">注册电话</span>
               <input id="entityPhone" type="text" maxlength="20" placeholder="选填">
             </label>
             <label class="entity-field">
               <span>电子邮箱 <i>*</i></span>
               <input id="entityEmail" type="email" maxlength="80" value="" placeholder="请输入电子发票接收邮箱">
             </label>
+            <label class="entity-field">
+              <span>备注</span>
+              <input id="entityRemark" type="text" maxlength="80" value="" placeholder="选填，备注内容将体现在发票上">
+            </label>
             <div class="entity-actions">
               <button type="button" class="btn-primary" id="confirmEntity">确认开票主体</button>
+            </div>
+            </div>
+            <div class="entity-service hidden" id="entityServicePanel">
+              <div class="entity-service-card">
+                <img src="./assets/images/qiyeweixin.png" width="168" height="168" alt="蜜度官方客服二维码">
+                <p>非企业单位开具普通电子发票需联系客服处理。<br>请扫码添加客服，沟通索要普通电子发票。</p>
+                <p class="entity-service-phone">客服热线：<a href="tel:4006007505">400-600-7505</a></p>
+              </div>
             </div>
           </form>
         </section>
@@ -115,10 +141,24 @@
             <button type="button" class="tab" data-order-filter="completed">已完成 <em id="countDone">10</em></button>
             <button type="button" class="tab" data-order-filter="cancelled">已取消 <em id="countCancel">1</em></button>
           </div>
+          <div class="toolbar">
+            <p>已完成且未开票的订单可勾选，支持合并开一张发票。</p>
+          </div>
           <div class="table-wrap">
-            <table class="data-table">
+            <table class="data-table order-table">
+              <colgroup>
+                <col class="col-check">
+                <col class="col-id">
+                <col class="col-product">
+                <col class="col-amount">
+                <col class="col-status">
+                <col class="col-ops">
+              </colgroup>
               <thead>
                 <tr>
+                  <th class="select-col">
+                    <label class="check-all" id="selectAll" title="全选本页可开票订单"><span class="check"></span></label>
+                  </th>
                   <th>订单编号</th>
                   <th>产品</th>
                   <th>订单金额</th>
@@ -129,50 +169,27 @@
               <tbody id="orderList"></tbody>
             </table>
           </div>
-          <nav class="pager" aria-label="订单分页">
-            <div class="pager-pages" id="orderPagerPages"></div>
-            <span class="pager-jump">跳至</span>
-            <input class="pager-input" id="orderPageJump" type="text" inputmode="numeric" maxlength="4" aria-label="页码">
-            <span class="pager-jump">页</span>
-            <button type="button" class="pager-ok" id="orderPageGo">确定</button>
-          </nav>
+          <div class="table-foot">
+            <div class="batch-bar">
+              <span>已选 <b id="selectedCount">0</b> 笔</span>
+              <strong>¥<span id="selectedTotal">0.00</span></strong>
+              <button type="button" class="btn-primary" id="goInvoice" disabled>统一开票</button>
+            </div>
+            <nav class="pager" aria-label="订单分页">
+              <div class="pager-pages" id="orderPagerPages"></div>
+              <span class="pager-jump">跳至</span>
+              <input class="pager-input" id="orderPageJump" type="text" inputmode="numeric" maxlength="4" aria-label="页码">
+              <span class="pager-jump">页</span>
+              <button type="button" class="pager-ok" id="orderPageGo">确定</button>
+            </nav>
+          </div>
         </section>
 
         <section class="block hidden" id="invoiceModule">
           <div class="block-head">
             <h2>发票管理</h2>
           </div>
-          <div class="tabs" role="tablist" aria-label="发票模块">
-            <button type="button" class="tab active" data-invoice-view="eligible">可开发票 <em id="countEligible">7</em></button>
-            <button type="button" class="tab" data-invoice-view="records">开票记录</button>
-          </div>
-
-          <div id="eligibleView">
-            <div class="toolbar">
-              <p>仅已完成且未开票的订单可申请电子发票，支持勾选多笔合并开票。</p>
-              <label class="check-all" id="selectAll"><span class="check"></span>全选</label>
-            </div>
-            <div class="table-wrap">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th style="width:44px"></th>
-                    <th>订单编号</th>
-                    <th>产品</th>
-                    <th>订单金额</th>
-                  </tr>
-                </thead>
-                <tbody id="eligibleList"></tbody>
-              </table>
-            </div>
-            <div class="batch-bar">
-              <span>已选 <b id="selectedCount">0</b> 笔</span>
-              <strong>¥<span id="selectedTotal">0.00</span></strong>
-              <button type="button" class="btn-primary" id="goInvoice" disabled>去开票</button>
-            </div>
-          </div>
-
-          <div id="recordsView" class="hidden">
+          <div id="recordsView">
             <div class="subtabs" role="tablist" aria-label="发票状态">
               <button type="button" class="subtab active" data-record-filter="all">全部</button>
               <button type="button" class="subtab" data-record-filter="processing">开票中</button>
@@ -180,7 +197,14 @@
               <button type="button" class="subtab" data-record-filter="failed">开票失败</button>
             </div>
             <div class="table-wrap">
-              <table class="data-table">
+              <table class="data-table record-table">
+                <colgroup>
+                  <col class="col-info">
+                  <col class="col-time">
+                  <col class="col-amount">
+                  <col class="col-status">
+                  <col class="col-ops">
+                </colgroup>
                 <thead>
                   <tr>
                     <th>发票信息</th>
@@ -249,8 +273,12 @@
           <label class="form-row"><span>发票格式</span><b>PDF 电子发票</b></label>
           <label class="form-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></label>
           <label class="form-row">
+            <span>开票订单</span>
+            <b id="invoiceOrderText"></b>
+          </label>
+          <label class="form-row">
             <span>备注</span>
-            <input id="remark" type="text" maxlength="80" placeholder="选填">
+            <input id="remark" type="text" maxlength="80" placeholder="选填，备注内容将体现在发票上">
           </label>
           <div class="form-row amount-row">
             <span>发票金额</span>
@@ -277,7 +305,63 @@
     </div>
   </div>
 
+  <div class="modal" id="wecomModal" hidden>
+    <div class="modal-mask" data-close-modal></div>
+    <div class="modal-card wecom-card" role="dialog" aria-modal="true" aria-labelledby="wecomModalTitle">
+      <header class="modal-head">
+        <h3 id="wecomModalTitle">蜜度官方客服企微</h3>
+        <button type="button" class="icon-btn" data-close-modal aria-label="关闭">×</button>
+      </header>
+      <div class="wecom-body">
+        <div class="wecom-qr">
+          <img src="./assets/images/qiyeweixin.png" width="200" height="200" alt="官方客服企微二维码">
+        </div>
+        <p class="wecom-tip">微信扫码添加客服，沟通获取发票</p>
+        <p class="wecom-phone">客服热线：<a href="tel:4006007505">400-600-7505</a></p>
+        <p class="wecom-hours">在线时间：工作日 9:00-18:00</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="payModal" hidden>
+    <div class="modal-mask" data-close-modal></div>
+    <div class="modal-card pay-card" role="dialog" aria-modal="true" aria-labelledby="payModalTitle">
+      <header class="modal-head">
+        <h3 id="payModalTitle">订单支付</h3>
+        <button type="button" class="icon-btn" data-close-modal aria-label="关闭">×</button>
+      </header>
+      <div class="pay-body">
+        <div class="pay-order">
+          <div class="pay-order-row"><span>订单编号</span><b id="payOrderId">—</b></div>
+          <div class="pay-order-row"><span>产品</span><b id="payOrderProduct">—</b></div>
+          <div class="pay-order-row"><span>应付金额</span><strong>¥<em id="payOrderAmount">0.00</em></strong></div>
+        </div>
+        <p class="pay-label">选择支付方式</p>
+        <div class="pay-methods" role="radiogroup" aria-label="支付方式">
+          <label class="pay-method">
+            <input type="radio" name="payMethod" value="alipay" checked>
+            <span class="pay-icon alipay" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm8.2 4.2c-2.4 0-4.1 1.3-4.1 3.1 0 2 1.9 2.7 3.3 3.1l.1.1c1.3.4 1.7.7 1.7 1.3 0 .7-.7 1.2-1.8 1.2-1.1 0-1.9-.4-2.5-.9l-.8 1.6c.8.6 2 1 3.4 1 2.6 0 4.3-1.4 4.3-3.3 0-1.9-1.6-2.7-3.2-3.2-.9-.3-1.7-.5-1.7-1.1 0-.5.6-1 1.5-1 .8 0 1.5.3 2 .7l.8-1.6c-.7-.5-1.7-.8-2.9-.8Zm5.3.4h-2.2l-1.8 8h2.2l1.8-8Z"/></svg>
+            </span>
+            <span>支付宝</span>
+          </label>
+          <label class="pay-method">
+            <input type="radio" name="payMethod" value="wechat">
+            <span class="pay-icon wechat" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M9.4 5.2c-3.8 0-6.8 2.5-6.8 5.6 0 1.8 1 3.4 2.6 4.4L4.8 17l2.4-1.3c.7.2 1.4.3 2.2.3.2 0 .4 0 .6-.1-.2-.5-.3-1-.3-1.6 0-2.9 2.8-5.2 6.2-5.2.1 0 .3 0 .4.1C15.7 7 12.8 5.2 9.4 5.2Zm-1.7 3.1a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8Zm3.6 0a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8Zm4.5.9c-3 0-5.4 2-5.4 4.5s2.4 4.5 5.4 4.5c.6 0 1.2-.1 1.7-.3L19.2 19l-.5-1.6c1.2-.8 2-2 2-3.4 0-2.5-2.4-4.5-5.4-4.5Zm-1.8 2.6a.7.7 0 1 1 0 1.4.7.7 0 0 1 0-1.4Zm3.5 0a.7.7 0 1 1 0 1.4.7.7 0 0 1 0-1.4Z"/></svg>
+            </span>
+            <span>微信支付</span>
+          </label>
+        </div>
+      </div>
+      <footer class="modal-foot">
+        <button type="button" class="btn-ghost" data-close-modal>取消</button>
+        <button type="button" class="btn-primary" id="confirmPay">确认支付</button>
+      </footer>
+    </div>
+  </div>
+
   <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
-  <script src="./js/orders.js?v=20260820b"></script>
+  <script src="./js/orders.js?v=20260904n"></script>
 </body>
 </html>
