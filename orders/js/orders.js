@@ -372,24 +372,9 @@ function invoiceKindLabel(kind) {
   return kind === "special" ? "专用电子发票" : "普通电子发票";
 }
 
-function setRadioValue(name, value) {
-  document.querySelectorAll(`input[name="${name}"]`).forEach((el) => {
-    el.checked = el.value === value;
-  });
-}
-
 function syncEntityTypeUI() {
   const data = readEntityForm();
-  let type = data.type;
-  let invoiceKind = data.invoiceKind;
-  if (invoiceKind === "special" && !isEnterprise(type)) {
-    type = "enterprise";
-    setRadioValue("entityType", "enterprise");
-  }
-  if (!isEnterprise(type) && invoiceKind === "special") {
-    invoiceKind = "normal";
-    setRadioValue("invoiceKind", "normal");
-  }
+  const invoiceKind = data.invoiceKind;
   $("entityCompanyLabel").innerHTML = "公司名称 <i>*</i>";
   $("entityCompany").placeholder = "请输入公司名称搜索并选择";
   $("entityTaxRow").classList.remove("hidden");
@@ -458,7 +443,6 @@ function onCompanyQuery() {
 function confirmEntity() {
   const data = readEntityForm();
   if (!data.invoiceKind) return toast("请选择发票类型");
-  if (data.invoiceKind === "special" && !isEnterprise(data.type)) return toast("专用电子发票仅支持企业单位");
   if (!data.company) return toast("请填写公司名称");
   if (!isCompanyMatched(data.company)) {
     onCompanyQuery();
@@ -915,12 +899,6 @@ document.addEventListener("click", (e) => {
 });
 document.querySelectorAll('input[name="entityType"], input[name="invoiceKind"]').forEach((el) => {
   el.addEventListener("change", () => {
-    if (el.name === "invoiceKind" && el.value === "special") {
-      setRadioValue("entityType", "enterprise");
-    }
-    if (el.name === "entityType" && el.value === "nonenterprise") {
-      setRadioValue("invoiceKind", "normal");
-    }
     syncEntityTypeUI();
     if (!entity.confirmed) return;
     entity.confirmed = false;
