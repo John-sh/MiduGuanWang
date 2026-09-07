@@ -6,7 +6,7 @@
   <title>订单与发票中心-蜜度Midu</title>
   <meta name="description" content="蜜度控制台订单与发票中心：订单管理与发票管理。">
   <link rel="icon" type="image/x-icon" href="https://www.midu.com/favicon.ico">
-  <link rel="stylesheet" href="./css/orders.css?v=20260904n">
+  <link rel="stylesheet" href="./css/orders.css?v=20260907b">
 </head>
 <body>
   <header class="console-header">
@@ -43,7 +43,7 @@
               <svg viewBox="0 0 24 24"><path d="M7 7h10M7 12h10M7 17h6"/><rect x="4" y="3.5" width="16" height="17" rx="3"/></svg>
             </span>
             <span>订单管理</span>
-            <em id="navOrderBadge">12</em>
+            <em id="navOrderBadge">13</em>
           </button>
           <button type="button" class="nav-item" data-module="invoice">
             <span class="nav-icon" aria-hidden="true">
@@ -121,13 +121,6 @@
               <button type="button" class="btn-primary" id="confirmEntity">确认开票主体</button>
             </div>
             </div>
-            <div class="entity-service hidden" id="entityServicePanel">
-              <div class="entity-service-card">
-                <img src="./assets/images/qiyeweixin.png" width="168" height="168" alt="蜜度官方客服二维码">
-                <p>非企业单位开具普通电子发票需联系客服处理。<br>请扫码添加客服，沟通索要普通电子发票。</p>
-                <p class="entity-service-phone">客服热线：<a href="tel:4006007505">400-600-7505</a></p>
-              </div>
-            </div>
           </form>
         </section>
 
@@ -136,9 +129,9 @@
             <h2>订单管理</h2>
           </div>
           <div class="tabs" role="tablist" aria-label="订单状态">
-            <button type="button" class="tab active" data-order-filter="all">全部 <em id="countAll">12</em></button>
+            <button type="button" class="tab active" data-order-filter="all">全部 <em id="countAll">13</em></button>
             <button type="button" class="tab" data-order-filter="pending_pay">待支付 <em id="countPay">1</em></button>
-            <button type="button" class="tab" data-order-filter="completed">已完成 <em id="countDone">10</em></button>
+            <button type="button" class="tab" data-order-filter="completed">已完成 <em id="countDone">11</em></button>
             <button type="button" class="tab" data-order-filter="cancelled">已取消 <em id="countCancel">1</em></button>
           </div>
           <div class="toolbar">
@@ -362,6 +355,6 @@
   </div>
 
   <div class="toast" id="toast" hidden role="status" aria-live="polite"></div>
-  <script src="./js/orders.js?v=20260904n"></script>
+  <script src="./js/orders.js?v=20260907b"></script>
 </body>
 </html>

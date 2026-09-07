@@ -1,4 +1,5 @@
 const orders = [
+  { id: "MD202608160008", product: "蜜度GEO", version: "旗舰版", benefit: ["生成式引擎监测周期 12 个月，覆盖主流大模型与 AI 搜索平台", "采样模型：DeepSeek、豆包、元宝、Kimi、千问、文心一言", "专项评估报告 24 份，支持品牌可见度与竞品对比", "AI 搜索竞争力诊断报告可导出 PDF", "购买后即时开通，支持按任务发起评估"], price: 9800, qty: 1, amount: 9800, date: "2026-08-16 14:08", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
   { id: "MD202608150019", product: "新浪舆情通", version: "旗舰版", benefit: ["全网监测周期 12 个月，覆盖新闻、微博、微信、短视频、论坛等主流信源", "账号席位 10 个，支持按角色分配查看、研判、导出权限", "热点事件预警 200 条/日，支持关键词、地域、情感多维规则", "报告导出：日报 / 周报 / 专题报告，支持 Word、PDF", "历史数据回溯 3 年，含传播路径与重点账号分析"], price: 98000, qty: 1, amount: 98000, date: "2026-08-15 10:24", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
   { id: "MD202608140083", product: "索骥", version: "专业版", benefit: ["线索监测周期 6 个月，覆盖公开网络与指定站点", "预警额度 50 条/日，支持优先级分级推送", "线索库容量 10 万条，支持标签、去重与合并研判", "导出权限：Excel / CSV，含原文链接与传播摘要"], price: 36000, qty: 1, amount: 36000, date: "2026-08-14 16:12", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608140021" },
   { id: "MD202608130057", product: "城感通", version: "标准版", benefit: ["城市感知监测 12 个月，覆盖市政、交通、民生等主题", "账号席位 5 个，支持按区域查看", "事件工单联动 1000 次/月", "区域热力图与趋势看板，支持周报自动生成"], price: 28000, qty: 1, amount: 28000, date: "2026-08-13 09:35", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608130008" },
@@ -349,12 +350,11 @@ function readEntityForm() {
   const kindEl = document.querySelector('input[name="invoiceKind"]:checked');
   const type = typeEl ? typeEl.value : "enterprise";
   const invoiceKind = kindEl ? kindEl.value : "normal";
-  const enterprise = isEnterprise(type);
   return {
     invoiceKind,
     type,
     company: $("entityCompany").value.trim(),
-    tax: enterprise ? $("entityTax").value.trim().toUpperCase() : "",
+    tax: $("entityTax").value.trim().toUpperCase(),
     bank: $("entityBank").value.trim(),
     account: $("entityAccount").value.trim(),
     address: $("entityAddress").value.trim(),
@@ -390,12 +390,9 @@ function syncEntityTypeUI() {
     invoiceKind = "normal";
     setRadioValue("invoiceKind", "normal");
   }
-  const enterprise = isEnterprise(type);
-  $("entityCompanyLabel").innerHTML = enterprise ? "公司名称 <i>*</i>" : "发票抬头 <i>*</i>";
-  $("entityCompany").placeholder = enterprise ? "请输入公司名称搜索并选择" : "请输入发票抬头，不少于4个汉字";
-  $("entityTaxRow").classList.toggle("hidden", !enterprise);
-  if (!enterprise) $("entityTax").value = "";
-  if (!enterprise) hideCompanyDropdown();
+  $("entityCompanyLabel").innerHTML = "公司名称 <i>*</i>";
+  $("entityCompany").placeholder = "请输入公司名称搜索并选择";
+  $("entityTaxRow").classList.remove("hidden");
   const special = invoiceKind === "special";
   [
     ["entityBankLabel", "开户银行", "entityBank", "请输入开户银行"],
@@ -406,9 +403,7 @@ function syncEntityTypeUI() {
     $(labelId).innerHTML = special ? `${label} <i>*</i>` : label;
     $(inputId).placeholder = special ? requiredPlaceholder : "选填";
   });
-  const showService = invoiceKind === "normal" && !enterprise;
-  $("entitySelfServe").classList.toggle("hidden", showService);
-  $("entityServicePanel").classList.toggle("hidden", !showService);
+  $("entitySelfServe").classList.remove("hidden");
 }
 
 function escapeHtml(s) {
@@ -417,10 +412,6 @@ function escapeHtml(s) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
-}
-
-function countHanChars(s) {
-  return (String(s).match(/[\u4e00-\u9fff]/g) || []).length;
 }
 
 function matchCompanies(keyword) {
@@ -456,10 +447,6 @@ function showCompanyDropdown(list) {
 }
 
 function onCompanyQuery() {
-  if (!isEnterprise(readEntityForm().type)) {
-    hideCompanyDropdown();
-    return;
-  }
   const keyword = $("entityCompany").value.trim();
   if (!keyword) {
     hideCompanyDropdown();
@@ -472,14 +459,12 @@ function confirmEntity() {
   const data = readEntityForm();
   if (!data.invoiceKind) return toast("请选择发票类型");
   if (data.invoiceKind === "special" && !isEnterprise(data.type)) return toast("专用电子发票仅支持企业单位");
-  if (data.invoiceKind === "normal" && !isEnterprise(data.type)) return toast("请联系客服沟通索要普通电子发票");
-  if (!data.company) return toast(isEnterprise(data.type) ? "请填写公司名称" : "请填写发票抬头");
-  if (isEnterprise(data.type) && !isCompanyMatched(data.company)) {
+  if (!data.company) return toast("请填写公司名称");
+  if (!isCompanyMatched(data.company)) {
     onCompanyQuery();
     return toast("无匹配单位名称，请联系客服获取发票");
   }
-  if (!isEnterprise(data.type) && countHanChars(data.company) < 4) return toast("发票抬头须不少于4个汉字");
-  if (isEnterprise(data.type) && !/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的公司税号");
+  if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的公司税号");
   if (data.invoiceKind === "special") {
     if (!data.bank) return toast("请填写开户银行");
     if (!data.account) return toast("请填写银行账号");
@@ -512,7 +497,7 @@ function fillInvoiceFromEntity() {
 
 function applySelectedInvoiceTitle() {
   const selected = $("invoiceTitleSelect").value === "confirmed" && entity.confirmed;
-  const showTax = selected && isEnterprise(entity.type);
+  const showTax = selected;
   $("invoiceTaxRow").classList.toggle("hidden", !showTax);
   $("invoiceTaxText").textContent = showTax ? entity.tax : "";
   $("invoiceEmailText").textContent = selected ? entity.email : "";
@@ -727,8 +712,8 @@ function submitInvoice() {
   $("confirmBody").innerHTML = `
     <div class="info-row"><span>发票类型</span><b>${invoiceKindLabel(entity.invoiceKind)}</b></div>
     <div class="info-row"><span>抬头类型</span><b>${isEnterprise(entity.type) ? "企业单位" : "非企业单位"}</b></div>
-    <div class="info-row"><span>${isEnterprise(entity.type) ? "公司名称" : "发票抬头"}</span><b>${escapeHtml(company)}</b></div>
-    ${isEnterprise(entity.type) ? `<div class="info-row"><span>公司税号</span><b>${escapeHtml(tax || "—")}</b></div>` : ""}
+    <div class="info-row"><span>公司名称</span><b>${escapeHtml(company)}</b></div>
+    <div class="info-row"><span>公司税号</span><b>${escapeHtml(tax || "—")}</b></div>
     <div class="info-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></div>
     <div class="info-row"><span>开票订单</span><b>${escapeHtml(invoiceOrderSummary(selected))}</b></div>
     ${remark ? `<div class="info-row"><span>备注</span><b>${escapeHtml(remark)}</b></div>` : ""}
