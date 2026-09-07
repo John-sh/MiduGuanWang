@@ -136,8 +136,8 @@
     .boss-table {
       border-collapse: collapse;
       font-size: 12px;
-      min-width: 2140px;
-      width: 2140px;
+      min-width: 2000px;
+      width: 2000px;
     }
     .boss-table.full { width: 100%; min-width: 100%; }
     .boss-table th {
@@ -718,7 +718,6 @@
                     <th>支付方式</th>
                     <th>单位属性</th>
                     <th>发票抬头</th>
-                    <th>发票号</th>
                     <th>订单状态</th>
                     <th class="sticky-op" style="min-width:88px">操作</th>
                   </tr>
@@ -740,7 +739,6 @@
                     <td>{{ row.payMethod }}</td>
                     <td>{{ row.unitType }}</td>
                     <td>{{ row.invoiceTitle }}</td>
-                    <td>{{ orderInvoiceNo(row) }}</td>
                     <td><span class="tag" :class="tagClass(row.status)">{{ row.status }}</span></td>
                     <td class="sticky-op">
                       <div class="op-col">
@@ -792,7 +790,6 @@
       <div class="info-item"><span class="info-label">付款编号：</span><span class="info-value">{{ current.payNo }}</span></div>
       <div class="info-item"><span class="info-label">单位属性：</span><span class="info-value">{{ current.unitType }}</span></div>
       <div class="info-item"><span class="info-label">发票抬头：</span><span class="info-value">{{ current.invoiceTitle }}</span></div>
-      <div class="info-item"><span class="info-label">发票号：</span><span class="info-value">{{ orderInvoiceNo(current) }}</span></div>
       <div class="info-item"><span class="info-label">订单状态：</span><span class="info-value"><span class="tag" :class="tagClass(current.status)">{{ current.status }}</span></span></div>
     </div>
     <p v-if="current.voidRemark" style="font-size:13px;color:#606266;margin:0 0 10px;">
@@ -833,14 +830,13 @@
 
       <el-tab-pane label="开票信息" name="invoice">
         <div class="table-scroll">
-          <table class="boss-table" style="min-width:1980px;width:1980px;">
+          <table class="boss-table" style="min-width:1860px;width:1860px;">
             <thead>
               <tr>
                 <th>发票提交时间</th>
                 <th>开票时间</th>
                 <th class="right">开票金额</th>
                 <th>开票状态</th>
-                <th>发票号</th>
                 <th>发票抬头</th>
                 <th>纳税人识别号</th>
                 <th>注册地址</th>
@@ -853,14 +849,13 @@
             </thead>
             <tbody>
               <tr v-if="!current.invoices || !current.invoices.length">
-                <td colspan="13" class="center" style="color:#909399;">暂无开票信息</td>
+                <td colspan="12" class="center" style="color:#909399;">暂无开票信息</td>
               </tr>
               <tr v-for="(row, i) in current.invoices" :key="i">
                 <td>{{ row.submitTime || '-' }}</td>
                 <td>{{ row.invoiceTime || '-' }}</td>
                 <td class="right">{{ money(row.amount) }}</td>
                 <td><span class="tag" :class="tagClass(row.status)">{{ row.status }}</span></td>
-                <td>{{ row.invoiceNo || '-' }}</td>
                 <td>{{ row.title || '-' }}</td>
                 <td>{{ row.taxNo || '-' }}</td>
                 <td>{{ row.regAddress || '-' }}</td>
@@ -1996,11 +1991,6 @@ new Vue({
         '退单': 'tag-danger',
         '已退票': 'tag-danger'
       }[st] || 'tag-mute';
-    },
-    orderInvoiceNo(row) {
-      if (!row || !row.invoices || !row.invoices.length) return '-';
-      const nos = row.invoices.map(function (inv) { return inv.invoiceNo; }).filter(Boolean);
-      return nos.length ? nos.join('、') : '-';
     },
     onSearch() { this.page = 1; this.$message.success('已按条件筛选'); },
     onReset() {
