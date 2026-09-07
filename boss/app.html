@@ -136,8 +136,8 @@
     .boss-table {
       border-collapse: collapse;
       font-size: 12px;
-      min-width: 2600px;
-      width: 2600px;
+      min-width: 2140px;
+      width: 2140px;
     }
     .boss-table.full { width: 100%; min-width: 100%; }
     .boss-table th {
@@ -715,10 +715,7 @@
                     <th>服务开始日期</th>
                     <th>服务终止日期</th>
                     <th>下单时间</th>
-                    <th>用户名</th>
-                    <th>账号（手机号）</th>
                     <th>支付方式</th>
-                    <th>付款编号</th>
                     <th>单位属性</th>
                     <th>发票抬头</th>
                     <th>发票号</th>
@@ -740,10 +737,7 @@
                     <td>{{ row.serviceStart }}</td>
                     <td>{{ row.serviceEnd }}</td>
                     <td>{{ row.orderTime }}</td>
-                    <td>{{ row.userName }}</td>
-                    <td>{{ row.mobile }}</td>
                     <td>{{ row.payMethod }}</td>
-                    <td>{{ row.payNo }}</td>
                     <td>{{ row.unitType }}</td>
                     <td>{{ row.invoiceTitle }}</td>
                     <td>{{ orderInvoiceNo(row) }}</td>
@@ -1071,6 +1065,9 @@
           <div class="info-item"><span class="info-label">服务开始日期：</span><span class="info-value">{{ invCurrent.serviceStart }}</span></div>
           <div class="info-item"><span class="info-label">服务终止日期：</span><span class="info-value">{{ invCurrent.serviceEnd }}</span></div>
           <div class="info-item"><span class="info-label">下单时间：</span><span class="info-value">{{ invCurrent.orderTime }}</span></div>
+          <div class="info-item"><span class="info-label">用户名：</span><span class="info-value">{{ invCurrent.userName || '-' }}</span></div>
+          <div class="info-item"><span class="info-label">账号（手机号）：</span><span class="info-value">{{ invCurrent.mobile || '-' }}</span></div>
+          <div class="info-item"><span class="info-label">付款编号：</span><span class="info-value">{{ invCurrent.payNo || '-' }}</span></div>
         </div>
 
         <div class="info-block">
@@ -1516,6 +1513,9 @@ const INV_MOCK = [
     invoiceTime: '2026-08-29 09:40:18',
     receivedAmount: 9800,
     payMethod: '微信',
+    payNo: '4200002631202608281088212345',
+    userName: '张伟',
+    mobile: '1381678****',
     payTime: '2026-08-28 10:21:48',
     unitType: '企业单位',
     receivedDate: '2026-08-28 10:21:48',
@@ -1567,6 +1567,9 @@ const INV_MOCK = [
     invoiceTime: '',
     receivedAmount: 7960,
     payMethod: '支付宝',
+    payNo: '2026090122001478901234567890',
+    userName: '李娜',
+    mobile: '1860210****',
     payTime: '2026-09-01 16:08:19',
     unitType: '企业单位',
     receivedDate: '2026-09-01 16:08:19',
@@ -1616,6 +1619,9 @@ const INV_MOCK = [
     invoiceTime: '',
     receivedAmount: 1980,
     payMethod: '微信',
+    payNo: '4200002631202609020913445566',
+    userName: '王强',
+    mobile: '1391744****',
     payTime: '2026-09-02 09:13:01',
     unitType: '非企业单位',
     receivedDate: '2026-09-02 09:13:01',
@@ -1665,6 +1671,9 @@ const INV_MOCK = [
     invoiceTime: '2026-08-21 11:12:08',
     receivedAmount: 0,
     payMethod: '微信',
+    payNo: '4200002631202608201133887701',
+    userName: '陈静',
+    mobile: '1582199****',
     payTime: '2026-08-20 11:33:22',
     unitType: '非企业单位',
     receivedDate: '',
@@ -1718,6 +1727,9 @@ const INV_MOCK = [
     invoiceTime: '2026-08-19 09:06:44',
     receivedAmount: 9900,
     payMethod: '微信',
+    payNo: '4200002631202608181944102233',
+    userName: '赵敏',
+    mobile: '1370166****',
     payTime: '2026-08-18 19:44:28',
     unitType: '企业单位',
     receivedDate: '2026-08-18 19:44:28',
@@ -1768,6 +1780,9 @@ const INV_MOCK = [
     invoiceTime: '2026-09-02 15:22:41',
     receivedAmount: 8600,
     payMethod: '支付宝',
+    payNo: '2026090222001488012345678901',
+    userName: '林晓',
+    mobile: '1390503****',
     payTime: '2026-09-02 11:06:33',
     unitType: '非企业单位',
     receivedDate: '2026-09-02 11:06:33',
