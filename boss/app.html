@@ -302,6 +302,7 @@
     .stat-row.s-recv b { color: #1677ff; }
     .stat-row.s-total { background: #fff; border-color: #e6e8ed; }
     .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
+    .boss-table.inv-order-table { min-width: 1980px; width: 1980px; }
     .boss-table tbody tr.row-mute td { color: var(--text-muted); }
     .boss-table input[type="checkbox"] {
       appearance: none; -webkit-appearance: none;
@@ -463,6 +464,7 @@
                         <el-select v-model="invQuery.unitType" placeholder="全部" clearable style="width:100%">
                           <el-option label="企业单位" value="企业单位" />
                           <el-option label="非企业单位" value="非企业单位" />
+                          <el-option label="个人" value="个人" />
                         </el-select>
                       </el-form-item>
                     </el-col>
@@ -654,6 +656,7 @@
                     <el-select v-model="query.unitType" placeholder="全部" clearable style="width:100%">
                       <el-option label="企业单位" value="企业单位" />
                       <el-option label="非企业单位" value="非企业单位" />
+                      <el-option label="个人" value="个人" />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -1042,32 +1045,61 @@
     append-to-body
   >
     <div slot="title" class="detail-title">
-      开票详情 【{{ invCurrent.orderNo }}】
+      开票详情 【{{ invCurrent.invoiceNo || (invDetailOrders[0] && invDetailOrders[0].orderNo) || '-' }}】
       <span class="tag" :class="tagClass(invCurrent.invoiceStatus)">{{ invCurrent.invoiceStatus }}</span>
     </div>
 
     <el-tabs v-model="invDetailTab">
-      <el-tab-pane label="发票信息" name="info">
-        <div class="section-hd">订单信息</div>
-        <div class="info-grid" v-if="invCurrent.orderNo">
-          <div class="info-item"><span class="info-label">产品：</span><span class="info-value">{{ invCurrent.product }}</span></div>
-          <div class="info-item"><span class="info-label">订单编号：</span><span class="info-value">{{ invCurrent.orderNo }}</span></div>
-          <div class="info-item"><span class="info-label">套餐名称：</span><span class="info-value">{{ invCurrent.packageName }}</span></div>
-          <div class="info-item span-3"><span class="info-label">套餐权益：</span><span class="info-value">{{ invCurrent.rights }}</span></div>
-          <div class="info-item"><span class="info-label">订购数量：</span><span class="info-value">{{ invCurrent.qty }}</span></div>
-          <div class="info-item"><span class="info-label">单价：</span><span class="info-value">{{ money(invCurrent.unitPrice) }}</span></div>
-          <div class="info-item"><span class="info-label">价格：</span><span class="info-value">{{ money(invCurrent.amount) }}</span></div>
-          <div class="info-item"><span class="info-label">服务开始日期：</span><span class="info-value">{{ invCurrent.serviceStart }}</span></div>
-          <div class="info-item"><span class="info-label">服务终止日期：</span><span class="info-value">{{ invCurrent.serviceEnd }}</span></div>
-          <div class="info-item"><span class="info-label">下单时间：</span><span class="info-value">{{ invCurrent.orderTime }}</span></div>
-          <div class="info-item"><span class="info-label">用户名：</span><span class="info-value">{{ invCurrent.userName || '-' }}</span></div>
-          <div class="info-item"><span class="info-label">账号（手机号）：</span><span class="info-value">{{ invCurrent.mobile || '-' }}</span></div>
-          <div class="info-item"><span class="info-label">付款编号：</span><span class="info-value">{{ invCurrent.payNo || '-' }}</span></div>
+      <el-tab-pane label="订单信息" name="orders">
+        <div class="table-scroll">
+          <table class="boss-table inv-order-table">
+            <thead>
+              <tr>
+                <th class="center">序号</th>
+                <th>产品</th>
+                <th>订单编号</th>
+                <th>套餐名称</th>
+                <th>套餐权益</th>
+                <th class="right">订购数量</th>
+                <th class="right">单价</th>
+                <th class="right">价格</th>
+                <th>服务开始日期</th>
+                <th>服务终止日期</th>
+                <th>下单时间</th>
+                <th>用户名</th>
+                <th>账号（手机号）</th>
+                <th>付款编号</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="!invDetailOrders.length">
+                <td colspan="14" class="center" style="color:#909399;">暂无订单信息</td>
+              </tr>
+              <tr v-for="(row, i) in invDetailOrders" :key="row.orderNo || i">
+                <td class="center">{{ i + 1 }}</td>
+                <td>{{ row.product }}</td>
+                <td>{{ row.orderNo }}</td>
+                <td>{{ row.packageName }}</td>
+                <td><span class="clip" :title="row.rights">{{ row.rights || '-' }}</span></td>
+                <td class="right">{{ row.qty }}</td>
+                <td class="right">{{ money(row.unitPrice) }}</td>
+                <td class="right">{{ money(row.amount) }}</td>
+                <td>{{ row.serviceStart }}</td>
+                <td>{{ row.serviceEnd }}</td>
+                <td>{{ row.orderTime }}</td>
+                <td>{{ row.userName || '-' }}</td>
+                <td>{{ row.mobile || '-' }}</td>
+                <td>{{ row.payNo || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </el-tab-pane>
 
+      <el-tab-pane label="发票信息" name="info">
         <div class="info-block">
           <div class="section-hd">开票信息</div>
-          <div class="info-grid" v-if="invCurrent.orderNo">
+          <div class="info-grid" v-if="invCurrent.invoiceTitle || invCurrent.orderNo">
             <div class="info-item"><span class="info-label">开票状态：</span><span class="info-value"><span class="tag" :class="tagClass(invCurrent.invoiceStatus)">{{ invCurrent.invoiceStatus }}</span></span></div>
             <div class="info-item"><span class="info-label">开票抬头：</span><span class="info-value">{{ invCurrent.invoiceTitle }}</span></div>
             <div class="info-item"><span class="info-label">发票号：</span><span class="info-value">{{ invCurrent.invoiceNo || '-' }}</span></div>
@@ -1090,7 +1122,7 @@
 
         <div class="info-block">
           <div class="section-hd">发票收件信息</div>
-          <div class="info-grid" v-if="invCurrent.orderNo">
+          <div class="info-grid" v-if="invCurrent.receiver || invCurrent.orderNo">
             <div class="info-item"><span class="info-label">收件人：</span><span class="info-value">{{ invCurrent.receiver }}</span></div>
             <div class="info-item"><span class="info-label">收件人电话：</span><span class="info-value">{{ invCurrent.receiverPhone }}</span></div>
             <div class="info-item"><span class="info-label">收件人邮箱：</span><span class="info-value">{{ invCurrent.receiverEmail }}</span></div>
@@ -1379,7 +1411,7 @@ const MOCK = [
     payMethod: '微信',
     payNo: '4200002631202608030913445566',
     invoiceTitle: '王强',
-    unitType: '非企业单位',
+    unitType: '个人',
     status: '正常',
     invoices: [
       geoInvoice({
@@ -1457,7 +1489,7 @@ const MOCK = [
     payMethod: '微信',
     payNo: '4200002631202607301944102233',
     invoiceTitle: '赵敏',
-    unitType: '非企业单位',
+    unitType: '个人',
     status: '作废',
     originOrderNo: '',
     voidRemark: '下错数量，作废后重新下单',
@@ -1488,7 +1520,7 @@ const INV_MOCK = [
     invoiceStatus: '已开票',
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '25312000000123456789',
-    invoiceAmount: 9800,
+    invoiceAmount: 13780,
     invoiceType: '普票电子票',
     invoiceTitle: '上海蜜度信息技术有限公司',
     taxNo: '91310115MA1K3XXXXX',
@@ -1506,26 +1538,61 @@ const INV_MOCK = [
     receiverEmail: 'zhangwei@midu.com',
     submitTime: '2026-08-28 14:02:11',
     invoiceTime: '2026-08-29 09:40:18',
-    receivedAmount: 9800,
+    receivedAmount: 13780,
     payMethod: '微信',
     payNo: '4200002631202608281088212345',
     userName: '张伟',
     mobile: '1381678****',
     payTime: '2026-08-28 10:21:48',
     unitType: '企业单位',
-    receivedDate: '2026-08-28 10:21:48',
+    receivedDate: '2026-08-28 11:05:36',
+    orders: [
+      {
+        product: '舆情平台',
+        orderNo: 'OL202608280017',
+        packageName: '舆情通专业版 · 年包',
+        rights: '监测信息 50,000 条/年；报告导出 120 次；账号席位 5 个',
+        qty: 1,
+        unitPrice: 9800,
+        amount: 9800,
+        serviceStart: '2026-09-01',
+        serviceEnd: '2027-08-31',
+        orderTime: '2026-08-28 10:21:36',
+        userName: '张伟',
+        mobile: '1381678****',
+        payNo: '4200002631202608281088212345'
+      },
+      {
+        product: '蜜度DataQ',
+        orderNo: 'OL202608280042',
+        packageName: '传播分析基础版 · 季包',
+        rights: '传播分析报告 12 份；账号席位 2 个；数据导出 30 次',
+        qty: 1,
+        unitPrice: 3980,
+        amount: 3980,
+        serviceStart: '2026-09-01',
+        serviceEnd: '2026-11-30',
+        orderTime: '2026-08-28 11:05:20',
+        userName: '张伟',
+        mobile: '1381678****',
+        payNo: '4200002631202608281188212999'
+      }
+    ],
     files: [
       { id: '10001', type: '电子发票', name: '电子发票-25312000000123456789.pdf', uploader: 'WIKI', uploadTime: '2026-08-29 09:40:18', signTime: '2026-08-29 10:05:22', remark: '已开具' },
       { id: '10002', type: '开票资料', name: '增值税开票信息.png', uploader: '张伟', uploadTime: '2026-08-28 14:02:11', signTime: '', remark: '用户上传' }
     ],
     flows: [
-      { time: '2026-08-28 10:21:48', amount: 9800, remark: '微信支付到账，付款编号 4200002631202608281088212345' }
+      { time: '2026-08-28 10:21:48', amount: 9800, remark: '微信支付到账，订单 OL202608280017，付款编号 4200002631202608281088212345' },
+      { time: '2026-08-28 11:05:36', amount: 3980, remark: '微信支付到账，订单 OL202608280042，付款编号 4200002631202608281188212999' }
     ],
     logs: [
-      { operator: '系统', type: '下单', time: '2026-08-28 10:21:36', desc: '官网下单成功' },
-      { operator: '系统', type: '支付', time: '2026-08-28 10:21:48', desc: '微信支付成功，订单生效' },
-      { operator: '张伟', type: '提交开票', time: '2026-08-28 14:02:11', desc: '提交发票抬头：上海蜜度信息技术有限公司' },
-      { operator: 'WIKI', type: '开票', time: '2026-08-29 09:40:18', desc: '开具普票电子票，发票号 25312000000123456789，金额 9,800.00' }
+      { operator: '系统', type: '下单', time: '2026-08-28 10:21:36', desc: '官网下单成功，订单 OL202608280017' },
+      { operator: '系统', type: '支付', time: '2026-08-28 10:21:48', desc: '微信支付成功，订单 OL202608280017 生效' },
+      { operator: '系统', type: '下单', time: '2026-08-28 11:05:20', desc: '官网下单成功，订单 OL202608280042' },
+      { operator: '系统', type: '支付', time: '2026-08-28 11:05:36', desc: '微信支付成功，订单 OL202608280042 生效' },
+      { operator: '张伟', type: '提交开票', time: '2026-08-28 14:02:11', desc: '两笔订单合并开票，抬头：上海蜜度信息技术有限公司' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-29 09:40:18', desc: '开具普票电子票，发票号 25312000000123456789，金额 13,780.00' }
     ]
   },
   {
@@ -1879,7 +1946,7 @@ new Vue({
       invPageSize: 10,
       invSels: [],
       invDetailVisible: false,
-      invDetailTab: 'info',
+      invDetailTab: 'orders',
       invCurrent: {},
       invUpload: { type: '', fileName: '', remark: '' }
     };
@@ -1945,6 +2012,26 @@ new Vue({
     },
     invAllChecked() {
       return this.invPaged.length > 0 && this.invPaged.every(r => this.invSels.indexOf(r.orderNo) !== -1);
+    },
+    invDetailOrders() {
+      const row = this.invCurrent || {};
+      if (row.orders && row.orders.length) return row.orders;
+      if (!row.orderNo) return [];
+      return [{
+        product: row.product,
+        orderNo: row.orderNo,
+        packageName: row.packageName,
+        rights: row.rights,
+        qty: row.qty,
+        unitPrice: row.unitPrice,
+        amount: row.amount,
+        serviceStart: row.serviceStart,
+        serviceEnd: row.serviceEnd,
+        orderTime: row.orderTime,
+        userName: row.userName,
+        mobile: row.mobile,
+        payNo: row.payNo
+      }];
     },
     invStats() {
       const sum = (st) => this.invFiltered.filter(r => r.invoiceStatus === st).reduce((s, r) => s + Number(r.invoiceAmount || 0), 0);
@@ -2071,7 +2158,7 @@ new Vue({
     },
     openInvDetail(row) {
       this.invCurrent = row;
-      this.invDetailTab = 'info';
+      this.invDetailTab = 'orders';
       this.invUpload = { type: '', fileName: '', remark: '' };
       this.invDetailVisible = true;
     },
