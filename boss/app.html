@@ -303,7 +303,13 @@
     .stat-row.s-total { background: #fff; border-color: #e6e8ed; }
     .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
     .boss-table.inv-order-table { min-width: 1980px; width: 1980px; }
-    .boss-table.customer-table { min-width: 1680px; width: 1680px; }
+    .boss-table.customer-table { min-width: 3200px; width: 3200px; }
+    .boss-table.track-table { min-width: 760px; width: 100%; }
+    .tag-cold { background: #eef2f6; color: #5c6b7a; }
+    .tag-warm { background: #fff7e6; color: #d48806; }
+    .tag-hot { background: #ffecec; color: #e05252; }
+    .score-num { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .level-note { font-size: 12px; color: #909399; line-height: 1.7; padding: 4px 0 8px; }
     .col-setting { padding: 6px 4px; min-width: 168px; }
     .col-setting .el-checkbox { display: block; margin: 4px 8px; }
     .status-dot {
@@ -423,11 +429,16 @@
             <span class="crumb">联系人管理 / 联系人列表</span>
           </div>
           <div class="panel">
-            <el-form :model="custQuery" label-width="88px" size="small" class="filter-form">
+            <el-form :model="custQuery" label-width="108px" size="small" class="filter-form">
               <el-row :gutter="12">
                 <el-col :span="6">
-                  <el-form-item label="用户ID">
-                    <el-input v-model="custQuery.userId" placeholder="请输入" clearable />
+                  <el-form-item label="联系人ID">
+                    <el-input v-model="custQuery.contactId" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="官网账号ID">
+                    <el-input v-model="custQuery.officialAccountId" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -436,13 +447,13 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="昵称">
-                    <el-input v-model="custQuery.nickname" placeholder="请输入" clearable />
+                  <el-form-item label="客户主体名称">
+                    <el-input v-model="custQuery.customerSubjectName" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="账号">
-                    <el-input v-model="custQuery.account" placeholder="请输入" clearable />
+                  <el-form-item label="联系人姓名">
+                    <el-input v-model="custQuery.name" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -451,40 +462,62 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="姓名">
-                    <el-input v-model="custQuery.name" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="单位名称">
-                    <el-input v-model="custQuery.company" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="省份">
-                    <el-select v-model="custQuery.province" placeholder="请选择" clearable style="width:100%">
-                      <el-option v-for="p in provinceOptions" :key="p" :label="p" :value="p" />
+                  <el-form-item label="来源渠道">
+                    <el-select v-model="custQuery.source" placeholder="请选择" clearable style="width:100%" @change="onSourceChange">
+                      <el-option v-for="s in sourceOptions" :key="s" :label="s" :value="s" />
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="一级渠道">
-                    <el-select v-model="custQuery.channel1" placeholder="请选择" clearable style="width:100%" @change="onChannel1Change">
-                      <el-option v-for="c in channel1Options" :key="c" :label="c" :value="c" />
+                  <el-form-item label="来源详情">
+                    <el-select v-model="custQuery.sourceDetail" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="s in sourceDetailOptions" :key="s" :label="s" :value="s" />
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="二级渠道">
-                    <el-select v-model="custQuery.channel2" placeholder="请选择" clearable style="width:100%">
-                      <el-option v-for="c in channel2Options" :key="c" :label="c" :value="c" />
+                  <el-form-item label="意向产品线">
+                    <el-select v-model="custQuery.intentLine" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="p in productLineOptions" :key="p" :label="p" :value="p" />
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="注册时间">
+                  <el-form-item label="已购产品线">
+                    <el-select v-model="custQuery.purchasedLine" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="p in productLineOptions" :key="p" :label="p" :value="p" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="身份状态">
+                    <el-select v-model="custQuery.identityStatus" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="s in identityStatusOptions" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="行为等级">
+                    <el-select v-model="custQuery.behaviorLevel" placeholder="请选择" clearable style="width:100%">
+                      <el-option label="冷" value="冷" />
+                      <el-option label="温" value="温" />
+                      <el-option label="热" value="热" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="数据状态">
+                    <el-select v-model="custQuery.dataStatus" placeholder="请选择" clearable style="width:100%">
+                      <el-option label="正常" value="正常" />
+                      <el-option label="无效" value="无效" />
+                      <el-option label="已合并" value="已合并" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="入库时间">
                     <el-date-picker
-                      v-model="custQuery.registerTime"
+                      v-model="custQuery.createdAt"
                       type="daterange"
                       start-placeholder="开始日期"
                       end-placeholder="结束日期"
@@ -494,14 +527,6 @@
                     />
                   </el-form-item>
                 </el-col>
-                <el-col :span="6">
-                  <el-form-item label="状态">
-                    <el-select v-model="custQuery.status" placeholder="请选择" clearable style="width:100%">
-                      <el-option label="已启用" value="已启用" />
-                      <el-option label="未启用" value="未启用" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
               </el-row>
             </el-form>
             <div class="filter-actions">
@@ -509,6 +534,7 @@
               <el-button type="success" size="small" plain icon="el-icon-refresh" @click="onCustReset">重置</el-button>
               <el-button type="success" size="small" icon="el-icon-upload2" @click="$message.success('批量导入（原型）')">批量导入</el-button>
             </div>
+            <div class="warn-text">*行为分、行为等级按产线分开计算，当前样例为蜜度GEO小程序评估套餐。</div>
             <div class="toolbar">
               <div class="toolbar-left">
                 <el-dropdown trigger="click" :hide-on-click="false">
@@ -541,43 +567,57 @@
                 <thead>
                   <tr>
                     <th class="center">序号</th>
-                    <th v-if="custCols.userId">用户 ID</th>
+                    <th v-if="custCols.contactId">联系人ID</th>
+                    <th v-if="custCols.officialAccountId">官网账号ID</th>
                     <th v-if="custCols.mobile">手机号</th>
-                    <th v-if="custCols.nickname">昵称</th>
-                    <th v-if="custCols.account">账号</th>
+                    <th v-if="custCols.customerSubjectId">客户主体ID</th>
+                    <th v-if="custCols.customerSubjectName">客户主体名称</th>
                     <th v-if="custCols.email">邮箱</th>
-                    <th v-if="custCols.company">单位名称</th>
-                    <th v-if="custCols.name">姓名</th>
-                    <th v-if="custCols.province">省份</th>
-                    <th v-if="custCols.channel1">一级渠道</th>
-                    <th v-if="custCols.channel2">二级渠道</th>
-                    <th v-if="custCols.registerTime">注册时间</th>
-                    <th v-if="custCols.status">状态</th>
+                    <th v-if="custCols.name">联系人姓名</th>
+                    <th v-if="custCols.openid">小程序openid</th>
+                    <th v-if="custCols.unionid">微信unionid</th>
+                    <th v-if="custCols.source">来源渠道</th>
+                    <th v-if="custCols.sourceDetail">来源详情</th>
+                    <th v-if="custCols.intentLines">意向产品线</th>
+                    <th v-if="custCols.purchasedLines">已购产品线</th>
+                    <th v-if="custCols.identityStatus">身份状态</th>
+                    <th v-if="custCols.behaviorScore" class="right">行为分</th>
+                    <th v-if="custCols.behaviorLevel">行为等级</th>
+                    <th v-if="custCols.dataStatus">数据状态</th>
+                    <th v-if="custCols.remark">备注</th>
+                    <th v-if="custCols.createdAt">入库时间</th>
+                    <th v-if="custCols.updatedAt">更新时间</th>
+                    <th v-if="custCols.createdBy">创建人</th>
                     <th class="sticky-op" style="min-width:72px">操作</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-if="!custPaged.length">
-                    <td class="center" colspan="14" style="color:#909399;padding:36px 12px;">暂无数据</td>
+                    <td class="center" colspan="23" style="color:#909399;padding:36px 12px;">暂无数据</td>
                   </tr>
-                  <tr v-for="(row, idx) in custPaged" :key="row.userId">
+                  <tr v-for="(row, idx) in custPaged" :key="row.contactId">
                     <td class="center">{{ (custPage - 1) * custPageSize + idx + 1 }}</td>
-                    <td v-if="custCols.userId">{{ row.userId }}</td>
-                    <td v-if="custCols.mobile">{{ row.mobile }}</td>
-                    <td v-if="custCols.nickname">{{ row.nickname }}</td>
-                    <td v-if="custCols.account">{{ row.account }}</td>
-                    <td v-if="custCols.email">{{ row.email }}</td>
-                    <td v-if="custCols.company"><span class="clip" :title="row.company">{{ row.company }}</span></td>
-                    <td v-if="custCols.name">{{ row.name }}</td>
-                    <td v-if="custCols.province">{{ row.province }}</td>
-                    <td v-if="custCols.channel1">{{ row.channel1 }}</td>
-                    <td v-if="custCols.channel2">{{ row.channel2 }}</td>
-                    <td v-if="custCols.registerTime">{{ row.registerTime }}</td>
-                    <td v-if="custCols.status">
-                      <span class="status-dot" :class="row.status === '已启用' ? 'status-on' : 'status-off'">
-                        <i></i>{{ row.status }}
-                      </span>
-                    </td>
+                    <td v-if="custCols.contactId">{{ row.contactId }}</td>
+                    <td v-if="custCols.officialAccountId">{{ row.officialAccountId }}</td>
+                    <td v-if="custCols.mobile">{{ row.mobile || '-' }}</td>
+                    <td v-if="custCols.customerSubjectId">{{ row.customerSubjectId || '-' }}</td>
+                    <td v-if="custCols.customerSubjectName"><span class="clip" :title="row.customerSubjectName">{{ row.customerSubjectName || '-' }}</span></td>
+                    <td v-if="custCols.email">{{ row.email || '-' }}</td>
+                    <td v-if="custCols.name">{{ row.name || '-' }}</td>
+                    <td v-if="custCols.openid"><span class="clip" :title="row.openid">{{ row.openid || '-' }}</span></td>
+                    <td v-if="custCols.unionid"><span class="clip" :title="row.unionid">{{ row.unionid || '-' }}</span></td>
+                    <td v-if="custCols.source">{{ row.source }}</td>
+                    <td v-if="custCols.sourceDetail">{{ row.sourceDetail || '-' }}</td>
+                    <td v-if="custCols.intentLines"><span class="clip" :title="joinLines(row.intentLines)">{{ joinLines(row.intentLines) }}</span></td>
+                    <td v-if="custCols.purchasedLines"><span class="clip" :title="joinLines(row.purchasedLines)">{{ joinLines(row.purchasedLines) }}</span></td>
+                    <td v-if="custCols.identityStatus"><span class="tag" :class="tagClass(row.identityStatus)">{{ row.identityStatus }}</span></td>
+                    <td v-if="custCols.behaviorScore" class="right"><span class="score-num">{{ row.behaviorScore }}</span></td>
+                    <td v-if="custCols.behaviorLevel"><span class="tag" :class="tagClass(row.behaviorLevel)">{{ row.behaviorLevel }}</span></td>
+                    <td v-if="custCols.dataStatus"><span class="tag" :class="tagClass(row.dataStatus)">{{ row.dataStatus }}</span></td>
+                    <td v-if="custCols.remark"><span class="clip" :title="row.remark">{{ row.remark || '-' }}</span></td>
+                    <td v-if="custCols.createdAt">{{ row.createdAt }}</td>
+                    <td v-if="custCols.updatedAt">{{ row.updatedAt }}</td>
+                    <td v-if="custCols.createdBy">{{ row.createdBy }}</td>
                     <td class="sticky-op">
                       <div class="op-col">
                         <el-button type="text" @click="openCustDetail(row)">详情</el-button>
@@ -642,15 +682,6 @@
                         <el-select v-model="invQuery.payMethod" placeholder="全部" clearable style="width:100%">
                           <el-option label="微信" value="微信" />
                           <el-option label="支付宝" value="支付宝" />
-                        </el-select>
-                      </el-form-item>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-form-item label="单位属性">
-                        <el-select v-model="invQuery.unitType" placeholder="全部" clearable style="width:100%">
-                          <el-option label="企业单位" value="企业单位" />
-                          <el-option label="非企业单位" value="非企业单位" />
-                          <el-option label="个人" value="个人" />
                         </el-select>
                       </el-form-item>
                     </el-col>
@@ -834,15 +865,6 @@
                     <el-select v-model="query.status" placeholder="全部" clearable style="width:100%">
                       <el-option label="正常" value="正常" />
                       <el-option label="作废" value="作废" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="单位属性">
-                    <el-select v-model="query.unitType" placeholder="全部" clearable style="width:100%">
-                      <el-option label="企业单位" value="企业单位" />
-                      <el-option label="非企业单位" value="非企业单位" />
-                      <el-option label="个人" value="个人" />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -1221,33 +1243,66 @@
     </div>
   </el-dialog>
 
-  <!-- 联系人详情 -->
+  <!-- 联系人详情：子表-完整轨迹 -->
   <el-dialog
     :visible.sync="custDetailVisible"
-    width="760px"
-    top="12vh"
+    width="920px"
+    top="8vh"
     custom-class="detail-dialog"
     :close-on-click-modal="false"
     append-to-body
   >
     <div slot="title" class="detail-title">
-      联系人详情 【{{ custCurrent.userId }}】
-      <span class="tag" :class="tagClass(custCurrent.status)">{{ custCurrent.status }}</span>
+      行为轨迹 【{{ custCurrent.contactId }}】
+      <span class="tag" :class="tagClass(custCurrent.behaviorLevel)">{{ custCurrent.behaviorLevel }}</span>
     </div>
-    <div class="info-grid" v-if="custCurrent.userId">
-      <div class="info-item"><span class="info-label">用户 ID：</span><span class="info-value">{{ custCurrent.userId }}</span></div>
-      <div class="info-item"><span class="info-label">手机号：</span><span class="info-value">{{ custCurrent.mobile }}</span></div>
-      <div class="info-item"><span class="info-label">昵称：</span><span class="info-value">{{ custCurrent.nickname }}</span></div>
-      <div class="info-item"><span class="info-label">账号：</span><span class="info-value">{{ custCurrent.account }}</span></div>
-      <div class="info-item"><span class="info-label">邮箱：</span><span class="info-value">{{ custCurrent.email }}</span></div>
-      <div class="info-item"><span class="info-label">姓名：</span><span class="info-value">{{ custCurrent.name }}</span></div>
-      <div class="info-item span-3"><span class="info-label">单位名称：</span><span class="info-value">{{ custCurrent.company }}</span></div>
-      <div class="info-item"><span class="info-label">省份：</span><span class="info-value">{{ custCurrent.province }}</span></div>
-      <div class="info-item"><span class="info-label">一级渠道：</span><span class="info-value">{{ custCurrent.channel1 }}</span></div>
-      <div class="info-item"><span class="info-label">二级渠道：</span><span class="info-value">{{ custCurrent.channel2 }}</span></div>
-      <div class="info-item"><span class="info-label">注册时间：</span><span class="info-value">{{ custCurrent.registerTime }}</span></div>
-      <div class="info-item"><span class="info-label">状态：</span><span class="info-value"><span class="tag" :class="tagClass(custCurrent.status)">{{ custCurrent.status }}</span></span></div>
+
+    <div v-if="custCurrent.contactId">
+      <div class="section-hd">行为汇总</div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">首次登录时间：</span><span class="info-value">{{ custCurrent.firstLoginAt || '-' }}</span></div>
+        <div class="info-item"><span class="info-label">登录次数：</span><span class="info-value">{{ custCurrent.loginCount }}</span></div>
+        <div class="info-item"><span class="info-label">最近活跃时间：</span><span class="info-value">{{ custCurrent.lastActiveAt || '-' }}</span></div>
+        <div class="info-item"><span class="info-label">最近关键行为：</span><span class="info-value">{{ custCurrent.lastBehavior || '-' }}</span></div>
+        <div class="info-item"><span class="info-label">关键事件次数：</span><span class="info-value">{{ custCurrent.keyEventCount }}</span></div>
+        <div class="info-item"><span class="info-label">是否下单：</span><span class="info-value">{{ custCurrent.hasOrder ? '是' : '否' }}</span></div>
+        <div class="info-item"><span class="info-label">订单数：</span><span class="info-value">{{ custCurrent.orderCount }}</span></div>
+        <div class="info-item"><span class="info-label">订单金额：</span><span class="info-value">{{ custCurrent.orderAmount ? money(custCurrent.orderAmount) : '-' }}</span></div>
+        <div class="info-item"><span class="info-label">开票状态：</span><span class="info-value">{{ custCurrent.invoiceStatus || '-' }}</span></div>
+      </div>
+      <div class="level-note">
+        冷（10–20分）：刚完成注册或零星登录，销售暂不跟进。<br>
+        温（21–45分）：有浏览、点击 9.9 元体验或填写表单，可由 SDR 初步触达。<br>
+        热（46分以上）：进入订单页、绑定主体、提交开票，销售需立刻跟进。行为分按产线分开计算，当前为蜜度GEO。
+      </div>
+      <div class="section-hd">行为轨迹</div>
+      <div class="table-scroll">
+        <table class="boss-table track-table">
+          <thead>
+            <tr>
+              <th class="center">序号</th>
+              <th>时间</th>
+              <th>产品线</th>
+              <th>行为</th>
+              <th class="right">得分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="!custCurrent.behaviorTrack || !custCurrent.behaviorTrack.length">
+              <td colspan="5" class="center" style="color:#909399;">暂无行为轨迹</td>
+            </tr>
+            <tr v-for="(row, i) in custCurrent.behaviorTrack" :key="i">
+              <td class="center">{{ i + 1 }}</td>
+              <td>{{ row.time }}</td>
+              <td>{{ row.product }}</td>
+              <td>{{ row.action }}</td>
+              <td class="right">+{{ row.score }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
     <div class="detail-footer">
       <el-button @click="custDetailVisible = false">关闭</el-button>
     </div>
@@ -2084,27 +2139,417 @@ const INV_MOCK = [
   }
 ];
 
-const CHANNEL_MAP = {
-  '官网注册': ['官网表单', '微信小程序', 'APP注册'],
-  '销售推荐': ['直销跟进', '老客转介'],
-  '活动投放': ['行业峰会', '线上直播', '内容投放'],
-  '合作伙伴': ['渠道转介', '代理商'],
-  'SEM搜索': ['百度搜索', '360搜索']
+const GEO_LINE = '蜜度GEO小程序评估套餐';
+const SOURCE_MAP = {
+  '官网': ['官网注册', '官网表单'],
+  '小程序': ['GEO小程序']
 };
 
-const CUSTOMER_MOCK = [
-  { userId: '10086001', mobile: '13816781234', nickname: '张伟', account: 'zhangwei', email: 'zhangwei@midu.com', company: '上海蜜度信息技术有限公司', name: '张伟', province: '上海', channel1: '官网注册', channel2: '官网表单', registerTime: '2026-03-12 10:24:18', status: '已启用' },
-  { userId: '10086002', mobile: '18602108821', nickname: '李娜', account: 'lina', email: 'lina@example.com', company: '北京双杰电气股份有限公司', name: '李娜', province: '北京', channel1: 'SEM搜索', channel2: '百度搜索', registerTime: '2026-04-08 16:12:02', status: '已启用' },
-  { userId: '10086003', mobile: '13917445566', nickname: '王强', account: 'wangqiang', email: 'wangqiang@example.com', company: '宁波市公安局', name: '王强', province: '浙江', channel1: '销售推荐', channel2: '直销跟进', registerTime: '2026-05-21 09:35:44', status: '已启用' },
-  { userId: '10086004', mobile: '15821997701', nickname: '陈静', account: 'chenjing', email: 'chenjing@example.com', company: '四川海底捞餐饮股份有限公司', name: '陈静', province: '四川', channel1: '活动投放', channel2: '行业峰会', registerTime: '2026-06-02 14:18:09', status: '未启用' },
-  { userId: '10086005', mobile: '13701662233', nickname: '赵敏', account: 'zhaomin', email: 'zhaomin@midu.com', company: '蜜度科技股份有限公司', name: '赵敏', province: '上海', channel1: '官网注册', channel2: '微信小程序', registerTime: '2026-06-18 11:06:33', status: '已启用' },
-  { userId: '10086006', mobile: '13905031234', nickname: '林晓', account: 'linxiao', email: 'linxiao@ningde.gov.cn', company: '宁德市公安局', name: '林晓', province: '福建', channel1: '合作伙伴', channel2: '渠道转介', registerTime: '2026-07-01 15:40:18', status: '已启用' },
-  { userId: '10086007', mobile: '17621717517', nickname: '周磊', account: 'zhoulei', email: 'zhoulei@example.com', company: '杭州阿里云计算有限公司', name: '周磊', province: '浙江', channel1: 'SEM搜索', channel2: '360搜索', registerTime: '2026-07-15 08:22:51', status: '已启用' },
-  { userId: '10086008', mobile: '13501668890', nickname: '吴倩', account: 'wuqian', email: 'wuqian@example.com', company: '江苏苏宁易购集团股份有限公司', name: '吴倩', province: '江苏', channel1: '活动投放', channel2: '线上直播', registerTime: '2026-07-28 19:44:10', status: '未启用' },
-  { userId: '10086009', mobile: '15021234567', nickname: '郑浩', account: 'zhenghao', email: 'zhenghao@example.com', company: '广州日报报业集团', name: '郑浩', province: '广东', channel1: '销售推荐', channel2: '老客转介', registerTime: '2026-08-04 10:11:26', status: '已启用' },
-  { userId: '10086010', mobile: '18817556621', nickname: '孙悦', account: 'sunyue', email: 'sunyue@example.com', company: '山东省文化和旅游厅', name: '孙悦', province: '山东', channel1: '合作伙伴', channel2: '代理商', registerTime: '2026-08-12 13:28:40', status: '已启用' },
-  { userId: '10086011', mobile: '13601669988', nickname: '何婷', account: 'heting', email: 'heting@example.com', company: '上海浦东发展银行股份有限公司', name: '何婷', province: '上海', channel1: '官网注册', channel2: 'APP注册', registerTime: '2026-08-20 17:02:15', status: '未启用' },
-  { userId: '10086012', mobile: '15902107766', nickname: '马超', account: 'machao', email: 'machao@example.com', company: '成都传媒集团', name: '马超', province: '四川', channel1: '活动投放', channel2: '内容投放', registerTime: '2026-08-29 09:16:08', status: '已启用' }
+function contactRow(o) {
+  return Object.assign({
+    customerSubjectId: '',
+    customerSubjectName: '',
+    email: '',
+    name: '',
+    openid: '',
+    unionid: '',
+    sourceDetail: '',
+    intentLines: [],
+    purchasedLines: [],
+    remark: '',
+    firstLoginAt: '',
+    loginCount: 0,
+    lastActiveAt: '',
+    lastBehavior: '',
+    keyEventCount: 0,
+    hasOrder: 0,
+    orderCount: 0,
+    orderAmount: 0,
+    invoiceStatus: '未申请',
+    behaviorTrack: []
+  }, o);
+}
+
+const CONTACT_MOCK = [
+  contactRow({
+    contactId: 'C202608290001',
+    officialAccountId: 'zhangwei',
+    mobile: '13816781234',
+    customerSubjectId: 'SUB-10001',
+    customerSubjectName: '上海蜜度信息技术有限公司',
+    email: 'zhangwei@midu.com',
+    name: '张伟',
+    openid: 'oX8fT5zhangwei001',
+    unionid: 'un_zw_001',
+    source: '官网',
+    sourceDetail: '官网注册',
+    intentLines: [GEO_LINE],
+    purchasedLines: [GEO_LINE],
+    identityStatus: '已开票',
+    behaviorScore: 67,
+    behaviorLevel: '热',
+    dataStatus: '正常',
+    remark: '已完成 9.9 体验并开具电子发票',
+    createdAt: '2026-03-12 10:24:18',
+    updatedAt: '2026-08-29 09:40:18',
+    createdBy: '系统',
+    firstLoginAt: '2026-03-12 10:26:02',
+    loginCount: 6,
+    lastActiveAt: '2026-08-29 09:38:11',
+    lastBehavior: '提交开票',
+    keyEventCount: 4,
+    hasOrder: 1,
+    orderCount: 1,
+    orderAmount: 9.9,
+    invoiceStatus: '已开票',
+    behaviorTrack: [
+      { time: '2026-03-12 10:24:18', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-03-12 10:26:02', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-08-05 10:18:00', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-08-05 10:20:36', product: GEO_LINE, action: '进入订单页', score: 15 },
+      { time: '2026-08-28 14:02:11', product: GEO_LINE, action: '绑定主体', score: 20 },
+      { time: '2026-08-28 14:08:40', product: GEO_LINE, action: '提交开票', score: 10 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202609010002',
+    officialAccountId: 'lina',
+    mobile: '18602108821',
+    customerSubjectId: 'SUB-10002',
+    customerSubjectName: '北京双杰电气股份有限公司',
+    email: 'lina@example.com',
+    name: '李娜',
+    openid: 'oX8fT5lina002',
+    unionid: 'un_ln_002',
+    source: '小程序',
+    sourceDetail: 'GEO小程序',
+    intentLines: [GEO_LINE],
+    purchasedLines: [GEO_LINE],
+    identityStatus: '已绑定主体',
+    behaviorScore: 57,
+    behaviorLevel: '热',
+    dataStatus: '正常',
+    remark: '已绑定企业主体，待提交开票',
+    createdAt: '2026-04-08 16:12:02',
+    updatedAt: '2026-09-01 16:21:33',
+    createdBy: '系统',
+    firstLoginAt: '2026-04-08 16:13:10',
+    loginCount: 4,
+    lastActiveAt: '2026-09-01 16:20:08',
+    lastBehavior: '绑定主体',
+    keyEventCount: 3,
+    hasOrder: 1,
+    orderCount: 1,
+    orderAmount: 9.9,
+    invoiceStatus: '未申请',
+    behaviorTrack: [
+      { time: '2026-04-08 16:12:02', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-04-08 16:13:10', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-09-01 16:08:02', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-09-01 16:08:40', product: GEO_LINE, action: '进入订单页', score: 15 },
+      { time: '2026-09-01 16:20:08', product: GEO_LINE, action: '绑定主体', score: 20 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202609020003',
+    officialAccountId: 'wangqiang',
+    mobile: '13917445566',
+    source: '小程序',
+    sourceDetail: 'GEO小程序',
+    openid: 'oX8fT5wangqiang003',
+    unionid: 'un_wq_003',
+    intentLines: [GEO_LINE],
+    purchasedLines: [],
+    identityStatus: '已注册未下单',
+    behaviorScore: 47,
+    behaviorLevel: '热',
+    dataStatus: '正常',
+    remark: '进入订单页未支付',
+    createdAt: '2026-05-21 09:35:44',
+    updatedAt: '2026-09-02 09:18:22',
+    createdBy: '系统',
+    firstLoginAt: '2026-05-21 09:36:01',
+    loginCount: 5,
+    lastActiveAt: '2026-09-02 09:16:08',
+    lastBehavior: '进入订单页',
+    keyEventCount: 2,
+    invoiceStatus: '未申请',
+    behaviorTrack: [
+      { time: '2026-05-21 09:35:44', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-05-21 09:36:01', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-09-02 09:12:10', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-09-02 09:16:08', product: GEO_LINE, action: '进入订单页', score: 15 },
+      { time: '2026-09-02 09:16:40', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-09-02 09:17:11', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-09-02 09:18:00', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-09-02 09:18:22', product: GEO_LINE, action: '登录', score: 2 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202608040004',
+    officialAccountId: 'chenjing',
+    mobile: '15821997701',
+    source: '官网',
+    sourceDetail: '官网表单',
+    openid: 'oX8fT5chenjing004',
+    intentLines: [GEO_LINE],
+    identityStatus: '已注册未下单',
+    behaviorScore: 32,
+    behaviorLevel: '温',
+    dataStatus: '正常',
+    remark: '已点击 9.9 元体验，未进入订单页',
+    createdAt: '2026-06-02 14:18:09',
+    updatedAt: '2026-08-04 16:12:22',
+    createdBy: '系统',
+    firstLoginAt: '2026-06-02 14:20:00',
+    loginCount: 6,
+    lastActiveAt: '2026-08-04 16:11:40',
+    lastBehavior: '点击 9.9 元体验',
+    keyEventCount: 1,
+    behaviorTrack: [
+      { time: '2026-06-02 14:18:09', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-06-02 14:20:00', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-07-15 08:22:51', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-08-04 16:10:18', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-08-04 16:11:40', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-08-04 16:12:22', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-08-04 16:13:01', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-08-04 16:13:40', product: GEO_LINE, action: '登录', score: 2 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202608180005',
+    officialAccountId: 'zhaomin',
+    mobile: '13701662233',
+    customerSubjectId: 'SUB-10005',
+    customerSubjectName: '蜜度科技股份有限公司',
+    email: 'zhaomin@midu.com',
+    name: '赵敏',
+    source: '小程序',
+    sourceDetail: 'GEO小程序',
+    openid: 'oX8fT5zhaomin005',
+    unionid: 'un_zm_005',
+    intentLines: [GEO_LINE],
+    purchasedLines: [GEO_LINE],
+    identityStatus: '已下单未开票',
+    behaviorScore: 37,
+    behaviorLevel: '温',
+    dataStatus: '正常',
+    createdAt: '2026-06-18 11:06:33',
+    updatedAt: '2026-08-18 19:44:28',
+    createdBy: '系统',
+    firstLoginAt: '2026-06-18 11:07:02',
+    loginCount: 3,
+    lastActiveAt: '2026-08-18 19:44:10',
+    lastBehavior: '进入订单页',
+    keyEventCount: 2,
+    hasOrder: 1,
+    orderCount: 1,
+    orderAmount: 9.9,
+    invoiceStatus: '未申请',
+    behaviorTrack: [
+      { time: '2026-06-18 11:06:33', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-06-18 11:07:02', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-08-18 19:40:00', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-08-18 19:44:10', product: GEO_LINE, action: '进入订单页', score: 15 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202607010006',
+    officialAccountId: 'linxiao',
+    mobile: '13905031234',
+    source: '小程序',
+    sourceDetail: 'GEO小程序',
+    openid: 'oX8fT5linxiao006',
+    intentLines: [GEO_LINE],
+    identityStatus: '已注册未下单',
+    behaviorScore: 12,
+    behaviorLevel: '冷',
+    dataStatus: '正常',
+    remark: '刚完成注册，零星登录',
+    createdAt: '2026-07-01 15:40:18',
+    updatedAt: '2026-07-01 15:41:02',
+    createdBy: '系统',
+    firstLoginAt: '2026-07-01 15:41:02',
+    loginCount: 1,
+    lastActiveAt: '2026-07-01 15:41:02',
+    lastBehavior: '登录',
+    behaviorTrack: [
+      { time: '2026-07-01 15:40:18', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-07-01 15:41:02', product: GEO_LINE, action: '登录', score: 2 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202607150007',
+    officialAccountId: 'zhoulei',
+    mobile: '17621717517',
+    source: '官网',
+    sourceDetail: '官网注册',
+    intentLines: [GEO_LINE],
+    identityStatus: '已注册未下单',
+    behaviorScore: 14,
+    behaviorLevel: '冷',
+    dataStatus: '正常',
+    createdAt: '2026-07-15 08:22:51',
+    updatedAt: '2026-07-16 09:10:00',
+    createdBy: '系统',
+    firstLoginAt: '2026-07-15 08:23:10',
+    loginCount: 2,
+    lastActiveAt: '2026-07-16 09:10:00',
+    lastBehavior: '登录',
+    behaviorTrack: [
+      { time: '2026-07-15 08:22:51', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-07-15 08:23:10', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-07-16 09:10:00', product: GEO_LINE, action: '登录', score: 2 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202607280008',
+    officialAccountId: 'wuqian',
+    mobile: '13501668890',
+    source: '官网',
+    sourceDetail: '官网表单',
+    intentLines: [GEO_LINE],
+    identityStatus: '已注册未下单',
+    behaviorScore: 22,
+    behaviorLevel: '温',
+    dataStatus: '正常',
+    remark: '点击 9.9 元体验后未继续',
+    createdAt: '2026-07-28 19:44:10',
+    updatedAt: '2026-07-28 19:50:00',
+    createdBy: '系统',
+    firstLoginAt: '2026-07-28 19:45:00',
+    loginCount: 1,
+    lastActiveAt: '2026-07-28 19:50:00',
+    lastBehavior: '点击 9.9 元体验',
+    keyEventCount: 1,
+    behaviorTrack: [
+      { time: '2026-07-28 19:44:10', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-07-28 19:45:00', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-07-28 19:50:00', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202608040009',
+    officialAccountId: 'zhenghao',
+    mobile: '15021234567',
+    customerSubjectId: 'SUB-10009',
+    customerSubjectName: '广州日报报业集团',
+    email: 'zhenghao@example.com',
+    name: '郑浩',
+    source: '官网',
+    sourceDetail: '官网注册',
+    intentLines: [GEO_LINE],
+    purchasedLines: [GEO_LINE],
+    identityStatus: '已下单未开票',
+    behaviorScore: 37,
+    behaviorLevel: '温',
+    dataStatus: '无效',
+    remark: '重复注册后标记无效',
+    createdAt: '2026-08-04 10:11:26',
+    updatedAt: '2026-08-20 17:02:15',
+    createdBy: '人工',
+    firstLoginAt: '2026-08-04 10:12:00',
+    loginCount: 2,
+    lastActiveAt: '2026-08-04 11:06:18',
+    lastBehavior: '进入订单页',
+    keyEventCount: 2,
+    hasOrder: 1,
+    orderCount: 1,
+    orderAmount: 9.9,
+    invoiceStatus: '未申请',
+    behaviorTrack: [
+      { time: '2026-08-04 10:11:26', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-08-04 10:12:00', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-08-04 10:40:00', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-08-04 11:06:18', product: GEO_LINE, action: '进入订单页', score: 15 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202608120010',
+    officialAccountId: 'sunyue',
+    mobile: '18817556621',
+    source: '小程序',
+    sourceDetail: 'GEO小程序',
+    openid: 'oX8fT5sunyue010',
+    intentLines: [GEO_LINE],
+    identityStatus: '已注册未下单',
+    behaviorScore: 12,
+    behaviorLevel: '冷',
+    dataStatus: '已合并',
+    remark: '已合并至 C202608290001',
+    createdAt: '2026-08-12 13:28:40',
+    updatedAt: '2026-08-29 10:00:00',
+    createdBy: '人工',
+    firstLoginAt: '2026-08-12 13:29:00',
+    loginCount: 1,
+    lastActiveAt: '2026-08-12 13:29:00',
+    lastBehavior: '登录',
+    behaviorTrack: [
+      { time: '2026-08-12 13:28:40', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-08-12 13:29:00', product: GEO_LINE, action: '登录', score: 2 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202608200011',
+    officialAccountId: 'heting',
+    mobile: '13601669988',
+    source: '官网',
+    sourceDetail: '官网注册',
+    intentLines: [GEO_LINE],
+    identityStatus: '已注册未下单',
+    behaviorScore: 10,
+    behaviorLevel: '冷',
+    dataStatus: '正常',
+    remark: '仅完成注册，尚未登录',
+    createdAt: '2026-08-20 17:02:15',
+    updatedAt: '2026-08-20 17:02:15',
+    createdBy: '系统',
+    lastBehavior: '完成官网注册 + 微信授权手机号 + 同意协议',
+    behaviorTrack: [
+      { time: '2026-08-20 17:02:15', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202608290012',
+    officialAccountId: 'machao',
+    mobile: '15902107766',
+    customerSubjectId: 'SUB-10012',
+    customerSubjectName: '成都传媒集团',
+    email: 'machao@example.com',
+    name: '马超',
+    source: '小程序',
+    sourceDetail: 'GEO小程序',
+    openid: 'oX8fT5machao012',
+    unionid: 'un_mc_012',
+    intentLines: [GEO_LINE],
+    purchasedLines: [GEO_LINE],
+    identityStatus: '已开票',
+    behaviorScore: 69,
+    behaviorLevel: '热',
+    dataStatus: '正常',
+    createdAt: '2026-08-29 09:16:08',
+    updatedAt: '2026-09-02 15:22:41',
+    createdBy: '系统',
+    firstLoginAt: '2026-08-29 09:16:40',
+    loginCount: 2,
+    lastActiveAt: '2026-09-02 15:22:41',
+    lastBehavior: '提交开票',
+    keyEventCount: 4,
+    hasOrder: 1,
+    orderCount: 1,
+    orderAmount: 9.9,
+    invoiceStatus: '已开票',
+    behaviorTrack: [
+      { time: '2026-08-29 09:16:08', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-08-29 09:16:40', product: GEO_LINE, action: '登录', score: 2 },
+      { time: '2026-09-02 11:00:00', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-09-02 11:06:18', product: GEO_LINE, action: '进入订单页', score: 15 },
+      { time: '2026-09-02 11:40:00', product: GEO_LINE, action: '绑定主体', score: 20 },
+      { time: '2026-09-02 11:42:00', product: GEO_LINE, action: '提交开票', score: 10 },
+      { time: '2026-09-02 15:22:41', product: GEO_LINE, action: '登录', score: 2 }
+    ]
+  })
 ];
 
 new Vue({
@@ -2113,34 +2558,48 @@ new Vue({
     return {
       collapsed: false,
       currentMenu: pageFromQuery(),
-      provinceOptions: ['上海', '北京', '浙江', '江苏', '广东', '四川', '福建', '山东'],
-      channelMap: CHANNEL_MAP,
+      sourceMap: SOURCE_MAP,
+      productLineOptions: [GEO_LINE],
+      identityStatusOptions: ['已注册未下单', '已下单未开票', '已绑定主体', '已开票'],
       custQuery: {
-        userId: '', mobile: '', nickname: '', account: '',
-        email: '', name: '', company: '', province: '',
-        channel1: '', channel2: '', registerTime: [], status: ''
+        contactId: '', officialAccountId: '', mobile: '', customerSubjectName: '',
+        name: '', email: '', source: '', sourceDetail: '',
+        intentLine: '', purchasedLine: '', identityStatus: '',
+        behaviorLevel: '', dataStatus: '', createdAt: []
       },
-      custList: JSON.parse(JSON.stringify(CUSTOMER_MOCK)),
+      custList: JSON.parse(JSON.stringify(CONTACT_MOCK)),
       custPage: 1,
       custPageSize: 10,
       custCols: {
-        userId: true, mobile: true, nickname: true, account: true,
-        email: true, company: true, name: true, province: true,
-        channel1: true, channel2: true, registerTime: true, status: true
+        contactId: true, officialAccountId: true, mobile: true,
+        customerSubjectId: true, customerSubjectName: true, email: true, name: true,
+        openid: true, unionid: true, source: true, sourceDetail: true,
+        intentLines: true, purchasedLines: true, identityStatus: true,
+        behaviorScore: true, behaviorLevel: true, dataStatus: true,
+        remark: true, createdAt: true, updatedAt: true, createdBy: true
       },
       custColList: [
-        { key: 'userId', label: '用户 ID' },
+        { key: 'contactId', label: '联系人ID' },
+        { key: 'officialAccountId', label: '官网账号ID' },
         { key: 'mobile', label: '手机号' },
-        { key: 'nickname', label: '昵称' },
-        { key: 'account', label: '账号' },
+        { key: 'customerSubjectId', label: '客户主体ID' },
+        { key: 'customerSubjectName', label: '客户主体名称' },
         { key: 'email', label: '邮箱' },
-        { key: 'company', label: '单位名称' },
-        { key: 'name', label: '姓名' },
-        { key: 'province', label: '省份' },
-        { key: 'channel1', label: '一级渠道' },
-        { key: 'channel2', label: '二级渠道' },
-        { key: 'registerTime', label: '注册时间' },
-        { key: 'status', label: '状态' }
+        { key: 'name', label: '联系人姓名' },
+        { key: 'openid', label: '小程序openid' },
+        { key: 'unionid', label: '微信unionid' },
+        { key: 'source', label: '来源渠道' },
+        { key: 'sourceDetail', label: '来源详情' },
+        { key: 'intentLines', label: '意向产品线' },
+        { key: 'purchasedLines', label: '已购产品线' },
+        { key: 'identityStatus', label: '身份状态' },
+        { key: 'behaviorScore', label: '行为分' },
+        { key: 'behaviorLevel', label: '行为等级' },
+        { key: 'dataStatus', label: '数据状态' },
+        { key: 'remark', label: '备注' },
+        { key: 'createdAt', label: '入库时间' },
+        { key: 'updatedAt', label: '更新时间' },
+        { key: 'createdBy', label: '创建人' }
       ],
       custDetailVisible: false,
       custCurrent: {},
@@ -2195,7 +2654,7 @@ new Vue({
       entityOptions: ['蜜度科技股份有限公司'],
       query: {
         product: '', orderNo: '', packageName: '', userName: '', mobile: '',
-        invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: '', unitType: ''
+        invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: ''
       },
       list: JSON.parse(JSON.stringify(MOCK)),
       page: 1,
@@ -2213,7 +2672,7 @@ new Vue({
       voidReason: '',
       invQuery: {
         product: '', invoiceNo: '', invoiceStatus: '',
-        invoiceEntity: '', invoiceType: '', payMethod: '', unitType: '',
+        invoiceEntity: '', invoiceType: '', payMethod: '',
         invoiceTitle: '', submitTime: [], invoiceDate: []
       },
       invList: JSON.parse(JSON.stringify(INV_MOCK)),
@@ -2240,7 +2699,6 @@ new Vue({
         if (q.mobile && !row.mobile.includes(q.mobile)) return false;
         if (q.invoiceTitle && !row.invoiceTitle.includes(q.invoiceTitle)) return false;
         if (q.status && row.status !== q.status) return false;
-        if (q.unitType && row.unitType !== q.unitType) return false;
         if (q.serviceStart && row.serviceStart < q.serviceStart) return false;
         if (q.serviceEnd && row.serviceEnd > q.serviceEnd) return false;
         if (q.orderTime && q.orderTime.length === 2) {
@@ -2266,7 +2724,6 @@ new Vue({
         if (q.invoiceEntity && row.invoiceEntity !== q.invoiceEntity) return false;
         if (q.invoiceType && row.invoiceType !== q.invoiceType) return false;
         if (q.payMethod && row.payMethod !== q.payMethod) return false;
-        if (q.unitType && row.unitType !== q.unitType) return false;
         if (q.invoiceTitle && !(row.invoiceTitle || '').includes(q.invoiceTitle)) return false;
         if (q.submitTime && q.submitTime.length === 2) {
           if (!row.submitTime) return false;
@@ -2318,36 +2775,38 @@ new Vue({
         received: this.invFiltered.reduce((s, r) => s + Number(r.receivedAmount || 0), 0)
       };
     },
-    channel1Options() {
-      return Object.keys(this.channelMap);
+    sourceOptions() {
+      return Object.keys(this.sourceMap);
     },
-    channel2Options() {
-      if (this.custQuery.channel1 && this.channelMap[this.custQuery.channel1]) {
-        return this.channelMap[this.custQuery.channel1];
+    sourceDetailOptions() {
+      if (this.custQuery.source && this.sourceMap[this.custQuery.source]) {
+        return this.sourceMap[this.custQuery.source];
       }
       const all = [];
-      Object.keys(this.channelMap).forEach(k => {
-        this.channelMap[k].forEach(v => { if (all.indexOf(v) === -1) all.push(v); });
+      Object.keys(this.sourceMap).forEach(k => {
+        this.sourceMap[k].forEach(v => { if (all.indexOf(v) === -1) all.push(v); });
       });
       return all;
     },
     custFiltered() {
       const q = this.custQuery;
       return this.custList.filter(row => {
-        if (q.userId && !row.userId.includes(q.userId)) return false;
-        if (q.mobile && !row.mobile.includes(q.mobile)) return false;
-        if (q.nickname && !row.nickname.includes(q.nickname)) return false;
-        if (q.account && !row.account.includes(q.account)) return false;
-        if (q.email && !row.email.includes(q.email)) return false;
-        if (q.name && !row.name.includes(q.name)) return false;
-        if (q.company && !row.company.includes(q.company)) return false;
-        if (q.province && row.province !== q.province) return false;
-        if (q.channel1 && row.channel1 !== q.channel1) return false;
-        if (q.channel2 && row.channel2 !== q.channel2) return false;
-        if (q.status && row.status !== q.status) return false;
-        if (q.registerTime && q.registerTime.length === 2) {
-          const d = row.registerTime.slice(0, 10);
-          if (d < q.registerTime[0] || d > q.registerTime[1]) return false;
+        if (q.contactId && !(row.contactId || '').includes(q.contactId)) return false;
+        if (q.officialAccountId && !(row.officialAccountId || '').includes(q.officialAccountId)) return false;
+        if (q.mobile && !(row.mobile || '').includes(q.mobile)) return false;
+        if (q.customerSubjectName && !(row.customerSubjectName || '').includes(q.customerSubjectName)) return false;
+        if (q.name && !(row.name || '').includes(q.name)) return false;
+        if (q.email && !(row.email || '').includes(q.email)) return false;
+        if (q.source && row.source !== q.source) return false;
+        if (q.sourceDetail && row.sourceDetail !== q.sourceDetail) return false;
+        if (q.intentLine && (row.intentLines || []).indexOf(q.intentLine) === -1) return false;
+        if (q.purchasedLine && (row.purchasedLines || []).indexOf(q.purchasedLine) === -1) return false;
+        if (q.identityStatus && row.identityStatus !== q.identityStatus) return false;
+        if (q.behaviorLevel && row.behaviorLevel !== q.behaviorLevel) return false;
+        if (q.dataStatus && row.dataStatus !== q.dataStatus) return false;
+        if (q.createdAt && q.createdAt.length === 2) {
+          const d = (row.createdAt || '').slice(0, 10);
+          if (d < q.createdAt[0] || d > q.createdAt[1]) return false;
         }
         return true;
       });
@@ -2383,15 +2842,19 @@ new Vue({
         document.title = this.pageTitle(name);
       }
     },
-    onChannel1Change() {
-      this.custQuery.channel2 = '';
+    joinLines(arr) {
+      return arr && arr.length ? arr.join('、') : '-';
+    },
+    onSourceChange() {
+      this.custQuery.sourceDetail = '';
     },
     onCustSearch() { this.custPage = 1; this.$message.success('已按条件筛选'); },
     onCustReset() {
       this.custQuery = {
-        userId: '', mobile: '', nickname: '', account: '',
-        email: '', name: '', company: '', province: '',
-        channel1: '', channel2: '', registerTime: [], status: ''
+        contactId: '', officialAccountId: '', mobile: '', customerSubjectName: '',
+        name: '', email: '', source: '', sourceDetail: '',
+        intentLine: '', purchasedLine: '', identityStatus: '',
+        behaviorLevel: '', dataStatus: '', createdAt: []
       };
       this.custPage = 1;
     },
@@ -2417,12 +2880,20 @@ new Vue({
         '退单': 'tag-danger',
         '已退票': 'tag-danger',
         '已启用': 'tag-ok',
-        '未启用': 'tag-danger'
+        '未启用': 'tag-danger',
+        '冷': 'tag-cold',
+        '温': 'tag-warn',
+        '热': 'tag-hot',
+        '已注册未下单': 'tag-mute',
+        '已下单未开票': 'tag-warn',
+        '已绑定主体': 'tag-info',
+        '无效': 'tag-mute',
+        '已合并': 'tag-mute'
       }[st] || 'tag-mute';
     },
     onSearch() { this.page = 1; this.$message.success('已按条件筛选'); },
     onReset() {
-      this.query = { product: '', orderNo: '', packageName: '', userName: '', mobile: '', invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: '', unitType: '' };
+      this.query = { product: '', orderNo: '', packageName: '', userName: '', mobile: '', invoiceTitle: '', orderTime: [], serviceStart: '', serviceEnd: '', status: '' };
       this.page = 1;
     },
     toggleAll(e) {
@@ -2488,7 +2959,7 @@ new Vue({
     onInvReset() {
       this.invQuery = {
         product: '', invoiceNo: '', invoiceStatus: '',
-        invoiceEntity: '', invoiceType: '', payMethod: '', unitType: '',
+        invoiceEntity: '', invoiceType: '', payMethod: '',
         invoiceTitle: '', submitTime: [], invoiceDate: []
       };
       this.invPage = 1;
