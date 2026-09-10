@@ -236,6 +236,13 @@
       white-space: nowrap;
     }
     .detail-title::before { content: ""; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
+    .detail-product-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 6px 0 4px;
+    }
+    .detail-product-bar .k { font-size: 13px; color: var(--text-muted); }
+    .detail-product-bar .el-select { width: 240px; }
+    .el-select-dropdown.detail-product-popper { z-index: 4000 !important; }
     .detail-tag { font-size: 12px; font-weight: 500; }
     .detail-warn { position: absolute; right: 48px; top: 18px; color: #d48806; font-size: 12px; }
     .info-grid {
@@ -304,12 +311,26 @@
     .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
     .boss-table.inv-order-table { min-width: 1980px; width: 1980px; }
     .boss-table.customer-table { min-width: 3200px; width: 3200px; }
-    .boss-table.track-table { min-width: 760px; width: 100%; }
+    .boss-table.track-table,
+    .boss-table.summary-table,
+    .boss-table.rule-table { min-width: 100%; width: 100%; }
+    .boss-table.summary-table td:nth-child(2),
+    .boss-table.rule-table td.rule-text,
+    .boss-table.rule-table tfoot td {
+      white-space: normal; line-height: 1.65;
+    }
+    .boss-table.rule-table tbody tr.is-current.level-cold td { background: #f4f6f8; }
+    .boss-table.rule-table tbody tr.is-current.level-warm td { background: #fff8eb; }
+    .boss-table.rule-table tbody tr.is-current.level-hot td { background: #ffecec; }
+    .boss-table.rule-table tbody tr.is-current:hover td { filter: brightness(0.99); }
+    .boss-table.rule-table tfoot td { color: #667085; background: #fafbfc; }
+    .boss-table.track-table tfoot td {
+      background: #f7f8fa; font-weight: 600; color: var(--text);
+    }
     .tag-cold { background: #eef2f6; color: #5c6b7a; }
     .tag-warm { background: #fff7e6; color: #d48806; }
     .tag-hot { background: #ffecec; color: #e05252; }
     .score-num { font-variant-numeric: tabular-nums; font-weight: 600; }
-    .level-note { font-size: 12px; color: #909399; line-height: 1.7; padding: 4px 0 8px; }
     .col-setting { padding: 6px 4px; min-width: 168px; }
     .col-setting .el-checkbox { display: block; margin: 4px 8px; }
     .status-dot {
@@ -1254,26 +1275,34 @@
   >
     <div slot="title" class="detail-title">
       行为轨迹 【{{ custCurrent.contactId }}】
-      <span class="tag" :class="tagClass(custCurrent.behaviorLevel)">{{ custCurrent.behaviorLevel }}</span>
+      <span class="tag" :class="tagClass(custDetailLevel)">{{ custDetailLevel }}</span>
     </div>
 
     <div v-if="custCurrent.contactId">
-      <div class="section-hd">行为汇总</div>
-      <div class="info-grid">
-        <div class="info-item"><span class="info-label">首次登录时间：</span><span class="info-value">{{ custCurrent.firstLoginAt || '-' }}</span></div>
-        <div class="info-item"><span class="info-label">登录次数：</span><span class="info-value">{{ custCurrent.loginCount }}</span></div>
-        <div class="info-item"><span class="info-label">最近活跃时间：</span><span class="info-value">{{ custCurrent.lastActiveAt || '-' }}</span></div>
-        <div class="info-item"><span class="info-label">最近关键行为：</span><span class="info-value">{{ custCurrent.lastBehavior || '-' }}</span></div>
-        <div class="info-item"><span class="info-label">关键事件次数：</span><span class="info-value">{{ custCurrent.keyEventCount }}</span></div>
-        <div class="info-item"><span class="info-label">是否下单：</span><span class="info-value">{{ custCurrent.hasOrder ? '是' : '否' }}</span></div>
-        <div class="info-item"><span class="info-label">订单数：</span><span class="info-value">{{ custCurrent.orderCount }}</span></div>
-        <div class="info-item"><span class="info-label">订单金额：</span><span class="info-value">{{ custCurrent.orderAmount ? money(custCurrent.orderAmount) : '-' }}</span></div>
-        <div class="info-item"><span class="info-label">开票状态：</span><span class="info-value">{{ custCurrent.invoiceStatus || '-' }}</span></div>
+      <div class="detail-product-bar">
+        <span class="k">产品线</span>
+        <el-select v-model="custDetailProduct" size="small" popper-class="detail-product-popper">
+          <el-option v-for="p in custDetailProducts" :key="p" :label="productShortName(p)" :value="p" />
+        </el-select>
       </div>
-      <div class="level-note">
-        冷（10–20分）：刚完成注册或零星登录，销售暂不跟进。<br>
-        温（21–45分）：有浏览、点击 9.9 元体验或填写表单，可由 SDR 初步触达。<br>
-        热（46分以上）：进入订单页、绑定主体、提交开票，销售需立刻跟进。行为分按产线分开计算，当前为蜜度GEO。
+      <div class="section-hd">行为汇总</div>
+      <div class="table-scroll">
+        <table class="boss-table summary-table">
+          <thead>
+            <tr>
+              <th class="center">序号</th>
+              <th>字段</th>
+              <th>内容</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, i) in custSummaryRows" :key="item.field">
+              <td class="center">{{ i + 1 }}</td>
+              <td>{{ item.field }}</td>
+              <td>{{ item.value }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div class="section-hd">行为轨迹</div>
       <div class="table-scroll">
@@ -1288,10 +1317,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-if="!custCurrent.behaviorTrack || !custCurrent.behaviorTrack.length">
-              <td colspan="5" class="center" style="color:#909399;">暂无行为轨迹</td>
+            <tr v-if="!custFilteredTrack.length">
+              <td colspan="5" class="center" style="color:#909399;">暂无该产品线的行为轨迹</td>
             </tr>
-            <tr v-for="(row, i) in custCurrent.behaviorTrack" :key="i">
+            <tr v-for="(row, i) in custFilteredTrack" :key="i">
               <td class="center">{{ i + 1 }}</td>
               <td>{{ row.time }}</td>
               <td>{{ row.product }}</td>
@@ -1299,6 +1328,39 @@
               <td class="right">+{{ row.score }}</td>
             </tr>
           </tbody>
+          <tfoot v-if="custFilteredTrack.length">
+            <tr>
+              <td colspan="4">合计得分</td>
+              <td class="right"><span class="score-num">+{{ custTrackScoreTotal }}</span></td>
+            </tr>
+          </tfoot>
+        </table>
+        <table class="boss-table rule-table">
+          <thead>
+            <tr>
+              <th class="center" style="width:72px">等级</th>
+              <th style="width:120px">分数区间</th>
+              <th>规则</th>
+              <th class="center" style="width:80px">匹配</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="rule in behaviorLevelRules"
+              :key="rule.level"
+              :class="['level-' + ({ '冷': 'cold', '温': 'warm', '热': 'hot' }[rule.level] || ''), { 'is-current': rule.level === custDetailLevel }]"
+            >
+              <td class="center"><span class="tag" :class="tagClass(rule.level)">{{ rule.level }}</span></td>
+              <td>{{ rule.score }}</td>
+              <td class="rule-text">{{ rule.rule }}</td>
+              <td class="center">{{ rule.level === custDetailLevel ? '当前' : '-' }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4">行为分按产线分开计算，当前为{{ productShortName(custDetailProduct) }}。</td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
@@ -2140,10 +2202,40 @@ const INV_MOCK = [
 ];
 
 const GEO_LINE = '蜜度GEO小程序评估套餐';
+const YQ_LINE = '舆情平台';
+const PRODUCT_SHORT = {
+  '蜜度GEO小程序评估套餐': '蜜度GEO',
+  '舆情平台': '舆情平台'
+};
 const SOURCE_MAP = {
   '官网': ['官网注册', '官网表单'],
   '小程序': ['GEO小程序']
 };
+const BEHAVIOR_LEVEL_RULES = [
+  { level: '冷', score: '10–20分', rule: '刚完成注册或零星登录，销售暂不跟进。' },
+  { level: '温', score: '21–45分', rule: '有浏览、点击 9.9 元体验或填写表单，可由 SDR 初步触达。' },
+  { level: '热', score: '46分以上', rule: '进入订单页、绑定主体、提交开票，销售需立刻跟进。' }
+];
+
+function scoreToLevel(score) {
+  const n = Number(score) || 0;
+  if (n >= 46) return '热';
+  if (n >= 21) return '温';
+  if (n >= 10) return '冷';
+  return '-';
+}
+
+function uniqueProducts(row) {
+  const list = [];
+  function add(v) {
+    if (v && list.indexOf(v) === -1) list.push(v);
+  }
+  (row.intentLines || []).forEach(add);
+  (row.purchasedLines || []).forEach(add);
+  (row.behaviorTrack || []).forEach(function (t) { add(t.product); });
+  if (!list.length) add(GEO_LINE);
+  return list;
+}
 
 function contactRow(o) {
   return Object.assign({
@@ -2183,7 +2275,7 @@ const CONTACT_MOCK = [
     unionid: 'un_zw_001',
     source: '官网',
     sourceDetail: '官网注册',
-    intentLines: [GEO_LINE],
+    intentLines: [GEO_LINE, YQ_LINE],
     purchasedLines: [GEO_LINE],
     identityStatus: '已开票',
     behaviorScore: 67,
@@ -2202,13 +2294,40 @@ const CONTACT_MOCK = [
     orderCount: 1,
     orderAmount: 9.9,
     invoiceStatus: '已开票',
+    productDetails: {
+      '蜜度GEO小程序评估套餐': {
+        firstLoginAt: '2026-03-12 10:26:02',
+        loginCount: 6,
+        lastActiveAt: '2026-08-29 09:38:11',
+        lastBehavior: '提交开票',
+        keyEventCount: 4,
+        hasOrder: 1,
+        orderCount: 1,
+        orderAmount: 9.9,
+        invoiceStatus: '已开票'
+      },
+      '舆情平台': {
+        firstLoginAt: '2026-08-10 10:02:18',
+        loginCount: 2,
+        lastActiveAt: '2026-08-22 14:18:00',
+        lastBehavior: '点击 9.9 元体验',
+        keyEventCount: 1,
+        hasOrder: 0,
+        orderCount: 0,
+        orderAmount: 0,
+        invoiceStatus: '未申请'
+      }
+    },
     behaviorTrack: [
       { time: '2026-03-12 10:24:18', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
       { time: '2026-03-12 10:26:02', product: GEO_LINE, action: '登录', score: 2 },
       { time: '2026-08-05 10:18:00', product: GEO_LINE, action: '点击 9.9 元体验', score: 10 },
       { time: '2026-08-05 10:20:36', product: GEO_LINE, action: '进入订单页', score: 15 },
       { time: '2026-08-28 14:02:11', product: GEO_LINE, action: '绑定主体', score: 20 },
-      { time: '2026-08-28 14:08:40', product: GEO_LINE, action: '提交开票', score: 10 }
+      { time: '2026-08-28 14:08:40', product: GEO_LINE, action: '提交开票', score: 10 },
+      { time: '2026-08-10 10:00:40', product: YQ_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 },
+      { time: '2026-08-10 10:02:18', product: YQ_LINE, action: '登录', score: 2 },
+      { time: '2026-08-22 14:18:00', product: YQ_LINE, action: '点击 9.9 元体验', score: 10 }
     ]
   }),
   contactRow({
@@ -2559,7 +2678,8 @@ new Vue({
       collapsed: false,
       currentMenu: pageFromQuery(),
       sourceMap: SOURCE_MAP,
-      productLineOptions: [GEO_LINE],
+      behaviorLevelRules: BEHAVIOR_LEVEL_RULES,
+      productLineOptions: [GEO_LINE, YQ_LINE],
       identityStatusOptions: ['已注册未下单', '已下单未开票', '已绑定主体', '已开票'],
       custQuery: {
         contactId: '', officialAccountId: '', mobile: '', customerSubjectName: '',
@@ -2602,6 +2722,7 @@ new Vue({
         { key: 'createdBy', label: '创建人' }
       ],
       custDetailVisible: false,
+      custDetailProduct: '',
       custCurrent: {},
       menus: [
         { name: '我的工作台', icon: 'el-icon-s-home' },
@@ -2689,6 +2810,45 @@ new Vue({
     document.title = this.pageTitle(this.currentMenu);
   },
   computed: {
+    custSummaryRows() {
+      const c = this.custSummarySource || {};
+      return [
+        { field: '首次登录时间', value: c.firstLoginAt || '-' },
+        { field: '登录次数', value: c.loginCount == null ? '-' : c.loginCount },
+        { field: '最近活跃时间', value: c.lastActiveAt || '-' },
+        { field: '最近关键行为', value: c.lastBehavior || '-' },
+        { field: '关键事件次数', value: c.keyEventCount == null ? '-' : c.keyEventCount },
+        { field: '是否下单', value: c.hasOrder ? '是' : '否' },
+        { field: '订单数', value: c.orderCount == null ? '-' : c.orderCount },
+        { field: '订单金额', value: c.orderAmount ? this.money(c.orderAmount) : '-' },
+        { field: '开票状态', value: c.invoiceStatus || '-' }
+      ];
+    },
+    custDetailProducts() {
+      return uniqueProducts(this.custCurrent || {});
+    },
+    custFilteredTrack() {
+      const rows = (this.custCurrent && this.custCurrent.behaviorTrack) || [];
+      const p = this.custDetailProduct;
+      if (!p) return rows;
+      return rows.filter(function (row) { return row.product === p; });
+    },
+    custTrackScoreTotal() {
+      return this.custFilteredTrack.reduce(function (sum, row) {
+        return sum + (Number(row.score) || 0);
+      }, 0);
+    },
+    custDetailLevel() {
+      return scoreToLevel(this.custTrackScoreTotal);
+    },
+    custSummarySource() {
+      const c = this.custCurrent || {};
+      const p = this.custDetailProduct;
+      const mapped = ((c.productDetails || {})[p]);
+      if (mapped) return mapped;
+      if (!p || p === GEO_LINE) return c;
+      return {};
+    },
     filtered() {
       const q = this.query;
       return this.list.filter(row => {
@@ -2864,7 +3024,12 @@ new Vue({
     },
     openCustDetail(row) {
       this.custCurrent = row;
+      const products = uniqueProducts(row || {});
+      this.custDetailProduct = products.indexOf(GEO_LINE) !== -1 ? GEO_LINE : (products[0] || '');
       this.custDetailVisible = true;
+    },
+    productShortName(name) {
+      return PRODUCT_SHORT[name] || name;
     },
     invoiceColor(st) {
       return { '已开票': '#67c23a', '开票中': '#e6a23c', '已作废': '#c0c4cc', '待开票': '#409eff', '已退票': '#f56c6c' }[st] || '#909399';
