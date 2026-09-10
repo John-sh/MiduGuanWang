@@ -1,23 +1,23 @@
 const orders = [
-  { id: "MD202608160008", product: "蜜度GEO", version: "旗舰版", benefit: ["生成式引擎监测周期 12 个月，覆盖主流大模型与 AI 搜索平台", "采样模型：DeepSeek、豆包、元宝、Kimi、千问、文心一言", "专项评估报告 24 份，支持品牌可见度与竞品对比", "AI 搜索竞争力诊断报告可导出 PDF", "购买后即时开通，支持按任务发起评估"], price: 9800, qty: 1, amount: 9800, date: "2026-08-16 14:08", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608150019", product: "新浪舆情通", version: "旗舰版", benefit: ["全网监测周期 12 个月，覆盖新闻、微博、微信、短视频、论坛等主流信源", "账号席位 10 个，支持按角色分配查看、研判、导出权限", "热点事件预警 200 条/日，支持关键词、地域、情感多维规则", "报告导出：日报 / 周报 / 专题报告，支持 Word、PDF", "历史数据回溯 3 年，含传播路径与重点账号分析"], price: 98000, qty: 1, amount: 98000, date: "2026-08-15 10:24", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608140083", product: "索骥", version: "专业版", benefit: ["线索监测周期 6 个月，覆盖公开网络与指定站点", "预警额度 50 条/日，支持优先级分级推送", "线索库容量 10 万条，支持标签、去重与合并研判", "导出权限：Excel / CSV，含原文链接与传播摘要"], price: 36000, qty: 1, amount: 36000, date: "2026-08-14 16:12", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608140021" },
-  { id: "MD202608130057", product: "城感通", version: "标准版", benefit: ["城市感知监测 12 个月，覆盖市政、交通、民生等主题", "账号席位 5 个，支持按区域查看", "事件工单联动 1000 次/月", "区域热力图与趋势看板，支持周报自动生成"], price: 28000, qty: 1, amount: 28000, date: "2026-08-13 09:35", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608130008" },
-  { id: "MD202608120031", product: "校对通", version: "企业版", benefit: ["智能校对额度 10 万字/月，有效期 12 个月", "支持公文、新闻、宣传稿等多文体校对", "错敏词库可定制，含行业词、领导人姓名、地名", "校对记录留存 180 天，支持对照导出"], price: 12800, qty: 1, amount: 12800, date: "2026-08-12 14:07", status: "pending_pay", statusText: "待支付", canInvoice: false, invoiced: false },
-  { id: "MD202608110027", product: "新媒通", version: "专业版", benefit: ["新媒体运营周期 12 个月", "账号席位 5 个，覆盖微博、微信、抖音等内容发布", "素材库 5000 条，支持选题日历与审核流", "传播效果复盘周报自动生成"], price: 19800, qty: 1, amount: 19800, date: "2026-08-11 13:18", status: "cancelled", statusText: "已取消", canInvoice: false, invoiced: false },
-  { id: "MD202608100061", product: "安巡通", version: "旗舰版", benefit: ["安全巡检周期 12 个月", "巡检站点 20 个，含可用性、篡改、挂马监测", "告警通道：短信 / 邮件 / 企微，响应时效 5 分钟", "巡检报告按日归档，支持整改闭环记录"], price: 56000, qty: 1, amount: 56000, date: "2026-08-10 17:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608090044", product: "模力通", version: "标准版", benefit: ["模型调用额度 100 万 tokens，有效期 12 个月", "支持主流大模型切换与提示词模板", "并发 10 路，日志留存 90 天", "用量看板与超限预警"], price: 8800, qty: 2, amount: 17600, date: "2026-08-09 11:05", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608080072", product: "模力通智能体", version: "专业版", benefit: ["智能体席位 3 个，有效期 12 个月", "支持知识库挂载 5 个，单库 2GB", "对话记录留存 180 天，可导出", "权限：创建、发布、分享至内部成员"], price: 25800, qty: 1, amount: 25800, date: "2026-08-08 15:22", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608070018", product: "校对通智能体", version: "标准版", benefit: ["校对智能体 1 席，有效期 12 个月", "支持长文分段校对与修改建议对照", "词库同步企业版校对通", "会话记录留存 90 天"], price: 9800, qty: 1, amount: 9800, date: "2026-08-07 09:48", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608070014" },
-  { id: "MD202608060053", product: "DataQ智能体", version: "企业版", benefit: ["数据问答席位 5 个，有效期 12 个月", "可连接业务数据源 3 个，支持权限隔离", "问数结果可导出图表与明细表", "问答审计日志留存 1 年"], price: 39800, qty: 1, amount: 39800, date: "2026-08-06 18:16", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608050036", product: "数据服务", version: "定制包", benefit: ["专项数据采集与清洗 1 次", "交付字段按需求清单约定，含去重、标准化、质检报告", "交付周期 15 个工作日，支持一次修订", "成果物：数据包 + 数据字典 + 质检说明"], price: 48000, qty: 1, amount: 48000, date: "2026-08-05 16:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
-  { id: "MD202608040012", product: "报告定制", version: "专题报告", benefit: ["行业分析报告定制 1 份", "含现状、竞品、传播与建议四部分，约 30 页", "提供 1 次大纲确认与 1 次成稿修订", "交付格式：PPT + PDF，含数据附件"], price: 26800, qty: 1, amount: 26800, date: "2026-08-04 10:18", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608160008", product: "蜜度GEO", benefit: ["生成式引擎监测周期 12 个月，覆盖主流大模型与 AI 搜索平台", "采样模型：DeepSeek、豆包、元宝、Kimi、千问、文心一言", "专项评估报告 24 份，支持品牌可见度与竞品对比", "AI 搜索竞争力诊断报告可导出 PDF", "购买后即时开通，支持按任务发起评估"], price: 9800, qty: 1, amount: 9800, date: "2026-08-16 14:08", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608150019", product: "新浪舆情通", benefit: ["全网监测周期 12 个月，覆盖新闻、微博、微信、短视频、论坛等主流信源", "账号席位 10 个，支持按角色分配查看、研判、导出权限", "热点事件预警 200 条/日，支持关键词、地域、情感多维规则", "报告导出：日报 / 周报 / 专题报告，支持 Word、PDF", "历史数据回溯 3 年，含传播路径与重点账号分析"], price: 98000, qty: 1, amount: 98000, date: "2026-08-15 10:24", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608140083", product: "索骥", benefit: ["线索监测周期 6 个月，覆盖公开网络与指定站点", "预警额度 50 条/日，支持优先级分级推送", "线索库容量 10 万条，支持标签、去重与合并研判", "导出权限：Excel / CSV，含原文链接与传播摘要"], price: 36000, qty: 1, amount: 36000, date: "2026-08-14 16:12", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608140021" },
+  { id: "MD202608130057", product: "城感通", benefit: ["城市感知监测 12 个月，覆盖市政、交通、民生等主题", "账号席位 5 个，支持按区域查看", "事件工单联动 1000 次/月", "区域热力图与趋势看板，支持周报自动生成"], price: 28000, qty: 1, amount: 28000, date: "2026-08-13 09:35", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608130008" },
+  { id: "MD202608120031", product: "校对通", benefit: ["智能校对额度 10 万字/月，有效期 12 个月", "支持公文、新闻、宣传稿等多文体校对", "错敏词库可定制，含行业词、领导人姓名、地名", "校对记录留存 180 天，支持对照导出"], price: 12800, qty: 1, amount: 12800, date: "2026-08-12 14:07", status: "pending_pay", statusText: "待支付", canInvoice: false, invoiced: false },
+  { id: "MD202608110027", product: "新媒通", benefit: ["新媒体运营周期 12 个月", "账号席位 5 个，覆盖微博、微信、抖音等内容发布", "素材库 5000 条，支持选题日历与审核流", "传播效果复盘周报自动生成"], price: 19800, qty: 1, amount: 19800, date: "2026-08-11 13:18", status: "cancelled", statusText: "已取消", canInvoice: false, invoiced: false },
+  { id: "MD202608100061", product: "安巡通", benefit: ["安全巡检周期 12 个月", "巡检站点 20 个，含可用性、篡改、挂马监测", "告警通道：短信 / 邮件 / 企微，响应时效 5 分钟", "巡检报告按日归档，支持整改闭环记录"], price: 56000, qty: 1, amount: 56000, date: "2026-08-10 17:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608090044", product: "模力通", benefit: ["模型调用额度 100 万 tokens，有效期 12 个月", "支持主流大模型切换与提示词模板", "并发 10 路，日志留存 90 天", "用量看板与超限预警"], price: 8800, qty: 2, amount: 17600, date: "2026-08-09 11:05", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608080072", product: "模力通智能体", benefit: ["智能体席位 3 个，有效期 12 个月", "支持知识库挂载 5 个，单库 2GB", "对话记录留存 180 天，可导出", "权限：创建、发布、分享至内部成员"], price: 25800, qty: 1, amount: 25800, date: "2026-08-08 15:22", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608070018", product: "校对通智能体", benefit: ["校对智能体 1 席，有效期 12 个月", "支持长文分段校对与修改建议对照", "词库同步企业版校对通", "会话记录留存 90 天"], price: 9800, qty: 1, amount: 9800, date: "2026-08-07 09:48", status: "completed", statusText: "已完成", canInvoice: false, invoiced: true, invoiceId: "INV202608070014" },
+  { id: "MD202608060053", product: "DataQ智能体", benefit: ["数据问答席位 5 个，有效期 12 个月", "可连接业务数据源 3 个，支持权限隔离", "问数结果可导出图表与明细表", "问答审计日志留存 1 年"], price: 39800, qty: 1, amount: 39800, date: "2026-08-06 18:16", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608050036", product: "数据服务", benefit: ["专项数据采集与清洗 1 次", "交付字段按需求清单约定，含去重、标准化、质检报告", "交付周期 15 个工作日，支持一次修订", "成果物：数据包 + 数据字典 + 质检说明"], price: 48000, qty: 1, amount: 48000, date: "2026-08-05 16:40", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
+  { id: "MD202608040012", product: "报告定制", benefit: ["行业分析报告定制 1 份", "含现状、竞品、传播与建议四部分，约 30 页", "提供 1 次大纲确认与 1 次成稿修订", "交付格式：PPT + PDF，含数据附件"], price: 26800, qty: 1, amount: 26800, date: "2026-08-04 10:18", status: "completed", statusText: "已完成", canInvoice: true, invoiced: false },
 ];
 
 let records = [
-  { id: "INV202608140021", status: "processing", statusText: "开票中", date: "2026-08-14 18:20", amount: 36000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "待发送", invoiceNo: "—", invoiceKind: "special", orderIds: ["MD202608140083"] },
-  { id: "INV202608130008", status: "issued", statusText: "已开票", date: "2026-08-13 11:26", amount: 28000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026081300010872", invoiceKind: "normal", orderIds: ["MD202608130057"] },
-  { id: "INV202608070014", status: "failed", statusText: "开票失败", date: "2026-08-07 18:05", amount: 9800, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", content: "*信息技术服务*平台服务费", email: "orma***@midu.com", emailStatus: "发送失败", invoiceNo: "—", invoiceKind: "normal", orderIds: ["MD202608070018"] },
+  { id: "INV202608140021", status: "processing", statusText: "开票中", date: "2026-08-14 18:20", amount: 36000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", type: "enterprise", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "待发送", invoiceNo: "—", invoiceKind: "special", orderIds: ["MD202608140083"] },
+  { id: "INV202608130008", status: "issued", statusText: "已开票", date: "2026-08-13 11:26", amount: 28000, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", type: "enterprise", content: "*信息技术服务*平台服务费", email: "lizemingsh@midu.com", emailStatus: "已发送", invoiceNo: "2026081300010872", invoiceKind: "normal", orderIds: ["MD202608130057"] },
+  { id: "INV202608070014", status: "failed", statusText: "开票失败", date: "2026-08-07 18:05", amount: 9800, count: 1, company: "上海蜜度云科技有限公司", tax: "91310115MA1K4GEO88", type: "enterprise", content: "*信息技术服务*平台服务费", email: "orma***@midu.com", emailStatus: "发送失败", invoiceNo: "—", invoiceKind: "normal", orderIds: ["MD202608070018"] },
 ];
 
 const PAGE_SIZE = 10;
@@ -341,7 +341,7 @@ function syncEntityStatus() {
     tag.className = "status wait";
     nav.textContent = "未确认";
     nav.className = "nav-status wait";
-    $("confirmEntity").textContent = "确认开票主体";
+    $("confirmEntity").textContent = "确认主体";
   }
 }
 
@@ -368,6 +368,14 @@ function isEnterprise(type) {
   return (type || entity.type) === "enterprise";
 }
 
+function titleLabel(type) {
+  return isEnterprise(type) ? "公司名称" : "发票抬头";
+}
+
+function taxLabel(type) {
+  return isEnterprise(type) ? "公司税号" : "单位税号";
+}
+
 function invoiceKindLabel(kind) {
   return kind === "special" ? "专用电子发票" : "普通电子发票";
 }
@@ -375,10 +383,14 @@ function invoiceKindLabel(kind) {
 function syncEntityTypeUI() {
   const data = readEntityForm();
   const invoiceKind = data.invoiceKind;
-  $("entityCompanyLabel").innerHTML = "公司名称 <i>*</i>";
-  $("entityCompany").placeholder = "请输入公司名称搜索并选择";
+  const nameText = titleLabel(data.type);
+  const taxText = taxLabel(data.type);
+  $("entityCompanyLabel").innerHTML = `${nameText} <i>*</i>`;
+  $("entityCompany").placeholder = isEnterprise(data.type) ? "请输入公司名称搜索并选择" : "请输入发票抬头搜索并选择";
   $("entityTaxRow").classList.remove("hidden");
   const special = invoiceKind === "special";
+  $("entityTaxLabel").innerHTML = special ? `${taxText} <i>*</i>` : taxText;
+  $("entityTax").placeholder = special ? "请输入统一社会信用代码" : "选填";
   [
     ["entityBankLabel", "开户银行", "entityBank", "请输入开户银行"],
     ["entityAccountLabel", "银行账号", "entityAccount", "请输入银行账号"],
@@ -443,12 +455,14 @@ function onCompanyQuery() {
 function confirmEntity() {
   const data = readEntityForm();
   if (!data.invoiceKind) return toast("请选择发票类型");
-  if (!data.company) return toast("请填写公司名称");
+  if (!data.company) return toast(`请填写${titleLabel(data.type)}`);
   if (!isCompanyMatched(data.company)) {
     onCompanyQuery();
     return toast("无匹配单位名称，请联系客服获取发票");
   }
-  if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast("请填写正确的公司税号");
+  if (data.invoiceKind === "special" || data.tax) {
+    if (!/^[A-Z0-9]{15,20}$/.test(data.tax)) return toast(`请填写正确的${taxLabel(data.type)}`);
+  }
   if (data.invoiceKind === "special") {
     if (!data.bank) return toast("请填写开户银行");
     if (!data.account) return toast("请填写银行账号");
@@ -458,7 +472,7 @@ function confirmEntity() {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return toast("请输入正确的电子邮箱");
   Object.assign(entity, data, { confirmed: true });
   syncEntityStatus();
-  toast("开票主体已确认");
+  toast("绑定主体已确认");
 }
 
 function fillInvoiceFromEntity() {
@@ -466,12 +480,12 @@ function fillInvoiceFromEntity() {
   $("entityNeededTip").classList.toggle("hidden", entity.confirmed);
   if (entity.confirmed) {
     select.innerHTML = `
-      <option value="">请选择开票主体</option>
+      <option value="">请选择绑定主体</option>
       <option value="confirmed">${escapeHtml(entity.company)}</option>
     `;
     select.disabled = false;
   } else {
-    select.innerHTML = `<option value="">请选择开票主体</option>`;
+    select.innerHTML = `<option value="">请选择绑定主体</option>`;
     select.disabled = true;
   }
   select.value = "";
@@ -481,7 +495,8 @@ function fillInvoiceFromEntity() {
 
 function applySelectedInvoiceTitle() {
   const selected = $("invoiceTitleSelect").value === "confirmed" && entity.confirmed;
-  const showTax = selected;
+  const showTax = selected && Boolean(entity.tax);
+  $("invoiceTaxLabel").textContent = taxLabel(entity.type);
   $("invoiceTaxRow").classList.toggle("hidden", !showTax);
   $("invoiceTaxText").textContent = showTax ? entity.tax : "";
   $("invoiceEmailText").textContent = selected ? entity.email : "";
@@ -538,7 +553,6 @@ function openOrderDetail(id) {
     <section class="info-card">
       <div class="info-row"><span>订单编号</span><b>${escapeHtml(o.id)}</b></div>
       <div class="info-row"><span>产品</span><b>${escapeHtml(o.product)}</b></div>
-      <div class="info-row"><span>版本</span><b>${escapeHtml(o.version)}</b></div>
       <div class="info-row"><span>价格</span><b>¥${money(o.price)}</b></div>
       <div class="info-row"><span>数量</span><b>${o.qty}</b></div>
       <div class="info-row"><span>订单金额</span><b>¥${money(o.amount)}</b></div>
@@ -583,8 +597,8 @@ function openInvoiceDetail(id) {
     <section class="info-card">
       <div class="info-row"><span>发票编号</span><b>${escapeHtml(r.invoiceNo)}</b></div>
       <div class="info-row"><span>发票类型</span><b>${invoiceKindLabel(r.invoiceKind)}</b></div>
-      <div class="info-row"><span>单位名称</span><b>${escapeHtml(r.company)}</b></div>
-      <div class="info-row"><span>公司税号</span><b>${escapeHtml(r.tax || "—")}</b></div>
+      <div class="info-row"><span>${titleLabel(r.type)}</span><b>${escapeHtml(r.company)}</b></div>
+      ${r.tax ? `<div class="info-row"><span>${taxLabel(r.type)}</span><b>${escapeHtml(r.tax)}</b></div>` : ""}
       <div class="info-row"><span>发票内容</span><b>${escapeHtml(r.content)}</b></div>
       ${r.remark ? `<div class="info-row"><span>备注</span><b>${escapeHtml(r.remark)}</b></div>` : ""}
       <div class="info-row"><span>发票格式</span><b>PDF</b></div>
@@ -683,21 +697,21 @@ function cancelOrder(id) {
 
 function submitInvoice() {
   if (!entity.confirmed || $("invoiceTitleSelect").value !== "confirmed") {
-    toast("请先选择已确认的开票主体");
+    toast("请先选择已确认的绑定主体");
     return;
   }
   const company = entity.company;
   const tax = entity.tax;
   const email = entity.email;
-  if (!email) return toast("请先在开票主体中填写电子邮箱");
+  if (!email) return toast("请先在绑定主体中填写电子邮箱");
   const selected = selectedEligible();
   const total = selected.reduce((s, o) => s + o.amount, 0);
   const remark = $("remark").value.trim() || entity.remark;
   $("confirmBody").innerHTML = `
     <div class="info-row"><span>发票类型</span><b>${invoiceKindLabel(entity.invoiceKind)}</b></div>
     <div class="info-row"><span>抬头类型</span><b>${isEnterprise(entity.type) ? "企业单位" : "非企业单位"}</b></div>
-    <div class="info-row"><span>公司名称</span><b>${escapeHtml(company)}</b></div>
-    <div class="info-row"><span>公司税号</span><b>${escapeHtml(tax || "—")}</b></div>
+    <div class="info-row"><span>${titleLabel(entity.type)}</span><b>${escapeHtml(company)}</b></div>
+    ${tax ? `<div class="info-row"><span>${taxLabel(entity.type)}</span><b>${escapeHtml(tax)}</b></div>` : ""}
     <div class="info-row"><span>发票内容</span><b>*信息技术服务*平台服务费</b></div>
     <div class="info-row"><span>开票订单</span><b>${escapeHtml(invoiceOrderSummary(selected))}</b></div>
     ${remark ? `<div class="info-row"><span>备注</span><b>${escapeHtml(remark)}</b></div>` : ""}
@@ -719,6 +733,7 @@ function finishSubmit() {
     count: selected.length,
     company: entity.company,
     tax: entity.tax,
+    type: entity.type,
     content: "*信息技术服务*平台服务费",
     email: entity.email,
     emailStatus: "待发送",
