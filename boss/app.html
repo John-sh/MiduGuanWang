@@ -303,6 +303,19 @@
     .stat-row.s-total { background: #fff; border-color: #e6e8ed; }
     .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
     .boss-table.inv-order-table { min-width: 1980px; width: 1980px; }
+    .boss-table.customer-table { min-width: 1680px; width: 1680px; }
+    .col-setting { padding: 6px 4px; min-width: 168px; }
+    .col-setting .el-checkbox { display: block; margin: 4px 8px; }
+    .status-dot {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 12px; white-space: nowrap;
+    }
+    .status-dot i {
+      width: 6px; height: 6px; border-radius: 50%; display: inline-block;
+    }
+    .status-on { color: #2d9a5b; }
+    .status-on i { background: #2d9a5b; }
+    .status-off { color: #e05252; }
+    .status-off i { background: #e05252; }
     .boss-table tbody tr.row-mute td { color: var(--text-muted); }
     .boss-table input[type="checkbox"] {
       appearance: none; -webkit-appearance: none;
@@ -400,8 +413,181 @@
       </aside>
 
       <main class="main">
-        <div v-if="currentMenu !== '线上订单' && currentMenu !== '线上订单发票'" class="panel" style="padding:40px;text-align:center;color:#909399;">
-          此为原型演示，请点击左侧 <b style="color:var(--primary)">收支管理 / 线上订单发票</b> 或 <b style="color:var(--primary)">订单管理 / 线上订单</b>
+        <div v-if="currentMenu !== '线上订单' && currentMenu !== '线上订单发票' && currentMenu !== '联系人管理'" class="panel" style="padding:40px;text-align:center;color:#909399;">
+          此为原型演示，请点击左侧 <b style="color:var(--primary)">联系人管理</b>、<b style="color:var(--primary)">收支管理 / 线上订单发票</b> 或 <b style="color:var(--primary)">订单管理 / 线上订单</b>
+        </div>
+
+        <div v-else-if="currentMenu === '联系人管理'">
+          <div class="page-head">
+            <h2>联系人列表</h2>
+            <span class="crumb">联系人管理 / 联系人列表</span>
+          </div>
+          <div class="panel">
+            <el-form :model="custQuery" label-width="88px" size="small" class="filter-form">
+              <el-row :gutter="12">
+                <el-col :span="6">
+                  <el-form-item label="用户ID">
+                    <el-input v-model="custQuery.userId" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="手机号">
+                    <el-input v-model="custQuery.mobile" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="昵称">
+                    <el-input v-model="custQuery.nickname" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="账号">
+                    <el-input v-model="custQuery.account" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="邮箱">
+                    <el-input v-model="custQuery.email" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="姓名">
+                    <el-input v-model="custQuery.name" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="单位名称">
+                    <el-input v-model="custQuery.company" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="省份">
+                    <el-select v-model="custQuery.province" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="p in provinceOptions" :key="p" :label="p" :value="p" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="一级渠道">
+                    <el-select v-model="custQuery.channel1" placeholder="请选择" clearable style="width:100%" @change="onChannel1Change">
+                      <el-option v-for="c in channel1Options" :key="c" :label="c" :value="c" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="二级渠道">
+                    <el-select v-model="custQuery.channel2" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="c in channel2Options" :key="c" :label="c" :value="c" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="注册时间">
+                    <el-date-picker
+                      v-model="custQuery.registerTime"
+                      type="daterange"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      value-format="yyyy-MM-dd"
+                      unlink-panels
+                      style="width:100%"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="状态">
+                    <el-select v-model="custQuery.status" placeholder="请选择" clearable style="width:100%">
+                      <el-option label="已启用" value="已启用" />
+                      <el-option label="未启用" value="未启用" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+            <div class="filter-actions">
+              <el-button type="primary" size="small" icon="el-icon-search" @click="onCustSearch">查询</el-button>
+              <el-button type="success" size="small" plain icon="el-icon-refresh" @click="onCustReset">重置</el-button>
+              <el-button type="success" size="small" icon="el-icon-upload2" @click="$message.success('批量导入（原型）')">批量导入</el-button>
+            </div>
+            <div class="toolbar">
+              <div class="toolbar-left">
+                <el-dropdown trigger="click" :hide-on-click="false">
+                  <el-button size="small">列显示设置<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <div class="col-setting" @click.stop>
+                      <el-checkbox v-for="col in custColList" :key="col.key" v-model="custCols[col.key]">{{ col.label }}</el-checkbox>
+                    </div>
+                  </el-dropdown-menu>
+                </el-dropdown>
+                <el-dropdown trigger="click" @command="onCustExport">
+                  <el-button size="small">导出设置<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="page">导出当前页</el-dropdown-item>
+                    <el-dropdown-item command="all">导出全部</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <el-pagination
+                background
+                layout="total, prev, pager, next, jumper"
+                :total="custFiltered.length"
+                :page-size="custPageSize"
+                :current-page.sync="custPage"
+                small
+              />
+            </div>
+            <div class="table-scroll">
+              <table class="boss-table customer-table">
+                <thead>
+                  <tr>
+                    <th class="center">序号</th>
+                    <th v-if="custCols.userId">用户 ID</th>
+                    <th v-if="custCols.mobile">手机号</th>
+                    <th v-if="custCols.nickname">昵称</th>
+                    <th v-if="custCols.account">账号</th>
+                    <th v-if="custCols.email">邮箱</th>
+                    <th v-if="custCols.company">单位名称</th>
+                    <th v-if="custCols.name">姓名</th>
+                    <th v-if="custCols.province">省份</th>
+                    <th v-if="custCols.channel1">一级渠道</th>
+                    <th v-if="custCols.channel2">二级渠道</th>
+                    <th v-if="custCols.registerTime">注册时间</th>
+                    <th v-if="custCols.status">状态</th>
+                    <th class="sticky-op" style="min-width:72px">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="!custPaged.length">
+                    <td class="center" colspan="14" style="color:#909399;padding:36px 12px;">暂无数据</td>
+                  </tr>
+                  <tr v-for="(row, idx) in custPaged" :key="row.userId">
+                    <td class="center">{{ (custPage - 1) * custPageSize + idx + 1 }}</td>
+                    <td v-if="custCols.userId">{{ row.userId }}</td>
+                    <td v-if="custCols.mobile">{{ row.mobile }}</td>
+                    <td v-if="custCols.nickname">{{ row.nickname }}</td>
+                    <td v-if="custCols.account">{{ row.account }}</td>
+                    <td v-if="custCols.email">{{ row.email }}</td>
+                    <td v-if="custCols.company"><span class="clip" :title="row.company">{{ row.company }}</span></td>
+                    <td v-if="custCols.name">{{ row.name }}</td>
+                    <td v-if="custCols.province">{{ row.province }}</td>
+                    <td v-if="custCols.channel1">{{ row.channel1 }}</td>
+                    <td v-if="custCols.channel2">{{ row.channel2 }}</td>
+                    <td v-if="custCols.registerTime">{{ row.registerTime }}</td>
+                    <td v-if="custCols.status">
+                      <span class="status-dot" :class="row.status === '已启用' ? 'status-on' : 'status-off'">
+                        <i></i>{{ row.status }}
+                      </span>
+                    </td>
+                    <td class="sticky-op">
+                      <div class="op-col">
+                        <el-button type="text" @click="openCustDetail(row)">详情</el-button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div v-else-if="currentMenu === '线上订单发票'">
@@ -1035,6 +1221,38 @@
     </div>
   </el-dialog>
 
+  <!-- 联系人详情 -->
+  <el-dialog
+    :visible.sync="custDetailVisible"
+    width="760px"
+    top="12vh"
+    custom-class="detail-dialog"
+    :close-on-click-modal="false"
+    append-to-body
+  >
+    <div slot="title" class="detail-title">
+      联系人详情 【{{ custCurrent.userId }}】
+      <span class="tag" :class="tagClass(custCurrent.status)">{{ custCurrent.status }}</span>
+    </div>
+    <div class="info-grid" v-if="custCurrent.userId">
+      <div class="info-item"><span class="info-label">用户 ID：</span><span class="info-value">{{ custCurrent.userId }}</span></div>
+      <div class="info-item"><span class="info-label">手机号：</span><span class="info-value">{{ custCurrent.mobile }}</span></div>
+      <div class="info-item"><span class="info-label">昵称：</span><span class="info-value">{{ custCurrent.nickname }}</span></div>
+      <div class="info-item"><span class="info-label">账号：</span><span class="info-value">{{ custCurrent.account }}</span></div>
+      <div class="info-item"><span class="info-label">邮箱：</span><span class="info-value">{{ custCurrent.email }}</span></div>
+      <div class="info-item"><span class="info-label">姓名：</span><span class="info-value">{{ custCurrent.name }}</span></div>
+      <div class="info-item span-3"><span class="info-label">单位名称：</span><span class="info-value">{{ custCurrent.company }}</span></div>
+      <div class="info-item"><span class="info-label">省份：</span><span class="info-value">{{ custCurrent.province }}</span></div>
+      <div class="info-item"><span class="info-label">一级渠道：</span><span class="info-value">{{ custCurrent.channel1 }}</span></div>
+      <div class="info-item"><span class="info-label">二级渠道：</span><span class="info-value">{{ custCurrent.channel2 }}</span></div>
+      <div class="info-item"><span class="info-label">注册时间：</span><span class="info-value">{{ custCurrent.registerTime }}</span></div>
+      <div class="info-item"><span class="info-label">状态：</span><span class="info-value"><span class="tag" :class="tagClass(custCurrent.status)">{{ custCurrent.status }}</span></span></div>
+    </div>
+    <div class="detail-footer">
+      <el-button @click="custDetailVisible = false">关闭</el-button>
+    </div>
+  </el-dialog>
+
   <!-- 线上订单发票 · 开票详情 -->
   <el-dialog
     :visible.sync="invDetailVisible"
@@ -1276,7 +1494,9 @@ function daysBetween(a, b) {
 function pageFromQuery() {
   const p = new URLSearchParams(location.search).get('page');
   if (p === 'order' || p === '线上订单') return '线上订单';
-  return '线上订单发票';
+  if (p === 'invoice' || p === '线上订单发票') return '线上订单发票';
+  if (p === 'customer' || p === 'contact' || p === '联系人管理' || p === '联系人列表' || p === '客户管理' || p === '客户列表') return '联系人管理';
+  return '联系人管理';
 }
 
 const GEO_PKG = '蜜度GEO小程序评估套餐';
@@ -1864,12 +2084,66 @@ const INV_MOCK = [
   }
 ];
 
+const CHANNEL_MAP = {
+  '官网注册': ['官网表单', '微信小程序', 'APP注册'],
+  '销售推荐': ['直销跟进', '老客转介'],
+  '活动投放': ['行业峰会', '线上直播', '内容投放'],
+  '合作伙伴': ['渠道转介', '代理商'],
+  'SEM搜索': ['百度搜索', '360搜索']
+};
+
+const CUSTOMER_MOCK = [
+  { userId: '10086001', mobile: '13816781234', nickname: '张伟', account: 'zhangwei', email: 'zhangwei@midu.com', company: '上海蜜度信息技术有限公司', name: '张伟', province: '上海', channel1: '官网注册', channel2: '官网表单', registerTime: '2026-03-12 10:24:18', status: '已启用' },
+  { userId: '10086002', mobile: '18602108821', nickname: '李娜', account: 'lina', email: 'lina@example.com', company: '北京双杰电气股份有限公司', name: '李娜', province: '北京', channel1: 'SEM搜索', channel2: '百度搜索', registerTime: '2026-04-08 16:12:02', status: '已启用' },
+  { userId: '10086003', mobile: '13917445566', nickname: '王强', account: 'wangqiang', email: 'wangqiang@example.com', company: '宁波市公安局', name: '王强', province: '浙江', channel1: '销售推荐', channel2: '直销跟进', registerTime: '2026-05-21 09:35:44', status: '已启用' },
+  { userId: '10086004', mobile: '15821997701', nickname: '陈静', account: 'chenjing', email: 'chenjing@example.com', company: '四川海底捞餐饮股份有限公司', name: '陈静', province: '四川', channel1: '活动投放', channel2: '行业峰会', registerTime: '2026-06-02 14:18:09', status: '未启用' },
+  { userId: '10086005', mobile: '13701662233', nickname: '赵敏', account: 'zhaomin', email: 'zhaomin@midu.com', company: '蜜度科技股份有限公司', name: '赵敏', province: '上海', channel1: '官网注册', channel2: '微信小程序', registerTime: '2026-06-18 11:06:33', status: '已启用' },
+  { userId: '10086006', mobile: '13905031234', nickname: '林晓', account: 'linxiao', email: 'linxiao@ningde.gov.cn', company: '宁德市公安局', name: '林晓', province: '福建', channel1: '合作伙伴', channel2: '渠道转介', registerTime: '2026-07-01 15:40:18', status: '已启用' },
+  { userId: '10086007', mobile: '17621717517', nickname: '周磊', account: 'zhoulei', email: 'zhoulei@example.com', company: '杭州阿里云计算有限公司', name: '周磊', province: '浙江', channel1: 'SEM搜索', channel2: '360搜索', registerTime: '2026-07-15 08:22:51', status: '已启用' },
+  { userId: '10086008', mobile: '13501668890', nickname: '吴倩', account: 'wuqian', email: 'wuqian@example.com', company: '江苏苏宁易购集团股份有限公司', name: '吴倩', province: '江苏', channel1: '活动投放', channel2: '线上直播', registerTime: '2026-07-28 19:44:10', status: '未启用' },
+  { userId: '10086009', mobile: '15021234567', nickname: '郑浩', account: 'zhenghao', email: 'zhenghao@example.com', company: '广州日报报业集团', name: '郑浩', province: '广东', channel1: '销售推荐', channel2: '老客转介', registerTime: '2026-08-04 10:11:26', status: '已启用' },
+  { userId: '10086010', mobile: '18817556621', nickname: '孙悦', account: 'sunyue', email: 'sunyue@example.com', company: '山东省文化和旅游厅', name: '孙悦', province: '山东', channel1: '合作伙伴', channel2: '代理商', registerTime: '2026-08-12 13:28:40', status: '已启用' },
+  { userId: '10086011', mobile: '13601669988', nickname: '何婷', account: 'heting', email: 'heting@example.com', company: '上海浦东发展银行股份有限公司', name: '何婷', province: '上海', channel1: '官网注册', channel2: 'APP注册', registerTime: '2026-08-20 17:02:15', status: '未启用' },
+  { userId: '10086012', mobile: '15902107766', nickname: '马超', account: 'machao', email: 'machao@example.com', company: '成都传媒集团', name: '马超', province: '四川', channel1: '活动投放', channel2: '内容投放', registerTime: '2026-08-29 09:16:08', status: '已启用' }
+];
+
 new Vue({
   el: '#app',
   data() {
     return {
       collapsed: false,
       currentMenu: pageFromQuery(),
+      provinceOptions: ['上海', '北京', '浙江', '江苏', '广东', '四川', '福建', '山东'],
+      channelMap: CHANNEL_MAP,
+      custQuery: {
+        userId: '', mobile: '', nickname: '', account: '',
+        email: '', name: '', company: '', province: '',
+        channel1: '', channel2: '', registerTime: [], status: ''
+      },
+      custList: JSON.parse(JSON.stringify(CUSTOMER_MOCK)),
+      custPage: 1,
+      custPageSize: 10,
+      custCols: {
+        userId: true, mobile: true, nickname: true, account: true,
+        email: true, company: true, name: true, province: true,
+        channel1: true, channel2: true, registerTime: true, status: true
+      },
+      custColList: [
+        { key: 'userId', label: '用户 ID' },
+        { key: 'mobile', label: '手机号' },
+        { key: 'nickname', label: '昵称' },
+        { key: 'account', label: '账号' },
+        { key: 'email', label: '邮箱' },
+        { key: 'company', label: '单位名称' },
+        { key: 'name', label: '姓名' },
+        { key: 'province', label: '省份' },
+        { key: 'channel1', label: '一级渠道' },
+        { key: 'channel2', label: '二级渠道' },
+        { key: 'registerTime', label: '注册时间' },
+        { key: 'status', label: '状态' }
+      ],
+      custDetailVisible: false,
+      custCurrent: {},
       menus: [
         { name: '我的工作台', icon: 'el-icon-s-home' },
         { name: '仪表盘', icon: 'el-icon-data-analysis' },
@@ -1878,6 +2152,7 @@ new Vue({
         { name: '行业管理', icon: 'el-icon-office-building' },
         { name: '线索管理', icon: 'el-icon-connection' },
         { name: '客户管理', icon: 'el-icon-user', badge: 1 },
+        { name: '联系人管理', icon: 'el-icon-phone-outline' },
         { name: '合作伙伴管理', icon: 'el-icon-s-custom' },
         { name: '日报管理', icon: 'el-icon-date' },
         { name: '商机管理', icon: 'el-icon-s-flag' },
@@ -1952,7 +2227,7 @@ new Vue({
     };
   },
   created() {
-    document.title = this.currentMenu === '线上订单' ? '蜜度BOSS系统 - 线上订单' : '蜜度BOSS系统 - 线上订单发票';
+    document.title = this.pageTitle(this.currentMenu);
   },
   computed: {
     filtered() {
@@ -2042,6 +2317,44 @@ new Vue({
         voided: sum('已作废'),
         received: this.invFiltered.reduce((s, r) => s + Number(r.receivedAmount || 0), 0)
       };
+    },
+    channel1Options() {
+      return Object.keys(this.channelMap);
+    },
+    channel2Options() {
+      if (this.custQuery.channel1 && this.channelMap[this.custQuery.channel1]) {
+        return this.channelMap[this.custQuery.channel1];
+      }
+      const all = [];
+      Object.keys(this.channelMap).forEach(k => {
+        this.channelMap[k].forEach(v => { if (all.indexOf(v) === -1) all.push(v); });
+      });
+      return all;
+    },
+    custFiltered() {
+      const q = this.custQuery;
+      return this.custList.filter(row => {
+        if (q.userId && !row.userId.includes(q.userId)) return false;
+        if (q.mobile && !row.mobile.includes(q.mobile)) return false;
+        if (q.nickname && !row.nickname.includes(q.nickname)) return false;
+        if (q.account && !row.account.includes(q.account)) return false;
+        if (q.email && !row.email.includes(q.email)) return false;
+        if (q.name && !row.name.includes(q.name)) return false;
+        if (q.company && !row.company.includes(q.company)) return false;
+        if (q.province && row.province !== q.province) return false;
+        if (q.channel1 && row.channel1 !== q.channel1) return false;
+        if (q.channel2 && row.channel2 !== q.channel2) return false;
+        if (q.status && row.status !== q.status) return false;
+        if (q.registerTime && q.registerTime.length === 2) {
+          const d = row.registerTime.slice(0, 10);
+          if (d < q.registerTime[0] || d > q.registerTime[1]) return false;
+        }
+        return true;
+      });
+    },
+    custPaged() {
+      const start = (this.custPage - 1) * this.custPageSize;
+      return this.custFiltered.slice(start, start + this.custPageSize);
     }
   },
   methods: {
@@ -2051,18 +2364,44 @@ new Vue({
       const n = Number(row.invoiceAmount || 0) - Number(row.receivedAmount || 0);
       return n > 0 ? n : 0;
     },
+    pageTitle(name) {
+      if (name === '线上订单') return '蜜度BOSS系统 - 线上订单';
+      if (name === '线上订单发票') return '蜜度BOSS系统 - 线上订单发票';
+      if (name === '联系人管理') return '蜜度BOSS系统 - 联系人列表';
+      return '蜜度BOSS系统';
+    },
     selectMenu(name) {
       this.currentMenu = name;
       this.menus.forEach(m => {
         if (m.children) m.open = m.children.some(c => c.name === name);
       });
-      const page = name === '线上订单' ? 'order' : name === '线上订单发票' ? 'invoice' : '';
+      const page = name === '线上订单' ? 'order' : name === '线上订单发票' ? 'invoice' : name === '联系人管理' ? 'contact' : '';
       if (page) {
         const url = new URL(location.href);
         url.searchParams.set('page', page);
         history.replaceState(null, '', url);
-        document.title = name === '线上订单' ? '蜜度BOSS系统 - 线上订单' : '蜜度BOSS系统 - 线上订单发票';
+        document.title = this.pageTitle(name);
       }
+    },
+    onChannel1Change() {
+      this.custQuery.channel2 = '';
+    },
+    onCustSearch() { this.custPage = 1; this.$message.success('已按条件筛选'); },
+    onCustReset() {
+      this.custQuery = {
+        userId: '', mobile: '', nickname: '', account: '',
+        email: '', name: '', company: '', province: '',
+        channel1: '', channel2: '', registerTime: [], status: ''
+      };
+      this.custPage = 1;
+    },
+    onCustExport(cmd) {
+      const n = cmd === 'page' ? this.custPaged.length : this.custFiltered.length;
+      this.$message.success('已导出 ' + n + ' 条（原型）');
+    },
+    openCustDetail(row) {
+      this.custCurrent = row;
+      this.custDetailVisible = true;
     },
     invoiceColor(st) {
       return { '已开票': '#67c23a', '开票中': '#e6a23c', '已作废': '#c0c4cc', '待开票': '#409eff', '已退票': '#f56c6c' }[st] || '#909399';
@@ -2076,7 +2415,9 @@ new Vue({
         '已作废': 'tag-mute',
         '作废': 'tag-mute',
         '退单': 'tag-danger',
-        '已退票': 'tag-danger'
+        '已退票': 'tag-danger',
+        '已启用': 'tag-ok',
+        '未启用': 'tag-danger'
       }[st] || 'tag-mute';
     },
     onSearch() { this.page = 1; this.$message.success('已按条件筛选'); },
