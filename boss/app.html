@@ -256,6 +256,66 @@
     .info-label { color: var(--text-muted); width: 132px; flex-shrink: 0; text-align: right; padding-right: 8px; }
     .info-value { color: var(--text); flex: 1; min-width: 0; word-break: break-all; }
     .detail-footer { text-align: center; padding: 12px 0 8px; }
+    .cust-full-dialog {
+      margin: 0 !important; width: 100% !important; height: 100% !important;
+      max-width: 100%; border-radius: 0; display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .cust-full-dialog .el-dialog__header { flex-shrink: 0; }
+    .cust-full-dialog .el-dialog__body {
+      flex: 1; overflow: auto; background: #f4f6f8; padding: 16px 24px 8px;
+    }
+    .cust-full-dialog .el-dialog__footer {
+      flex-shrink: 0; text-align: center; padding: 12px 24px;
+      border-top: 1px solid var(--line); background: #fff;
+    }
+    .cust-block {
+      background: #fff; border: 1px solid var(--line); border-radius: 8px;
+      padding: 4px 20px 18px; margin-bottom: 16px;
+    }
+    .cust-block .section-hd { padding-top: 12px; }
+    .cust-block-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .cust-profile-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+    }
+    .cust-profile-grid .cell {
+      display: flex; min-width: 0; min-height: 42px;
+      border-right: 1px solid #eef1f4; border-bottom: 1px solid #eef1f4;
+    }
+    .cust-profile-grid .cell:nth-child(4n) { border-right: none; }
+    .cust-profile-grid .k {
+      width: 108px; flex-shrink: 0; background: #f7f8fa; color: var(--text-muted);
+      font-size: 12px; padding: 10px 12px; display: flex; align-items: center;
+    }
+    .cust-profile-grid .v {
+      flex: 1; min-width: 0; font-size: 13px; color: var(--text);
+      padding: 10px 12px; display: flex; align-items: center;
+      word-break: break-all; line-height: 1.5;
+    }
+    .cust-behavior-split {
+      display: grid; grid-template-columns: 420px 1fr; gap: 16px; align-items: stretch;
+    }
+    .cust-behavior-pane {
+      display: flex; flex-direction: column; min-width: 0; min-height: 0;
+    }
+    .cust-behavior-pane .table-scroll {
+      flex: 1; display: flex; flex-direction: column;
+      border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff;
+    }
+    .cust-behavior-pane .boss-table {
+      flex: 1; width: 100%; min-width: 0; margin-bottom: 0;
+      height: 100%;
+    }
+    @media (max-width: 1200px) {
+      .cust-profile-grid { grid-template-columns: 1fr 1fr; }
+      .cust-profile-grid .cell:nth-child(4n) { border-right: 1px solid #eef1f4; }
+      .cust-profile-grid .cell:nth-child(2n) { border-right: none; }
+      .cust-behavior-split { grid-template-columns: 1fr; }
+    }
     .section-hd {
       display: flex; align-items: center; gap: 8px;
       font-size: 14px; color: #1d2939; font-weight: 600;
@@ -1264,108 +1324,137 @@
     </div>
   </el-dialog>
 
-  <!-- 联系人详情：子表-完整轨迹 -->
+  <!-- 联系人详情：全屏覆盖，上主表字段、下行为 -->
   <el-dialog
     :visible.sync="custDetailVisible"
-    width="920px"
-    top="8vh"
-    custom-class="detail-dialog"
+    fullscreen
+    custom-class="detail-dialog cust-full-dialog"
     :close-on-click-modal="false"
     append-to-body
   >
     <div slot="title" class="detail-title">
-      行为轨迹 【{{ custCurrent.contactId }}】
+      联系人详情 【{{ custCurrent.contactId }}】
       <span class="tag" :class="tagClass(custDetailLevel)">{{ custDetailLevel }}</span>
     </div>
 
     <div v-if="custCurrent.contactId">
-      <div class="detail-product-bar">
-        <span class="k">产品线</span>
-        <el-select v-model="custDetailProduct" size="small" popper-class="detail-product-popper">
-          <el-option v-for="p in custDetailProducts" :key="p" :label="productShortName(p)" :value="p" />
-        </el-select>
+      <div class="cust-block">
+        <div class="section-hd">基本信息</div>
+        <div class="cust-profile-grid">
+          <div class="cell" v-for="item in custProfileFields" :key="item.label">
+            <div class="k">{{ item.label }}</div>
+            <div class="v">
+              <span v-if="item.tag" class="tag" :class="tagClass(item.value)">{{ item.value }}</span>
+              <span v-else-if="item.score" class="score-num">{{ item.value }}</span>
+              <span v-else>{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="section-hd">行为汇总</div>
-      <div class="table-scroll">
-        <table class="boss-table summary-table">
-          <thead>
-            <tr>
-              <th class="center">序号</th>
-              <th>字段</th>
-              <th>内容</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, i) in custSummaryRows" :key="item.field">
-              <td class="center">{{ i + 1 }}</td>
-              <td>{{ item.field }}</td>
-              <td>{{ item.value }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="section-hd">行为轨迹</div>
-      <div class="table-scroll">
-        <table class="boss-table track-table">
-          <thead>
-            <tr>
-              <th class="center">序号</th>
-              <th>时间</th>
-              <th>产品线</th>
-              <th>行为</th>
-              <th class="right">得分</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="!custFilteredTrack.length">
-              <td colspan="5" class="center" style="color:#909399;">暂无该产品线的行为轨迹</td>
-            </tr>
-            <tr v-for="(row, i) in custFilteredTrack" :key="i">
-              <td class="center">{{ i + 1 }}</td>
-              <td>{{ row.time }}</td>
-              <td>{{ row.product }}</td>
-              <td>{{ row.action }}</td>
-              <td class="right">+{{ row.score }}</td>
-            </tr>
-          </tbody>
-          <tfoot v-if="custFilteredTrack.length">
-            <tr>
-              <td colspan="4">合计得分</td>
-              <td class="right"><span class="score-num">+{{ custTrackScoreTotal }}</span></td>
-            </tr>
-          </tfoot>
-        </table>
-        <table class="boss-table rule-table">
-          <thead>
-            <tr>
-              <th class="center" style="width:72px">等级</th>
-              <th style="width:120px">分数区间</th>
-              <th>规则</th>
-              <th class="center" style="width:80px">匹配</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="rule in behaviorLevelRules"
-              :key="rule.level"
-              :class="['level-' + ({ '冷': 'cold', '温': 'warm', '热': 'hot' }[rule.level] || ''), { 'is-current': rule.level === custDetailLevel }]"
-            >
-              <td class="center"><span class="tag" :class="tagClass(rule.level)">{{ rule.level }}</span></td>
-              <td>{{ rule.score }}</td>
-              <td class="rule-text">{{ rule.rule }}</td>
-              <td class="center">{{ rule.level === custDetailLevel ? '当前' : '-' }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="4">行为分按产线分开计算，当前为{{ productShortName(custDetailProduct) }}。</td>
-            </tr>
-          </tfoot>
-        </table>
+
+      <div class="cust-block">
+        <div class="cust-block-head">
+          <div class="section-hd" style="padding-bottom:0">行为</div>
+          <div class="detail-product-bar" style="padding:0">
+            <span class="k">产品线</span>
+            <el-select v-model="custDetailProduct" size="small" popper-class="detail-product-popper">
+              <el-option v-for="p in custDetailProducts" :key="p" :label="productShortName(p)" :value="p" />
+            </el-select>
+            <span class="tag" :class="tagClass(custDetailLevel)">{{ custDetailLevel }}</span>
+            <span class="score-num">合计 {{ custTrackScoreTotal }}</span>
+          </div>
+        </div>
+        <div class="cust-behavior-split">
+          <div class="cust-behavior-pane">
+            <div class="section-hd">行为汇总</div>
+            <div class="table-scroll">
+              <table class="boss-table summary-table">
+                <thead>
+                  <tr>
+                    <th class="center">序号</th>
+                    <th>字段</th>
+                    <th>内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, i) in custSummaryRows" :key="item.field">
+                    <td class="center">{{ i + 1 }}</td>
+                    <td>{{ item.field }}</td>
+                    <td>{{ item.value }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="cust-behavior-pane">
+            <div class="section-hd">行为轨迹</div>
+            <div class="table-scroll">
+              <table class="boss-table track-table">
+                <thead>
+                  <tr>
+                    <th class="center">序号</th>
+                    <th>时间</th>
+                    <th>产品线</th>
+                    <th>行为</th>
+                    <th class="right">得分</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="!custFilteredTrack.length">
+                    <td colspan="5" class="center" style="color:#909399;">暂无该产品线的行为轨迹</td>
+                  </tr>
+                  <tr v-for="(row, i) in custFilteredTrack" :key="i">
+                    <td class="center">{{ i + 1 }}</td>
+                    <td>{{ row.time }}</td>
+                    <td>{{ row.product }}</td>
+                    <td>{{ row.action }}</td>
+                    <td class="right">+{{ row.score }}</td>
+                  </tr>
+                </tbody>
+                <tfoot v-if="custFilteredTrack.length">
+                  <tr>
+                    <td colspan="4">合计得分</td>
+                    <td class="right"><span class="score-num">+{{ custTrackScoreTotal }}</span></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="section-hd">行为等级规则</div>
+        <div class="table-scroll">
+          <table class="boss-table rule-table">
+            <thead>
+              <tr>
+                <th class="center" style="width:72px">等级</th>
+                <th style="width:120px">分数区间</th>
+                <th>规则</th>
+                <th class="center" style="width:80px">匹配</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="rule in behaviorLevelRules"
+                :key="rule.level"
+                :class="['level-' + ({ '冷': 'cold', '温': 'warm', '热': 'hot' }[rule.level] || ''), { 'is-current': rule.level === custDetailLevel }]"
+              >
+                <td class="center"><span class="tag" :class="tagClass(rule.level)">{{ rule.level }}</span></td>
+                <td>{{ rule.score }}</td>
+                <td class="rule-text">{{ rule.rule }}</td>
+                <td class="center">{{ rule.level === custDetailLevel ? '当前' : '-' }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4">行为分按产线分开计算，当前为{{ productShortName(custDetailProduct) }}。</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </div>
 
-    <div class="detail-footer">
+    <div slot="footer">
       <el-button @click="custDetailVisible = false">关闭</el-button>
     </div>
   </el-dialog>
@@ -2848,6 +2937,32 @@ new Vue({
       if (mapped) return mapped;
       if (!p || p === GEO_LINE) return c;
       return {};
+    },
+    custProfileFields() {
+      const c = this.custCurrent || {};
+      return [
+        { label: '联系人ID', value: c.contactId || '-' },
+        { label: '官网账号ID', value: c.officialAccountId || '-' },
+        { label: '手机号', value: c.mobile || '-' },
+        { label: '客户主体ID', value: c.customerSubjectId || '-' },
+        { label: '客户主体名称', value: c.customerSubjectName || '-' },
+        { label: '邮箱', value: c.email || '-' },
+        { label: '联系人姓名', value: c.name || '-' },
+        { label: '小程序openid', value: c.openid || '-' },
+        { label: '微信unionid', value: c.unionid || '-' },
+        { label: '来源渠道', value: c.source || '-' },
+        { label: '来源详情', value: c.sourceDetail || '-' },
+        { label: '意向产品线', value: this.joinLines(c.intentLines) },
+        { label: '已购产品线', value: this.joinLines(c.purchasedLines) },
+        { label: '身份状态', value: c.identityStatus || '-', tag: true },
+        { label: '行为分', value: this.custTrackScoreTotal, score: true },
+        { label: '行为等级', value: this.custDetailLevel || '-', tag: true },
+        { label: '数据状态', value: c.dataStatus || '-', tag: true },
+        { label: '备注', value: c.remark || '-' },
+        { label: '入库时间', value: c.createdAt || '-' },
+        { label: '更新时间', value: c.updatedAt || '-' },
+        { label: '创建人', value: c.createdBy || '-' }
+      ];
     },
     filtered() {
       const q = this.query;
