@@ -370,7 +370,7 @@
     .stat-row.s-total { background: #fff; border-color: #e6e8ed; }
     .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
     .boss-table.inv-order-table { min-width: 1980px; width: 1980px; }
-    .boss-table.customer-table { min-width: 3200px; width: 3200px; }
+    .boss-table.customer-table { min-width: 3360px; width: 3360px; }
     .boss-table.track-table,
     .boss-table.summary-table,
     .boss-table.rule-table { min-width: 100%; width: 100%; }
@@ -538,6 +538,11 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
+                  <el-form-item label="昵称">
+                    <el-input v-model="custQuery.nickname" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
                   <el-form-item label="邮箱">
                     <el-input v-model="custQuery.email" placeholder="请输入" clearable />
                   </el-form-item>
@@ -655,6 +660,7 @@
                     <th v-if="custCols.customerSubjectName">客户主体名称</th>
                     <th v-if="custCols.email">邮箱</th>
                     <th v-if="custCols.name">联系人姓名</th>
+                    <th v-if="custCols.nickname">昵称</th>
                     <th v-if="custCols.openid">小程序openid</th>
                     <th v-if="custCols.unionid">微信unionid</th>
                     <th v-if="custCols.source">来源渠道</th>
@@ -674,7 +680,7 @@
                 </thead>
                 <tbody>
                   <tr v-if="!custPaged.length">
-                    <td class="center" colspan="23" style="color:#909399;padding:36px 12px;">暂无数据</td>
+                    <td class="center" colspan="24" style="color:#909399;padding:36px 12px;">暂无数据</td>
                   </tr>
                   <tr v-for="(row, idx) in custPaged" :key="row.contactId">
                     <td class="center">{{ (custPage - 1) * custPageSize + idx + 1 }}</td>
@@ -685,6 +691,7 @@
                     <td v-if="custCols.customerSubjectName"><span class="clip" :title="row.customerSubjectName">{{ row.customerSubjectName || '-' }}</span></td>
                     <td v-if="custCols.email">{{ row.email || '-' }}</td>
                     <td v-if="custCols.name">{{ row.name || '-' }}</td>
+                    <td v-if="custCols.nickname">{{ row.nickname || '-' }}</td>
                     <td v-if="custCols.openid"><span class="clip" :title="row.openid">{{ row.openid || '-' }}</span></td>
                     <td v-if="custCols.unionid"><span class="clip" :title="row.unionid">{{ row.unionid || '-' }}</span></td>
                     <td v-if="custCols.source">{{ row.source }}</td>
@@ -753,8 +760,8 @@
                     <el-col :span="6">
                       <el-form-item label="发票类型">
                         <el-select v-model="invQuery.invoiceType" placeholder="全部" clearable style="width:100%">
-                          <el-option label="专票电子票" value="专票电子票" />
-                          <el-option label="普票电子票" value="普票电子票" />
+                          <el-option label="电子专票" value="电子专票" />
+                          <el-option label="电子普票" value="电子普票" />
                         </el-select>
                       </el-form-item>
                     </el-col>
@@ -843,7 +850,7 @@
                     <th>开票提交时间</th>
                     <th>单位属性</th>
                     <th>发票抬头</th>
-                    <th>纳税人识别号</th>
+                    <th>单位税号</th>
                     <th>注册地址</th>
                     <th>注册电话</th>
                     <th>开户银行</th>
@@ -927,7 +934,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="用户名">
+                  <el-form-item label="昵称">
                     <el-input v-model="query.userName" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
@@ -1076,11 +1083,10 @@
         <span class="info-value">{{ current.serviceEnd }}（{{ daysBetween(current.serviceStart, current.serviceEnd) }}天）</span>
       </div>
       <div class="info-item"><span class="info-label">下单时间：</span><span class="info-value">{{ current.orderTime }}</span></div>
-      <div class="info-item"><span class="info-label">用户名：</span><span class="info-value">{{ current.userName }}</span></div>
+      <div class="info-item"><span class="info-label">昵称：</span><span class="info-value">{{ current.userName }}</span></div>
       <div class="info-item"><span class="info-label">账号（手机号）：</span><span class="info-value">{{ current.mobile }}</span></div>
       <div class="info-item"><span class="info-label">支付方式：</span><span class="info-value">{{ current.payMethod }}</span></div>
       <div class="info-item"><span class="info-label">付款编号：</span><span class="info-value">{{ current.payNo }}</span></div>
-      <div class="info-item"><span class="info-label">单位属性：</span><span class="info-value">{{ current.unitType }}</span></div>
       <div class="info-item"><span class="info-label">发票抬头：</span><span class="info-value">{{ current.invoiceTitle }}</span></div>
       <div class="info-item"><span class="info-label">订单状态：</span><span class="info-value"><span class="tag" :class="tagClass(current.status)">{{ current.status }}</span></span></div>
     </div>
@@ -1130,7 +1136,7 @@
                 <th class="right">开票金额</th>
                 <th>开票状态</th>
                 <th>发票抬头</th>
-                <th>纳税人识别号</th>
+                <th>单位税号</th>
                 <th>注册地址</th>
                 <th>注册电话</th>
                 <th>开户银行</th>
@@ -1527,13 +1533,15 @@
             <div class="info-item"><span class="info-label">开票状态：</span><span class="info-value"><span class="tag" :class="tagClass(invCurrent.invoiceStatus)">{{ invCurrent.invoiceStatus }}</span></span></div>
             <div class="info-item"><span class="info-label">开票抬头：</span><span class="info-value">{{ invCurrent.invoiceTitle }}</span></div>
             <div class="info-item"><span class="info-label">发票号：</span><span class="info-value">{{ invCurrent.invoiceNo || '-' }}</span></div>
-            <div class="info-item"><span class="info-label">纳税人识别号：</span><span class="info-value">{{ invCurrent.taxNo }}</span></div>
+            <div class="info-item"><span class="info-label">单位属性：</span><span class="info-value">{{ invCurrent.unitType || '-' }}</span></div>
+            <div class="info-item"><span class="info-label">单位税号：</span><span class="info-value">{{ invCurrent.taxNo || '-' }}</span></div>
             <div class="info-item"><span class="info-label">税率：</span><span class="info-value">{{ invCurrent.taxRate }}</span></div>
             <div class="info-item"><span class="info-label">开户行：</span><span class="info-value">{{ invCurrent.bankName }}</span></div>
             <div class="info-item"><span class="info-label">银行账号：</span><span class="info-value">{{ invCurrent.bankAccount }}</span></div>
-            <div class="info-item"><span class="info-label">开票电话：</span><span class="info-value">{{ invCurrent.invoicePhone }}</span></div>
-            <div class="info-item"><span class="info-label">开票地址：</span><span class="info-value">{{ invCurrent.invoiceAddress }}</span></div>
+            <div class="info-item"><span class="info-label">注册电话：</span><span class="info-value">{{ invCurrent.invoicePhone || '-' }}</span></div>
+            <div class="info-item"><span class="info-label">注册地址：</span><span class="info-value">{{ invCurrent.invoiceAddress || '-' }}</span></div>
             <div class="info-item"><span class="info-label">开票类型：</span><span class="info-value">{{ invCurrent.issueType }}</span></div>
+            <div class="info-item"><span class="info-label">发票格式：</span><span class="info-value">{{ invCurrent.invoiceFormat || 'PDF' }}</span></div>
             <div class="info-item span-3"><span class="info-label">开票内容：</span><span class="info-value">{{ invCurrent.invoiceContent }}</span></div>
             <div class="info-item span-3"><span class="info-label">备注：</span><span class="info-value">{{ invCurrent.remark || '-' }}</span></div>
             <div class="info-item"><span class="info-label">开票金额：</span><span class="info-value">{{ money(invCurrent.invoiceAmount) }}</span></div>
@@ -1947,7 +1955,7 @@ const INV_MOCK = [
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '25312000000123456789',
     invoiceAmount: 13780,
-    invoiceType: '普票电子票',
+    invoiceType: '电子普票',
     invoiceTitle: '上海蜜度信息技术有限公司',
     taxNo: '91310115MA1K3XXXXX',
     taxRate: '6%',
@@ -1955,7 +1963,8 @@ const INV_MOCK = [
     bankAccount: '1001234009012345678',
     invoicePhone: '021-58888888',
     invoiceAddress: '上海市浦东新区张江高科技园区科苑路88号',
-    issueType: '普票电子票',
+    issueType: '电子普票',
+    invoiceFormat: 'PDF',
     invoiceContent: '*信息技术服务*软件服务费',
     remark: '',
     receiver: '张伟',
@@ -2018,7 +2027,7 @@ const INV_MOCK = [
       { operator: '系统', type: '下单', time: '2026-08-28 11:05:20', desc: '官网下单成功，订单 OL202608280042' },
       { operator: '系统', type: '支付', time: '2026-08-28 11:05:36', desc: '微信支付成功，订单 OL202608280042 生效' },
       { operator: '张伟', type: '提交开票', time: '2026-08-28 14:02:11', desc: '两笔订单合并开票，抬头：上海蜜度信息技术有限公司' },
-      { operator: 'WIKI', type: '开票', time: '2026-08-29 09:40:18', desc: '开具普票电子票，发票号 25312000000123456789，金额 13,780.00' }
+      { operator: 'WIKI', type: '开票', time: '2026-08-29 09:40:18', desc: '开具电子普票，发票号 25312000000123456789，金额 13,780.00' }
     ]
   },
   {
@@ -2036,7 +2045,7 @@ const INV_MOCK = [
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '',
     invoiceAmount: 7960,
-    invoiceType: '专票电子票',
+    invoiceType: '电子专票',
     invoiceTitle: '北京双杰电气股份有限公司',
     taxNo: '91110108MA01XXXXXX',
     taxRate: '6%',
@@ -2044,7 +2053,8 @@ const INV_MOCK = [
     bankAccount: '110912345678901',
     invoicePhone: '010-58886666',
     invoiceAddress: '北京市海淀区中关村南大街5号',
-    issueType: '专票电子票',
+    issueType: '电子专票',
+    invoiceFormat: 'PDF',
     invoiceContent: '*信息技术服务*技术服务费',
     remark: '',
     receiver: '李娜',
@@ -2088,7 +2098,7 @@ const INV_MOCK = [
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '',
     invoiceAmount: 1980,
-    invoiceType: '普票电子票',
+    invoiceType: '电子普票',
     invoiceTitle: '宁波市公安局',
     taxNo: '12330200MB1XXXXXXX',
     taxRate: '6%',
@@ -2096,7 +2106,8 @@ const INV_MOCK = [
     bankAccount: '23',
     invoicePhone: '23',
     invoiceAddress: '浙江省宁波市海曙区县前街19号',
-    issueType: '普票电子票',
+    issueType: '电子普票',
+    invoiceFormat: 'PDF',
     invoiceContent: '*生产生活服务*新闻舆情通报技术服务',
     remark: '专票待税控开具',
     receiver: '王强',
@@ -2140,7 +2151,7 @@ const INV_MOCK = [
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '25312000000987654321',
     invoiceAmount: 9800,
-    invoiceType: '专票电子票',
+    invoiceType: '电子专票',
     invoiceTitle: '毕加索小镇二期项目部',
     taxNo: '91330100MA2XXXXXXX',
     taxRate: '6%',
@@ -2148,7 +2159,8 @@ const INV_MOCK = [
     bankAccount: '33050161660800001234',
     invoicePhone: '0571-8898000',
     invoiceAddress: '杭州市西湖区文三路259号',
-    issueType: '专票电子票',
+    issueType: '电子专票',
+    invoiceFormat: 'PDF',
     invoiceContent: '*信息技术服务*技术服务费',
     remark: '退票后发票作废，不再重开',
     receiver: '陈静',
@@ -2176,7 +2188,7 @@ const INV_MOCK = [
     logs: [
       { operator: '系统', type: '下单', time: '2026-08-20 11:33:09', desc: '官网下单成功' },
       { operator: '系统', type: '支付', time: '2026-08-20 11:33:22', desc: '微信支付成功' },
-      { operator: 'WIKI', type: '开票', time: '2026-08-21 11:12:08', desc: '开具专票电子票，发票号 25312000000987654321' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-21 11:12:08', desc: '开具电子专票，发票号 25312000000987654321' },
       { operator: '陈静', type: '退单', time: '2026-08-25 16:18:40', desc: '客户申请退单：重复购买' },
       { operator: 'WIKI', type: '退票', time: '2026-08-25 16:22:11', desc: '订单退款，发票退票作废' }
     ]
@@ -2196,7 +2208,7 @@ const INV_MOCK = [
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '25312000000555666777',
     invoiceAmount: 9900,
-    invoiceType: '普票电子票',
+    invoiceType: '电子普票',
     invoiceTitle: '上海蜜度信息技术有限公司',
     taxNo: '91310115MA1K3XXXXX',
     taxRate: '6%',
@@ -2204,7 +2216,8 @@ const INV_MOCK = [
     bankAccount: '1001234009012345678',
     invoicePhone: '021-58888888',
     invoiceAddress: '上海市浦东新区张江高科技园区科苑路88号',
-    issueType: '普票电子票',
+    issueType: '电子普票',
+    invoiceFormat: 'PDF',
     invoiceContent: '*信息技术服务*软件服务费',
     remark: '作废重开，原发票已失效',
     receiver: '赵敏',
@@ -2230,7 +2243,7 @@ const INV_MOCK = [
     logs: [
       { operator: '系统', type: '下单', time: '2026-08-18 19:44:10', desc: '官网下单成功' },
       { operator: '系统', type: '支付', time: '2026-08-18 19:44:28', desc: '微信支付成功' },
-      { operator: 'WIKI', type: '开票', time: '2026-08-19 09:06:44', desc: '开具普票电子票，发票号 25312000000555666777' },
+      { operator: 'WIKI', type: '开票', time: '2026-08-19 09:06:44', desc: '开具电子普票，发票号 25312000000555666777' },
       { operator: 'WIKI', type: '作废重开', time: '2026-08-19 10:02:16', desc: '抬头与订单主体不一致，作废后重开' }
     ]
   },
@@ -2249,7 +2262,7 @@ const INV_MOCK = [
     invoiceEntity: '蜜度科技股份有限公司',
     invoiceNo: '25312000000888111222',
     invoiceAmount: 8600,
-    invoiceType: '专票电子票',
+    invoiceType: '电子专票',
     invoiceTitle: '宁德市公安局',
     taxNo: '12350900MB2XXXXXXX',
     taxRate: '6%',
@@ -2257,9 +2270,10 @@ const INV_MOCK = [
     bankAccount: '6228480400000001234',
     invoicePhone: '0593-2820000',
     invoiceAddress: '福建省宁德市蕉城区蕉城南路17号',
-    issueType: '专票电子票',
+    issueType: '电子专票',
+    invoiceFormat: 'PDF',
     invoiceContent: '*生产生活服务*新闻舆情通报技术服务',
-    remark: '专票电子票已开具',
+    remark: '电子专票已开具',
     receiver: '林晓',
     receiverPhone: '13905031234',
     receiverAddress: '福建省宁德市蕉城区蕉城南路17号',
@@ -2285,7 +2299,7 @@ const INV_MOCK = [
       { operator: '系统', type: '下单', time: '2026-09-02 11:06:18', desc: '官网下单成功' },
       { operator: '系统', type: '支付', time: '2026-09-02 11:06:33', desc: '微信支付成功' },
       { operator: '林晓', type: '提交开票', time: '2026-09-02 11:40:00', desc: '提交发票抬头：宁德市公安局' },
-      { operator: 'WIKI', type: '开票', time: '2026-09-02 15:22:41', desc: '开具专票电子票，发票号 25312000000888111222，金额 8,600.00' }
+      { operator: 'WIKI', type: '开票', time: '2026-09-02 15:22:41', desc: '开具电子专票，发票号 25312000000888111222，金额 8,600.00' }
     ]
   }
 ];
@@ -2332,6 +2346,7 @@ function contactRow(o) {
     customerSubjectName: '',
     email: '',
     name: '',
+    nickname: '',
     openid: '',
     unionid: '',
     sourceDetail: '',
@@ -2360,6 +2375,7 @@ const CONTACT_MOCK = [
     customerSubjectName: '上海蜜度信息技术有限公司',
     email: 'zhangwei@midu.com',
     name: '张伟',
+    nickname: '老张在路上',
     openid: 'oX8fT5zhangwei001',
     unionid: 'un_zw_001',
     source: '官网',
@@ -2427,6 +2443,7 @@ const CONTACT_MOCK = [
     customerSubjectName: '北京双杰电气股份有限公司',
     email: 'lina@example.com',
     name: '李娜',
+    nickname: '娜娜呀',
     openid: 'oX8fT5lina002',
     unionid: 'un_ln_002',
     source: '小程序',
@@ -2461,6 +2478,7 @@ const CONTACT_MOCK = [
   contactRow({
     contactId: 'C202609020003',
     officialAccountId: 'wangqiang',
+    nickname: '强子',
     mobile: '13917445566',
     source: '小程序',
     sourceDetail: 'GEO小程序',
@@ -2496,6 +2514,7 @@ const CONTACT_MOCK = [
   contactRow({
     contactId: 'C202608040004',
     officialAccountId: 'chenjing',
+    nickname: 'Jing',
     mobile: '15821997701',
     source: '官网',
     sourceDetail: '官网表单',
@@ -2533,6 +2552,7 @@ const CONTACT_MOCK = [
     customerSubjectName: '蜜度科技股份有限公司',
     email: 'zhaomin@midu.com',
     name: '赵敏',
+    nickname: '敏敏',
     source: '小程序',
     sourceDetail: 'GEO小程序',
     openid: 'oX8fT5zhaomin005',
@@ -2565,6 +2585,7 @@ const CONTACT_MOCK = [
   contactRow({
     contactId: 'C202607010006',
     officialAccountId: 'linxiao',
+    nickname: '晓晓',
     mobile: '13905031234',
     source: '小程序',
     sourceDetail: 'GEO小程序',
@@ -2590,6 +2611,7 @@ const CONTACT_MOCK = [
   contactRow({
     contactId: 'C202607150007',
     officialAccountId: 'zhoulei',
+    nickname: 'Lei',
     mobile: '17621717517',
     source: '官网',
     sourceDetail: '官网注册',
@@ -2614,6 +2636,7 @@ const CONTACT_MOCK = [
   contactRow({
     contactId: 'C202607280008',
     officialAccountId: 'wuqian',
+    nickname: '浅浅',
     mobile: '13501668890',
     source: '官网',
     sourceDetail: '官网表单',
@@ -2645,6 +2668,7 @@ const CONTACT_MOCK = [
     customerSubjectName: '广州日报报业集团',
     email: 'zhenghao@example.com',
     name: '郑浩',
+    nickname: '浩克',
     source: '官网',
     sourceDetail: '官网注册',
     intentLines: [GEO_LINE],
@@ -2676,6 +2700,7 @@ const CONTACT_MOCK = [
   contactRow({
     contactId: 'C202608120010',
     officialAccountId: 'sunyue',
+    nickname: '月月',
     mobile: '18817556621',
     source: '小程序',
     sourceDetail: 'GEO小程序',
@@ -2701,6 +2726,7 @@ const CONTACT_MOCK = [
   contactRow({
     contactId: 'C202608200011',
     officialAccountId: 'heting',
+    nickname: 'Ting',
     mobile: '13601669988',
     source: '官网',
     sourceDetail: '官网注册',
@@ -2726,6 +2752,7 @@ const CONTACT_MOCK = [
     customerSubjectName: '成都传媒集团',
     email: 'machao@example.com',
     name: '马超',
+    nickname: '超超',
     source: '小程序',
     sourceDetail: 'GEO小程序',
     openid: 'oX8fT5machao012',
@@ -2772,7 +2799,7 @@ new Vue({
       identityStatusOptions: ['已注册未下单', '已下单未开票', '已绑定主体', '已开票'],
       custQuery: {
         contactId: '', officialAccountId: '', mobile: '', customerSubjectName: '',
-        name: '', email: '', source: '', sourceDetail: '',
+        name: '', nickname: '', email: '', source: '', sourceDetail: '',
         intentLine: '', purchasedLine: '', identityStatus: '',
         behaviorLevel: '', dataStatus: '', createdAt: []
       },
@@ -2781,7 +2808,7 @@ new Vue({
       custPageSize: 10,
       custCols: {
         contactId: true, officialAccountId: true, mobile: true,
-        customerSubjectId: true, customerSubjectName: true, email: true, name: true,
+        customerSubjectId: true, customerSubjectName: true, email: true, name: true, nickname: true,
         openid: true, unionid: true, source: true, sourceDetail: true,
         intentLines: true, purchasedLines: true, identityStatus: true,
         behaviorScore: true, behaviorLevel: true, dataStatus: true,
@@ -2795,6 +2822,7 @@ new Vue({
         { key: 'customerSubjectName', label: '客户主体名称' },
         { key: 'email', label: '邮箱' },
         { key: 'name', label: '联系人姓名' },
+        { key: 'nickname', label: '昵称' },
         { key: 'openid', label: '小程序openid' },
         { key: 'unionid', label: '微信unionid' },
         { key: 'source', label: '来源渠道' },
@@ -2948,6 +2976,7 @@ new Vue({
         { label: '客户主体名称', value: c.customerSubjectName || '-' },
         { label: '邮箱', value: c.email || '-' },
         { label: '联系人姓名', value: c.name || '-' },
+        { label: '昵称', value: c.nickname || '-' },
         { label: '小程序openid', value: c.openid || '-' },
         { label: '微信unionid', value: c.unionid || '-' },
         { label: '来源渠道', value: c.source || '-' },
@@ -3071,6 +3100,7 @@ new Vue({
         if (q.mobile && !(row.mobile || '').includes(q.mobile)) return false;
         if (q.customerSubjectName && !(row.customerSubjectName || '').includes(q.customerSubjectName)) return false;
         if (q.name && !(row.name || '').includes(q.name)) return false;
+        if (q.nickname && !(row.nickname || '').includes(q.nickname)) return false;
         if (q.email && !(row.email || '').includes(q.email)) return false;
         if (q.source && row.source !== q.source) return false;
         if (q.sourceDetail && row.sourceDetail !== q.sourceDetail) return false;
@@ -3127,7 +3157,7 @@ new Vue({
     onCustReset() {
       this.custQuery = {
         contactId: '', officialAccountId: '', mobile: '', customerSubjectName: '',
-        name: '', email: '', source: '', sourceDetail: '',
+        name: '', nickname: '', email: '', source: '', sourceDetail: '',
         intentLine: '', purchasedLine: '', identityStatus: '',
         behaviorLevel: '', dataStatus: '', createdAt: []
       };
