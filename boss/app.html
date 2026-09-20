@@ -216,7 +216,7 @@
 
     .op-col {
       display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;
-      min-width: 108px; white-space: nowrap;
+      min-width: 168px; white-space: nowrap;
     }
     .op-col .el-button { padding: 0; margin: 0; font-size: 12px; }
     .op-col .el-button + .el-button::before {
@@ -370,7 +370,9 @@
     .stat-row.s-total { background: #fff; border-color: #e6e8ed; }
     .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
     .boss-table.inv-order-table { min-width: 1980px; width: 1980px; }
-    .boss-table.customer-table { min-width: 3360px; width: 3360px; }
+    .boss-table.customer-table { min-width: 4280px; width: 4280px; }
+    .cell-tags { display: flex; flex-wrap: wrap; gap: 4px; max-width: 220px; }
+    .cell-tags .el-tag { margin: 0; }
     .boss-table.track-table,
     .boss-table.summary-table,
     .boss-table.rule-table { min-width: 100%; width: 100%; }
@@ -548,8 +550,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="来源渠道">
-                    <el-select v-model="custQuery.source" placeholder="请选择" clearable style="width:100%" @change="onSourceChange">
+                  <el-form-item label="联系人来源">
+                    <el-select v-model="custQuery.contactSource" placeholder="请选择" clearable style="width:100%" @change="onContactSourceChange">
                       <el-option v-for="s in sourceOptions" :key="s" :label="s" :value="s" />
                     </el-select>
                   </el-form-item>
@@ -558,6 +560,41 @@
                   <el-form-item label="来源详情">
                     <el-select v-model="custQuery.sourceDetail" placeholder="请选择" clearable style="width:100%">
                       <el-option v-for="s in sourceDetailOptions" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="一级渠道">
+                    <el-select v-model="custQuery.channel1" placeholder="包含" clearable filterable style="width:100%" @change="onChannel1Change">
+                      <el-option v-for="s in channel1Options" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="二级渠道">
+                    <el-select v-model="custQuery.channel2" placeholder="包含" clearable filterable style="width:100%" @change="onChannel2Change">
+                      <el-option v-for="s in channel2Options" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="三级渠道">
+                    <el-select v-model="custQuery.channel3" placeholder="包含" clearable filterable style="width:100%">
+                      <el-option v-for="s in channel3Options" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="来源标签">
+                    <el-select v-model="custQuery.sourceTag" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="s in sourceTagOptions" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="是否已转表单">
+                    <el-select v-model="custQuery.converted" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="s in convertedOptions" :key="s" :label="s" :value="s"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -585,18 +622,14 @@
                 <el-col :span="6">
                   <el-form-item label="行为等级">
                     <el-select v-model="custQuery.behaviorLevel" placeholder="请选择" clearable style="width:100%">
-                      <el-option label="冷" value="冷" />
-                      <el-option label="温" value="温" />
-                      <el-option label="热" value="热" />
+                      <el-option v-for="s in behaviorLevelOptions" :key="s" :label="s" :value="s"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
                   <el-form-item label="数据状态">
                     <el-select v-model="custQuery.dataStatus" placeholder="请选择" clearable style="width:100%">
-                      <el-option label="正常" value="正常" />
-                      <el-option label="无效" value="无效" />
-                      <el-option label="已合并" value="已合并" />
+                      <el-option v-for="s in dataStatusOptions" :key="s" :label="s" :value="s"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -663,24 +696,28 @@
                     <th v-if="custCols.nickname">昵称</th>
                     <th v-if="custCols.openid">小程序openid</th>
                     <th v-if="custCols.unionid">微信unionid</th>
-                    <th v-if="custCols.source">来源渠道</th>
+                    <th v-if="custCols.contactSource">联系人来源</th>
                     <th v-if="custCols.sourceDetail">来源详情</th>
+                    <th v-if="custCols.channel1">一级渠道</th>
+                    <th v-if="custCols.channel2">二级渠道</th>
+                    <th v-if="custCols.channel3">三级渠道</th>
+                    <th v-if="custCols.sourceTags">来源标签</th>
                     <th v-if="custCols.intentLines">意向产品线</th>
                     <th v-if="custCols.purchasedLines">已购产品线</th>
                     <th v-if="custCols.identityStatus">身份状态</th>
                     <th v-if="custCols.behaviorScore" class="right">行为分</th>
                     <th v-if="custCols.behaviorLevel">行为等级</th>
                     <th v-if="custCols.dataStatus">数据状态</th>
-                    <th v-if="custCols.remark">备注</th>
+                    <th v-if="custCols.formNo">是否已转表单</th>
                     <th v-if="custCols.createdAt">入库时间</th>
                     <th v-if="custCols.updatedAt">更新时间</th>
-                    <th v-if="custCols.createdBy">创建人</th>
-                    <th class="sticky-op" style="min-width:72px">操作</th>
+                    <th v-if="custCols.lastOperator">最新操作人</th>
+                    <th class="sticky-op" style="min-width:168px">操作</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-if="!custPaged.length">
-                    <td class="center" colspan="24" style="color:#909399;padding:36px 12px;">暂无数据</td>
+                    <td class="center" colspan="28" style="color:#909399;padding:36px 12px;">暂无数据</td>
                   </tr>
                   <tr v-for="(row, idx) in custPaged" :key="row.contactId">
                     <td class="center">{{ (custPage - 1) * custPageSize + idx + 1 }}</td>
@@ -694,21 +731,32 @@
                     <td v-if="custCols.nickname">{{ row.nickname || '-' }}</td>
                     <td v-if="custCols.openid"><span class="clip" :title="row.openid">{{ row.openid || '-' }}</span></td>
                     <td v-if="custCols.unionid"><span class="clip" :title="row.unionid">{{ row.unionid || '-' }}</span></td>
-                    <td v-if="custCols.source">{{ row.source }}</td>
+                    <td v-if="custCols.contactSource">{{ row.contactSource || '-' }}</td>
                     <td v-if="custCols.sourceDetail">{{ row.sourceDetail || '-' }}</td>
+                    <td v-if="custCols.channel1">{{ row.channel1 || '-' }}</td>
+                    <td v-if="custCols.channel2">{{ row.channel2 || '-' }}</td>
+                    <td v-if="custCols.channel3">{{ row.channel3 || '-' }}</td>
+                    <td v-if="custCols.sourceTags">
+                      <div class="cell-tags" v-if="row.sourceTags && row.sourceTags.length">
+                        <el-tag v-for="t in row.sourceTags" :key="t" size="mini" type="info">{{ t }}</el-tag>
+                      </div>
+                      <span v-else>-</span>
+                    </td>
                     <td v-if="custCols.intentLines"><span class="clip" :title="joinLines(row.intentLines)">{{ joinLines(row.intentLines) }}</span></td>
                     <td v-if="custCols.purchasedLines"><span class="clip" :title="joinLines(row.purchasedLines)">{{ joinLines(row.purchasedLines) }}</span></td>
                     <td v-if="custCols.identityStatus"><span class="tag" :class="tagClass(row.identityStatus)">{{ row.identityStatus }}</span></td>
                     <td v-if="custCols.behaviorScore" class="right"><span class="score-num">{{ row.behaviorScore }}</span></td>
                     <td v-if="custCols.behaviorLevel"><span class="tag" :class="tagClass(row.behaviorLevel)">{{ row.behaviorLevel }}</span></td>
                     <td v-if="custCols.dataStatus"><span class="tag" :class="tagClass(row.dataStatus)">{{ row.dataStatus }}</span></td>
-                    <td v-if="custCols.remark"><span class="clip" :title="row.remark">{{ row.remark || '-' }}</span></td>
+                    <td v-if="custCols.formNo">{{ formFlagText(row) }}</td>
                     <td v-if="custCols.createdAt">{{ row.createdAt }}</td>
                     <td v-if="custCols.updatedAt">{{ row.updatedAt }}</td>
-                    <td v-if="custCols.createdBy">{{ row.createdBy }}</td>
+                    <td v-if="custCols.lastOperator">{{ row.lastOperator || '-' }}</td>
                     <td class="sticky-op">
                       <div class="op-col">
                         <el-button type="text" @click="openCustDetail(row)">详情</el-button>
+                        <el-button type="text" @click="openCustTag(row)">打标签</el-button>
+                        <el-button type="text" :disabled="!!row.formNo" @click="openCustConvert(row)">转表单</el-button>
                       </div>
                     </td>
                   </tr>
@@ -1463,6 +1511,29 @@
     <div slot="footer">
       <el-button @click="custDetailVisible = false">关闭</el-button>
     </div>
+  </el-dialog>
+
+  <el-dialog title="打标签" :visible.sync="custTagVisible" width="480px" append-to-body :close-on-click-modal="false">
+    <p style="margin:0 0 12px;color:#606266;font-size:13px;">联系人 {{ custActionRow.contactId }} {{ custActionRow.name || custActionRow.nickname || '' }}</p>
+    <el-checkbox-group v-model="custTagDraft">
+      <el-checkbox v-for="t in sourceTagOptions" :key="t" :label="t" style="margin:6px 16px 6px 0;">{{ t }}</el-checkbox>
+    </el-checkbox-group>
+    <span slot="footer">
+      <el-button @click="custTagVisible = false">取消</el-button>
+      <el-button type="primary" @click="saveCustTags">确定</el-button>
+    </span>
+  </el-dialog>
+
+  <el-dialog title="转表单" :visible.sync="custFormVisible" width="440px" append-to-body :close-on-click-modal="false">
+    <p style="margin:0 0 8px;font-size:13px;color:#303133;line-height:1.7;">
+      将联系人 <b>{{ custActionRow.contactId }}</b> 转为线索表单？
+    </p>
+    <p v-if="custActionRow.formNo" style="margin:0;font-size:13px;color:#d48806;">该联系人已转表单，表单号 {{ custActionRow.formNo }}。</p>
+    <p v-else style="margin:0;font-size:13px;color:#909399;">转成后生成 2 开头的 6 位表单号，列表「是否已转表单」展示该号码。</p>
+    <span slot="footer">
+      <el-button @click="custFormVisible = false">取消</el-button>
+      <el-button type="primary" :disabled="!!custActionRow.formNo" @click="confirmConvertForm">确认转表单</el-button>
+    </span>
   </el-dialog>
 
   <!-- 线上订单发票 · 开票详情 -->
@@ -2312,8 +2383,26 @@ const PRODUCT_SHORT = {
 };
 const SOURCE_MAP = {
   '官网': ['官网注册', '官网表单'],
-  '小程序': ['GEO小程序']
+  '小程序': ['GEO小程序'],
+  '人工录入': ['销售录入', '客服录入'],
+  '批量导入': ['Excel导入']
 };
+const CHANNEL_TREE = {
+  '线上渠道': {
+    '官网': ['官网注册', '官网表单', 'SEO自然'],
+    '小程序': ['GEO小程序', '微信小程序'],
+    'SEM搜索': ['百度搜索', '360搜索']
+  },
+  '线下渠道': {
+    '销售推荐': ['直销跟进', '老客转介'],
+    '活动投放': ['行业峰会', '线上直播']
+  },
+  '合作伙伴': {
+    '代理商': ['华东代理', '华北代理'],
+    '渠道转介': ['合作ISV']
+  }
+};
+const SOURCE_TAG_OPTIONS = ['自然流量', '广告投放', '活动获客', '转介绍', 'SEM', '内容营销'];
 const BEHAVIOR_LEVEL_RULES = [
   { level: '冷', score: '10–20分', rule: '刚完成注册或零星登录，销售暂不跟进。' },
   { level: '温', score: '21–45分', rule: '有浏览、点击 9.9 元体验或填写表单，可由 SDR 初步触达。' },
@@ -2349,10 +2438,16 @@ function contactRow(o) {
     nickname: '',
     openid: '',
     unionid: '',
+    contactSource: '',
     sourceDetail: '',
+    channel1: '',
+    channel2: '',
+    channel3: '',
+    sourceTags: [],
+    formNo: '',
+    lastOperator: '系统',
     intentLines: [],
     purchasedLines: [],
-    remark: '',
     firstLoginAt: '',
     loginCount: 0,
     lastActiveAt: '',
@@ -2378,18 +2473,22 @@ const CONTACT_MOCK = [
     nickname: '老张在路上',
     openid: 'oX8fT5zhangwei001',
     unionid: 'un_zw_001',
-    source: '官网',
+    contactSource: '官网',
     sourceDetail: '官网注册',
+    channel1: '线上渠道',
+    channel2: '官网',
+    channel3: '官网注册',
+    sourceTags: ['自然流量'],
+    formNo: '200018',
     intentLines: [GEO_LINE, YQ_LINE],
     purchasedLines: [GEO_LINE],
     identityStatus: '已开票',
     behaviorScore: 67,
     behaviorLevel: '热',
     dataStatus: '正常',
-    remark: '已完成 9.9 体验并开具电子发票',
     createdAt: '2026-03-12 10:24:18',
     updatedAt: '2026-08-29 09:40:18',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-03-12 10:26:02',
     loginCount: 6,
     lastActiveAt: '2026-08-29 09:38:11',
@@ -2446,18 +2545,22 @@ const CONTACT_MOCK = [
     nickname: '娜娜呀',
     openid: 'oX8fT5lina002',
     unionid: 'un_ln_002',
-    source: '小程序',
+    contactSource: '小程序',
     sourceDetail: 'GEO小程序',
+    channel1: '线上渠道',
+    channel2: '小程序',
+    channel3: 'GEO小程序',
+    sourceTags: ['广告投放'],
+    formNo: '200102',
     intentLines: [GEO_LINE],
     purchasedLines: [GEO_LINE],
     identityStatus: '已绑定主体',
     behaviorScore: 57,
     behaviorLevel: '热',
     dataStatus: '正常',
-    remark: '已绑定企业主体，待提交开票',
     createdAt: '2026-04-08 16:12:02',
     updatedAt: '2026-09-01 16:21:33',
-    createdBy: '系统',
+    lastOperator: '李运营',
     firstLoginAt: '2026-04-08 16:13:10',
     loginCount: 4,
     lastActiveAt: '2026-09-01 16:20:08',
@@ -2480,8 +2583,12 @@ const CONTACT_MOCK = [
     officialAccountId: 'wangqiang',
     nickname: '强子',
     mobile: '13917445566',
-    source: '小程序',
+    contactSource: '小程序',
     sourceDetail: 'GEO小程序',
+    channel1: '线上渠道',
+    channel2: '小程序',
+    channel3: 'GEO小程序',
+    sourceTags: ['SEM'],
     openid: 'oX8fT5wangqiang003',
     unionid: 'un_wq_003',
     intentLines: [GEO_LINE],
@@ -2490,10 +2597,9 @@ const CONTACT_MOCK = [
     behaviorScore: 47,
     behaviorLevel: '热',
     dataStatus: '正常',
-    remark: '进入订单页未支付',
     createdAt: '2026-05-21 09:35:44',
     updatedAt: '2026-09-02 09:18:22',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-05-21 09:36:01',
     loginCount: 5,
     lastActiveAt: '2026-09-02 09:16:08',
@@ -2516,18 +2622,21 @@ const CONTACT_MOCK = [
     officialAccountId: 'chenjing',
     nickname: 'Jing',
     mobile: '15821997701',
-    source: '官网',
+    contactSource: '官网',
     sourceDetail: '官网表单',
+    channel1: '线上渠道',
+    channel2: '官网',
+    channel3: '官网表单',
+    sourceTags: ['内容营销'],
     openid: 'oX8fT5chenjing004',
     intentLines: [GEO_LINE],
     identityStatus: '已注册未下单',
     behaviorScore: 32,
     behaviorLevel: '温',
     dataStatus: '正常',
-    remark: '已点击 9.9 元体验，未进入订单页',
     createdAt: '2026-06-02 14:18:09',
     updatedAt: '2026-08-04 16:12:22',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-06-02 14:20:00',
     loginCount: 6,
     lastActiveAt: '2026-08-04 16:11:40',
@@ -2553,8 +2662,13 @@ const CONTACT_MOCK = [
     email: 'zhaomin@midu.com',
     name: '赵敏',
     nickname: '敏敏',
-    source: '小程序',
+    contactSource: '小程序',
     sourceDetail: 'GEO小程序',
+    channel1: '线上渠道',
+    channel2: '小程序',
+    channel3: 'GEO小程序',
+    sourceTags: ['自然流量'],
+    formNo: '200215',
     openid: 'oX8fT5zhaomin005',
     unionid: 'un_zm_005',
     intentLines: [GEO_LINE],
@@ -2565,7 +2679,7 @@ const CONTACT_MOCK = [
     dataStatus: '正常',
     createdAt: '2026-06-18 11:06:33',
     updatedAt: '2026-08-18 19:44:28',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-06-18 11:07:02',
     loginCount: 3,
     lastActiveAt: '2026-08-18 19:44:10',
@@ -2587,18 +2701,20 @@ const CONTACT_MOCK = [
     officialAccountId: 'linxiao',
     nickname: '晓晓',
     mobile: '13905031234',
-    source: '小程序',
+    contactSource: '小程序',
     sourceDetail: 'GEO小程序',
+    channel1: '线上渠道',
+    channel2: '小程序',
+    channel3: 'GEO小程序',
     openid: 'oX8fT5linxiao006',
     intentLines: [GEO_LINE],
     identityStatus: '已注册未下单',
     behaviorScore: 12,
     behaviorLevel: '冷',
     dataStatus: '正常',
-    remark: '刚完成注册，零星登录',
     createdAt: '2026-07-01 15:40:18',
     updatedAt: '2026-07-01 15:41:02',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-07-01 15:41:02',
     loginCount: 1,
     lastActiveAt: '2026-07-01 15:41:02',
@@ -2613,8 +2729,12 @@ const CONTACT_MOCK = [
     officialAccountId: 'zhoulei',
     nickname: 'Lei',
     mobile: '17621717517',
-    source: '官网',
+    contactSource: '官网',
     sourceDetail: '官网注册',
+    channel1: '线上渠道',
+    channel2: '官网',
+    channel3: '官网注册',
+    sourceTags: ['自然流量'],
     intentLines: [GEO_LINE],
     identityStatus: '已注册未下单',
     behaviorScore: 14,
@@ -2622,7 +2742,7 @@ const CONTACT_MOCK = [
     dataStatus: '正常',
     createdAt: '2026-07-15 08:22:51',
     updatedAt: '2026-07-16 09:10:00',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-07-15 08:23:10',
     loginCount: 2,
     lastActiveAt: '2026-07-16 09:10:00',
@@ -2638,17 +2758,20 @@ const CONTACT_MOCK = [
     officialAccountId: 'wuqian',
     nickname: '浅浅',
     mobile: '13501668890',
-    source: '官网',
+    contactSource: '官网',
     sourceDetail: '官网表单',
+    channel1: '线上渠道',
+    channel2: '官网',
+    channel3: '官网表单',
+    sourceTags: ['活动获客'],
     intentLines: [GEO_LINE],
     identityStatus: '已注册未下单',
     behaviorScore: 22,
     behaviorLevel: '温',
     dataStatus: '正常',
-    remark: '点击 9.9 元体验后未继续',
     createdAt: '2026-07-28 19:44:10',
     updatedAt: '2026-07-28 19:50:00',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-07-28 19:45:00',
     loginCount: 1,
     lastActiveAt: '2026-07-28 19:50:00',
@@ -2669,18 +2792,22 @@ const CONTACT_MOCK = [
     email: 'zhenghao@example.com',
     name: '郑浩',
     nickname: '浩克',
-    source: '官网',
-    sourceDetail: '官网注册',
+    contactSource: '人工录入',
+    sourceDetail: '销售录入',
+    channel1: '线下渠道',
+    channel2: '销售推荐',
+    channel3: '直销跟进',
+    sourceTags: ['转介绍'],
+    formNo: '200331',
     intentLines: [GEO_LINE],
     purchasedLines: [GEO_LINE],
     identityStatus: '已下单未开票',
     behaviorScore: 37,
     behaviorLevel: '温',
     dataStatus: '无效',
-    remark: '重复注册后标记无效',
     createdAt: '2026-08-04 10:11:26',
     updatedAt: '2026-08-20 17:02:15',
-    createdBy: '人工',
+    lastOperator: '张销售',
     firstLoginAt: '2026-08-04 10:12:00',
     loginCount: 2,
     lastActiveAt: '2026-08-04 11:06:18',
@@ -2702,18 +2829,21 @@ const CONTACT_MOCK = [
     officialAccountId: 'sunyue',
     nickname: '月月',
     mobile: '18817556621',
-    source: '小程序',
-    sourceDetail: 'GEO小程序',
+    contactSource: '批量导入',
+    sourceDetail: 'Excel导入',
+    channel1: '合作伙伴',
+    channel2: '代理商',
+    channel3: '华东代理',
+    sourceTags: ['转介绍'],
     openid: 'oX8fT5sunyue010',
     intentLines: [GEO_LINE],
     identityStatus: '已注册未下单',
     behaviorScore: 12,
     behaviorLevel: '冷',
     dataStatus: '已合并',
-    remark: '已合并至 C202608290001',
     createdAt: '2026-08-12 13:28:40',
     updatedAt: '2026-08-29 10:00:00',
-    createdBy: '人工',
+    lastOperator: '王主管',
     firstLoginAt: '2026-08-12 13:29:00',
     loginCount: 1,
     lastActiveAt: '2026-08-12 13:29:00',
@@ -2728,17 +2858,19 @@ const CONTACT_MOCK = [
     officialAccountId: 'heting',
     nickname: 'Ting',
     mobile: '13601669988',
-    source: '官网',
+    contactSource: '官网',
     sourceDetail: '官网注册',
+    channel1: '线上渠道',
+    channel2: '官网',
+    channel3: '官网注册',
     intentLines: [GEO_LINE],
     identityStatus: '已注册未下单',
     behaviorScore: 10,
     behaviorLevel: '冷',
     dataStatus: '正常',
-    remark: '仅完成注册，尚未登录',
     createdAt: '2026-08-20 17:02:15',
     updatedAt: '2026-08-20 17:02:15',
-    createdBy: '系统',
+    lastOperator: '系统',
     lastBehavior: '完成官网注册 + 微信授权手机号 + 同意协议',
     behaviorTrack: [
       { time: '2026-08-20 17:02:15', product: GEO_LINE, action: '完成官网注册 + 微信授权手机号 + 同意协议', score: 10 }
@@ -2753,8 +2885,13 @@ const CONTACT_MOCK = [
     email: 'machao@example.com',
     name: '马超',
     nickname: '超超',
-    source: '小程序',
+    contactSource: '小程序',
     sourceDetail: 'GEO小程序',
+    channel1: '线上渠道',
+    channel2: '小程序',
+    channel3: 'GEO小程序',
+    sourceTags: ['广告投放', 'SEM'],
+    formNo: '200448',
     openid: 'oX8fT5machao012',
     unionid: 'un_mc_012',
     intentLines: [GEO_LINE],
@@ -2765,7 +2902,7 @@ const CONTACT_MOCK = [
     dataStatus: '正常',
     createdAt: '2026-08-29 09:16:08',
     updatedAt: '2026-09-02 15:22:41',
-    createdBy: '系统',
+    lastOperator: '系统',
     firstLoginAt: '2026-08-29 09:16:40',
     loginCount: 2,
     lastActiveAt: '2026-09-02 15:22:41',
@@ -2794,12 +2931,18 @@ new Vue({
       collapsed: false,
       currentMenu: pageFromQuery(),
       sourceMap: SOURCE_MAP,
+      channelTree: CHANNEL_TREE,
+      sourceTagOptions: SOURCE_TAG_OPTIONS,
       behaviorLevelRules: BEHAVIOR_LEVEL_RULES,
       productLineOptions: [GEO_LINE, YQ_LINE],
       identityStatusOptions: ['已注册未下单', '已下单未开票', '已绑定主体', '已开票'],
+      behaviorLevelOptions: ['冷', '温', '热'],
+      dataStatusOptions: ['正常', '无效', '已合并'],
+      convertedOptions: ['是', '否'],
       custQuery: {
         contactId: '', officialAccountId: '', mobile: '', customerSubjectName: '',
-        name: '', nickname: '', email: '', source: '', sourceDetail: '',
+        name: '', nickname: '', email: '', contactSource: '', sourceDetail: '',
+        channel1: '', channel2: '', channel3: '', sourceTag: '', converted: '',
         intentLine: '', purchasedLine: '', identityStatus: '',
         behaviorLevel: '', dataStatus: '', createdAt: []
       },
@@ -2809,10 +2952,11 @@ new Vue({
       custCols: {
         contactId: true, officialAccountId: true, mobile: true,
         customerSubjectId: true, customerSubjectName: true, email: true, name: true, nickname: true,
-        openid: true, unionid: true, source: true, sourceDetail: true,
+        openid: true, unionid: true, contactSource: true, sourceDetail: true,
+        channel1: true, channel2: true, channel3: true, sourceTags: true,
         intentLines: true, purchasedLines: true, identityStatus: true,
         behaviorScore: true, behaviorLevel: true, dataStatus: true,
-        remark: true, createdAt: true, updatedAt: true, createdBy: true
+        formNo: true, createdAt: true, updatedAt: true, lastOperator: true
       },
       custColList: [
         { key: 'contactId', label: '联系人ID' },
@@ -2825,22 +2969,30 @@ new Vue({
         { key: 'nickname', label: '昵称' },
         { key: 'openid', label: '小程序openid' },
         { key: 'unionid', label: '微信unionid' },
-        { key: 'source', label: '来源渠道' },
+        { key: 'contactSource', label: '联系人来源' },
         { key: 'sourceDetail', label: '来源详情' },
+        { key: 'channel1', label: '一级渠道' },
+        { key: 'channel2', label: '二级渠道' },
+        { key: 'channel3', label: '三级渠道' },
+        { key: 'sourceTags', label: '来源标签' },
         { key: 'intentLines', label: '意向产品线' },
         { key: 'purchasedLines', label: '已购产品线' },
         { key: 'identityStatus', label: '身份状态' },
         { key: 'behaviorScore', label: '行为分' },
         { key: 'behaviorLevel', label: '行为等级' },
         { key: 'dataStatus', label: '数据状态' },
-        { key: 'remark', label: '备注' },
+        { key: 'formNo', label: '是否已转表单' },
         { key: 'createdAt', label: '入库时间' },
         { key: 'updatedAt', label: '更新时间' },
-        { key: 'createdBy', label: '创建人' }
+        { key: 'lastOperator', label: '最新操作人' }
       ],
       custDetailVisible: false,
       custDetailProduct: '',
       custCurrent: {},
+      custTagVisible: false,
+      custFormVisible: false,
+      custActionRow: {},
+      custTagDraft: [],
       menus: [
         { name: '我的工作台', icon: 'el-icon-s-home' },
         { name: '仪表盘', icon: 'el-icon-data-analysis' },
@@ -2979,18 +3131,22 @@ new Vue({
         { label: '昵称', value: c.nickname || '-' },
         { label: '小程序openid', value: c.openid || '-' },
         { label: '微信unionid', value: c.unionid || '-' },
-        { label: '来源渠道', value: c.source || '-' },
+        { label: '联系人来源', value: c.contactSource || '-' },
         { label: '来源详情', value: c.sourceDetail || '-' },
+        { label: '一级渠道', value: c.channel1 || '-' },
+        { label: '二级渠道', value: c.channel2 || '-' },
+        { label: '三级渠道', value: c.channel3 || '-' },
+        { label: '来源标签', value: this.joinLines(c.sourceTags) },
         { label: '意向产品线', value: this.joinLines(c.intentLines) },
         { label: '已购产品线', value: this.joinLines(c.purchasedLines) },
         { label: '身份状态', value: c.identityStatus || '-', tag: true },
         { label: '行为分', value: this.custTrackScoreTotal, score: true },
         { label: '行为等级', value: this.custDetailLevel || '-', tag: true },
         { label: '数据状态', value: c.dataStatus || '-', tag: true },
-        { label: '备注', value: c.remark || '-' },
+        { label: '是否已转表单', value: this.formFlagText(c) },
         { label: '入库时间', value: c.createdAt || '-' },
         { label: '更新时间', value: c.updatedAt || '-' },
-        { label: '创建人', value: c.createdBy || '-' }
+        { label: '最新操作人', value: c.lastOperator || '-' }
       ];
     },
     filtered() {
@@ -3083,12 +3239,36 @@ new Vue({
       return Object.keys(this.sourceMap);
     },
     sourceDetailOptions() {
-      if (this.custQuery.source && this.sourceMap[this.custQuery.source]) {
-        return this.sourceMap[this.custQuery.source];
+      if (this.custQuery.contactSource && this.sourceMap[this.custQuery.contactSource]) {
+        return this.sourceMap[this.custQuery.contactSource];
       }
       const all = [];
       Object.keys(this.sourceMap).forEach(k => {
         this.sourceMap[k].forEach(v => { if (all.indexOf(v) === -1) all.push(v); });
+      });
+      return all;
+    },
+    channel1Options() {
+      return Object.keys(this.channelTree);
+    },
+    channel2Options() {
+      const l1 = this.custQuery.channel1;
+      if (l1 && this.channelTree[l1]) return Object.keys(this.channelTree[l1]);
+      const all = [];
+      Object.keys(this.channelTree).forEach(k => {
+        Object.keys(this.channelTree[k]).forEach(v => { if (all.indexOf(v) === -1) all.push(v); });
+      });
+      return all;
+    },
+    channel3Options() {
+      const l1 = this.custQuery.channel1;
+      const l2 = this.custQuery.channel2;
+      if (l1 && l2 && this.channelTree[l1] && this.channelTree[l1][l2]) return this.channelTree[l1][l2];
+      const all = [];
+      Object.keys(this.channelTree).forEach(k => {
+        Object.keys(this.channelTree[k]).forEach(k2 => {
+          this.channelTree[k][k2].forEach(v => { if (all.indexOf(v) === -1) all.push(v); });
+        });
       });
       return all;
     },
@@ -3102,8 +3282,14 @@ new Vue({
         if (q.name && !(row.name || '').includes(q.name)) return false;
         if (q.nickname && !(row.nickname || '').includes(q.nickname)) return false;
         if (q.email && !(row.email || '').includes(q.email)) return false;
-        if (q.source && row.source !== q.source) return false;
+        if (q.contactSource && row.contactSource !== q.contactSource) return false;
         if (q.sourceDetail && row.sourceDetail !== q.sourceDetail) return false;
+        if (q.channel1 && !(row.channel1 || '').includes(q.channel1)) return false;
+        if (q.channel2 && !(row.channel2 || '').includes(q.channel2)) return false;
+        if (q.channel3 && !(row.channel3 || '').includes(q.channel3)) return false;
+        if (q.sourceTag && (row.sourceTags || []).indexOf(q.sourceTag) === -1) return false;
+        if (q.converted === '是' && !row.formNo) return false;
+        if (q.converted === '否' && row.formNo) return false;
         if (q.intentLine && (row.intentLines || []).indexOf(q.intentLine) === -1) return false;
         if (q.purchasedLine && (row.purchasedLines || []).indexOf(q.purchasedLine) === -1) return false;
         if (q.identityStatus && row.identityStatus !== q.identityStatus) return false;
@@ -3150,14 +3336,25 @@ new Vue({
     joinLines(arr) {
       return arr && arr.length ? arr.join('、') : '-';
     },
-    onSourceChange() {
+    formFlagText(row) {
+      return (row && row.formNo) ? row.formNo : '否';
+    },
+    onContactSourceChange() {
       this.custQuery.sourceDetail = '';
+    },
+    onChannel1Change() {
+      this.custQuery.channel2 = '';
+      this.custQuery.channel3 = '';
+    },
+    onChannel2Change() {
+      this.custQuery.channel3 = '';
     },
     onCustSearch() { this.custPage = 1; this.$message.success('已按条件筛选'); },
     onCustReset() {
       this.custQuery = {
         contactId: '', officialAccountId: '', mobile: '', customerSubjectName: '',
-        name: '', nickname: '', email: '', source: '', sourceDetail: '',
+        name: '', nickname: '', email: '', contactSource: '', sourceDetail: '',
+        channel1: '', channel2: '', channel3: '', sourceTag: '', converted: '',
         intentLine: '', purchasedLine: '', identityStatus: '',
         behaviorLevel: '', dataStatus: '', createdAt: []
       };
@@ -3172,6 +3369,43 @@ new Vue({
       const products = uniqueProducts(row || {});
       this.custDetailProduct = products.indexOf(GEO_LINE) !== -1 ? GEO_LINE : (products[0] || '');
       this.custDetailVisible = true;
+    },
+    openCustTag(row) {
+      this.custActionRow = row;
+      this.custTagDraft = (row.sourceTags || []).slice();
+      this.custTagVisible = true;
+    },
+    saveCustTags() {
+      this.$set(this.custActionRow, 'sourceTags', this.custTagDraft.slice());
+      this.$set(this.custActionRow, 'lastOperator', '当前用户');
+      this.$set(this.custActionRow, 'updatedAt', this.now());
+      this.custTagVisible = false;
+      this.$message.success('已更新来源标签');
+    },
+    openCustConvert(row) {
+      if (row.formNo) {
+        this.$message.warning('该联系人已转表单：' + row.formNo);
+        return;
+      }
+      this.custActionRow = row;
+      this.custFormVisible = true;
+    },
+    nextFormNo() {
+      let max = 200000;
+      this.custList.forEach(function (r) {
+        const n = parseInt(r.formNo, 10);
+        if (!isNaN(n) && n >= 200000 && n <= 299999 && n > max) max = n;
+      });
+      return String(max + 1);
+    },
+    confirmConvertForm() {
+      if (this.custActionRow.formNo) return;
+      const no = this.nextFormNo();
+      this.$set(this.custActionRow, 'formNo', no);
+      this.$set(this.custActionRow, 'lastOperator', '当前用户');
+      this.$set(this.custActionRow, 'updatedAt', this.now());
+      this.custFormVisible = false;
+      this.$message.success('已转表单，表单号 ' + no);
     },
     productShortName(name) {
       return PRODUCT_SHORT[name] || name;
