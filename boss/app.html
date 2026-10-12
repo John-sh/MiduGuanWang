@@ -216,7 +216,7 @@
 
     .op-col {
       display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;
-      min-width: 168px; white-space: nowrap;
+      min-width: 220px; white-space: nowrap;
     }
     .op-col .el-button { padding: 0; margin: 0; font-size: 12px; }
     .op-col .el-button + .el-button::before {
@@ -324,6 +324,22 @@
     .cust-track-hd .section-hd { padding-right: 0; }
     .cust-track-filter { display: flex; align-items: center; gap: 8px; }
     .cust-track-filter .k { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+    .track-hint {
+      margin: 0 0 8px; font-size: 12px; color: #c0c4cc; font-weight: 400; line-height: 1.5;
+    }
+    .cust-behavior-pane .track-flow-wrap {
+      flex: 1; border: 1px solid var(--line); border-radius: 8px; background: #fff;
+      overflow: auto; min-height: 280px;
+    }
+    .track-flow { padding: 4px 12px 12px; }
+    .flow-item {
+      display: flex; gap: 16px; padding: 10px 0; border-bottom: 1px dashed #eef1f4;
+      font-size: 13px; line-height: 1.5;
+    }
+    .flow-item:last-child { border-bottom: none; }
+    .flow-time { color: #909399; width: 156px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+    .flow-action { color: #303133; }
+    .flow-empty { color: #909399; text-align: center; padding: 48px 12px; }
     .section-hd {
       display: flex; align-items: center; gap: 8px;
       font-size: 14px; color: #1d2939; font-weight: 600;
@@ -378,8 +394,16 @@
     .stat-row.s-total { background: #fff; border-color: #e6e8ed; }
     .boss-table.invoice-table { min-width: 2680px; width: 2680px; }
     .boss-table.inv-order-table { min-width: 1980px; width: 1980px; }
-    .boss-table.customer-table { min-width: 3720px; width: 3720px; }
-    .cell-tags { display: flex; flex-wrap: wrap; gap: 4px; max-width: 220px; }
+    .boss-table.customer-table { min-width: 5380px; width: 5380px; }
+    .sms-preview {
+      background: #f7f8fa; border-radius: 8px; padding: 12px 14px;
+      font-size: 13px; line-height: 1.75; color: #303133; white-space: pre-wrap;
+    }
+    .sms-targets { max-height: 88px; overflow: auto; font-size: 13px; color: #606266; line-height: 1.7; }
+    .tag-clicked { background: #e8f3ff; color: #1677ff; }
+    .tag-unsub { background: #f4f6f8; color: #909399; }
+    .sms-table td:last-child, .sms-table th:last-child { white-space: nowrap; min-width: 88px; }
+    .cell-tags { display: flex; flex-wrap: wrap; gap: 4px; max-width: 260px; }
     .cell-tags .el-tag { margin: 0; }
     .tag-checks { display: flex; flex-wrap: wrap; }
     .tag-checks .el-checkbox { width: 140px; margin: 6px 8px 6px 0; }
@@ -406,7 +430,15 @@
     .tag-a { background: #fff7e6; color: #d48806; font-weight: 700; }
     .tag-b { background: #e8f3ff; color: #1677ff; font-weight: 700; }
     .tag-c { background: #f4f6f8; color: #667085; font-weight: 700; }
-    .grade-radios { display: flex; gap: 24px; padding: 8px 0 4px; }
+    .tag-unreg { background: #f4f6f8; color: #667085; }
+    .tag-norecharge { background: #eef2f6; color: #5c6b7a; }
+    .tag-trial { background: #fff7e6; color: #d48806; }
+    .tag-recharged { background: #eef9f2; color: #2d9a5b; }
+    .tag-silent { background: #f6f7f9; color: #909399; }
+    .tag-active { background: #ffecec; color: #c62828; font-weight: 600; }
+    .grade-radios { display: flex; flex-wrap: wrap; gap: 12px 8px; padding: 8px 0 4px; }
+    .grade-radios .el-radio,
+    .grade-radios .el-checkbox { width: 140px; margin: 0; }
     .score-num { font-variant-numeric: tabular-nums; font-weight: 600; }
     .col-setting { padding: 6px 4px; min-width: 168px; }
     .col-setting .el-checkbox { display: block; margin: 4px 8px; }
@@ -540,13 +572,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="昵称">
-                    <el-input v-model="custQuery.nickname" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="邮箱">
-                    <el-input v-model="custQuery.email" placeholder="请输入" clearable />
+                  <el-form-item label="官网账号">
+                    <el-input v-model="custQuery.officialAccountId" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -555,8 +582,33 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="官网账号ID">
-                    <el-input v-model="custQuery.officialAccountId" placeholder="请输入" clearable />
+                  <el-form-item label="客户主体ID">
+                    <el-input v-model="custQuery.customerSubjectId" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="邮箱">
+                    <el-input v-model="custQuery.email" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="微信">
+                    <el-input v-model="custQuery.wechat" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="微信昵称">
+                    <el-input v-model="custQuery.nickname" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="UserId">
+                    <el-input v-model="custQuery.userId" placeholder="请输入" clearable />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="蜜度NewId">
+                    <el-input v-model="custQuery.miduNewId" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -564,6 +616,25 @@
                     <el-select v-model="custQuery.source" placeholder="请选择" clearable style="width:100%">
                       <el-option v-for="s in sourceOptions" :key="s" :label="s" :value="s" />
                     </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="标签">
+                    <el-select v-model="custQuery.tags" placeholder="请选择" clearable multiple collapse-tags style="width:100%">
+                      <el-option v-for="s in tagOptions" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="运营套餐">
+                    <el-select v-model="custQuery.memberPack" placeholder="请选择" clearable style="width:100%">
+                      <el-option v-for="s in memberPackOptions" :key="s" :label="s" :value="s" />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="备注">
+                    <el-input v-model="custQuery.remark" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -591,13 +662,6 @@
                   <el-form-item label="来源标签">
                     <el-select v-model="custQuery.sourceTag" placeholder="请选择" clearable style="width:100%">
                       <el-option v-for="s in sourceTagOptions" :key="s" :label="s" :value="s" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="标签">
-                    <el-select v-model="custQuery.grade" placeholder="请选择" clearable style="width:100%">
-                      <el-option v-for="s in gradeOptions" :key="s" :label="s" :value="s" />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -663,7 +727,7 @@
               <el-button type="success" size="small" plain icon="el-icon-refresh" @click="onCustReset">重置</el-button>
               <el-button type="success" size="small" icon="el-icon-upload2" @click="$message.success('批量导入（原型）')">批量导入</el-button>
             </div>
-            <div class="warn-text">*行为分、行为等级按联系人全部行为合计，不按产品拆分。</div>
+            <div class="warn-text">*行为分累计模力通 APP 和 GEO 的用户行为。模力通 APP 行为暂定为：注册、登录、功能使用-写作、功能使用-会议纪要。</div>
             <div class="toolbar">
               <div class="toolbar-left">
                 <el-dropdown trigger="click" :hide-on-click="false">
@@ -695,17 +759,23 @@
               <table class="boss-table customer-table">
                 <thead>
                   <tr>
+                    <th class="center" style="width:40px"><input type="checkbox" :checked="custAllChecked" @change="toggleAllCust"></th>
                     <th class="center">序号</th>
                     <th v-if="custCols.name">联系人姓名</th>
                     <th v-if="custCols.mobile">手机号</th>
-                    <th v-if="custCols.nickname">昵称</th>
-                    <th v-if="custCols.email">邮箱</th>
+                    <th v-if="custCols.officialAccountId">官网账号</th>
                     <th v-if="custCols.customerSubjectName">客户主体名称</th>
-                    <th v-if="custCols.officialAccountId">官网账号ID</th>
+                    <th v-if="custCols.customerSubjectId">客户主体ID</th>
+                    <th v-if="custCols.email">邮箱</th>
+                    <th v-if="custCols.wechat">微信</th>
+                    <th v-if="custCols.nickname">微信昵称</th>
+                    <th v-if="custCols.userId">UserId</th>
+                    <th v-if="custCols.miduNewId">蜜度NewId</th>
                     <th v-if="custCols.source">来源</th>
+                    <th v-if="custCols.tags">标签</th>
+                    <th v-if="custCols.memberPack">运营套餐</th>
                     <th v-if="custCols.channel2">二级渠道</th>
                     <th v-if="custCols.sourceTags">来源标签</th>
-                    <th v-if="custCols.grade">标签</th>
                     <th v-if="custCols.intentLines">意向产品线</th>
                     <th v-if="custCols.purchasedLines">已购产品线</th>
                     <th v-if="custCols.identityStatus">身份状态</th>
@@ -716,32 +786,42 @@
                     <th v-if="custCols.createdAt">入库时间</th>
                     <th v-if="custCols.updatedAt">更新时间</th>
                     <th v-if="custCols.lastOperator">最新操作人</th>
+                    <th v-if="custCols.remark">备注</th>
                     <th v-if="custCols.openid">小程序openid</th>
                     <th v-if="custCols.unionid">微信unionid</th>
-                    <th class="sticky-op" style="min-width:168px">操作</th>
+                    <th class="sticky-op" style="min-width:220px">操作</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-if="!custPaged.length">
-                    <td class="center" colspan="24" style="color:#909399;padding:36px 12px;">暂无数据</td>
+                    <td class="center" colspan="31" style="color:#909399;padding:36px 12px;">暂无数据</td>
                   </tr>
                   <tr v-for="(row, idx) in custPaged" :key="row.contactId">
+                    <td class="center"><input type="checkbox" :value="row.contactId" v-model="custSels"></td>
                     <td class="center">{{ (custPage - 1) * custPageSize + idx + 1 }}</td>
                     <td v-if="custCols.name">{{ row.name || '-' }}</td>
                     <td v-if="custCols.mobile">{{ row.mobile || '-' }}</td>
-                    <td v-if="custCols.nickname">{{ row.nickname || '-' }}</td>
-                    <td v-if="custCols.email">{{ row.email || '-' }}</td>
+                    <td v-if="custCols.officialAccountId">{{ row.officialAccountId || '-' }}</td>
                     <td v-if="custCols.customerSubjectName"><span class="clip" :title="row.customerSubjectName">{{ row.customerSubjectName || '-' }}</span></td>
-                    <td v-if="custCols.officialAccountId">{{ row.officialAccountId }}</td>
+                    <td v-if="custCols.customerSubjectId">{{ row.customerSubjectId || '-' }}</td>
+                    <td v-if="custCols.email">{{ row.email || '-' }}</td>
+                    <td v-if="custCols.wechat">{{ row.wechat || '-' }}</td>
+                    <td v-if="custCols.nickname">{{ row.nickname || '-' }}</td>
+                    <td v-if="custCols.userId">{{ row.userId || '-' }}</td>
+                    <td v-if="custCols.miduNewId">{{ row.miduNewId || '-' }}</td>
                     <td v-if="custCols.source">{{ row.source || '-' }}</td>
-                    <td v-if="custCols.channel2">{{ row.channel2 || '-' }}</td>
-                    <td v-if="custCols.sourceTags">
-                      <div class="cell-tags" v-if="row.sourceTags && row.sourceTags.length">
-                        <el-tag v-for="t in row.sourceTags" :key="t" size="mini" type="info">{{ t }}</el-tag>
+                    <td v-if="custCols.tags">
+                      <div class="cell-tags" v-if="row.tags && row.tags.length">
+                        <span v-for="t in row.tags" :key="t" class="tag" :class="tagClass(t)">{{ t }}</span>
                       </div>
                       <span v-else>-</span>
                     </td>
-                    <td v-if="custCols.grade"><span v-if="row.grade" class="tag" :class="tagClass(row.grade)">{{ row.grade }}</span><span v-else>-</span></td>
+                    <td v-if="custCols.memberPack">{{ row.memberPack || '-' }}</td>
+                    <td v-if="custCols.channel2">{{ row.channel2 || '-' }}</td>
+                    <td v-if="custCols.sourceTags">
+                      <el-tag v-if="latestSourceTagOf(row)" size="mini" type="info">{{ latestSourceTagOf(row) }}</el-tag>
+                      <span v-else>-</span>
+                    </td>
                     <td v-if="custCols.intentLines"><span class="clip" :title="joinLines(row.intentLines)">{{ joinLines(row.intentLines) }}</span></td>
                     <td v-if="custCols.purchasedLines"><span class="clip" :title="joinLines(row.purchasedLines)">{{ joinLines(row.purchasedLines) }}</span></td>
                     <td v-if="custCols.identityStatus"><span class="tag" :class="tagClass(row.identityStatus)">{{ row.identityStatus }}</span></td>
@@ -752,6 +832,7 @@
                     <td v-if="custCols.createdAt">{{ row.createdAt }}</td>
                     <td v-if="custCols.updatedAt">{{ row.updatedAt }}</td>
                     <td v-if="custCols.lastOperator">{{ row.lastOperator || '-' }}</td>
+                    <td v-if="custCols.remark"><span class="clip" :title="row.remark">{{ row.remark || '-' }}</span></td>
                     <td v-if="custCols.openid"><span class="clip" :title="row.openid">{{ row.openid || '-' }}</span></td>
                     <td v-if="custCols.unionid"><span class="clip" :title="row.unionid">{{ row.unionid || '-' }}</span></td>
                     <td class="sticky-op">
@@ -1400,7 +1481,13 @@
           <div class="cell" v-for="item in custProfileFields" :key="item.label">
             <div class="k">{{ item.label }}</div>
             <div class="v">
-              <span v-if="item.tag" class="tag" :class="tagClass(item.value)">{{ item.value }}</span>
+              <template v-if="item.tags">
+                <div class="cell-tags" v-if="item.tags.length">
+                  <span v-for="t in item.tags" :key="t" class="tag" :class="tagClass(t)">{{ t }}</span>
+                </div>
+                <span v-else>-</span>
+              </template>
+              <span v-else-if="item.tag" class="tag" :class="tagClass(item.value)">{{ item.value }}</span>
               <span v-else-if="item.score" class="score-num">{{ item.value }}</span>
               <span v-else>{{ item.value }}</span>
             </div>
@@ -1440,8 +1527,12 @@
           </div>
           <div class="cust-behavior-pane">
             <div class="cust-track-hd">
-              <div class="section-hd">行为轨迹</div>
+              <div class="section-hd">行为记录</div>
               <div class="cust-track-filter">
+                <span class="k">产品</span>
+                <el-select v-model="custTrackProduct" size="mini" placeholder="请选择" clearable style="width:140px">
+                  <el-option v-for="p in trackProductOptions" :key="p" :label="p" :value="p"></el-option>
+                </el-select>
                 <span class="k">时间</span>
                 <el-date-picker
                   v-model="custTrackDate"
@@ -1459,34 +1550,15 @@
                 />
               </div>
             </div>
-            <div class="table-scroll">
-              <table class="boss-table track-table">
-                <thead>
-                  <tr>
-                    <th class="center">序号</th>
-                    <th>时间</th>
-                    <th>行为</th>
-                    <th class="right">得分</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-if="!custFilteredTrack.length">
-                    <td colspan="4" class="center" style="color:#909399;">{{ custTrackEmptyText }}</td>
-                  </tr>
-                  <tr v-for="(row, i) in custFilteredTrack" :key="i">
-                    <td class="center">{{ i + 1 }}</td>
-                    <td>{{ row.time }}</td>
-                    <td>{{ row.action }}</td>
-                    <td class="right">+{{ row.score }}</td>
-                  </tr>
-                </tbody>
-                <tfoot v-if="custFilteredTrack.length">
-                  <tr>
-                    <td colspan="3">合计得分</td>
-                    <td class="right"><span class="score-num">+{{ custFilteredTrackScore }}</span></td>
-                  </tr>
-                </tfoot>
-              </table>
+            <p class="track-hint">可按产品筛选。模力通 APP 行为（暂定）：注册、登录、功能使用-写作、功能使用-会议纪要。蜜度GEO 恢复原用户行为记录。具体以产品传输内容为准。</p>
+            <div class="track-flow-wrap">
+              <div v-if="!custFilteredTrack.length" class="flow-empty">{{ custTrackEmptyText }}</div>
+              <div v-else class="track-flow">
+                <div class="flow-item" v-for="(row, i) in custFilteredTrack" :key="i">
+                  <div class="flow-time">{{ row.time }}</div>
+                  <div class="flow-action">{{ row.action }}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1515,12 +1587,13 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4">行为分按联系人全部轨迹合计，不按产品拆分。</td>
+                <td colspan="4">行为分累计模力通 APP 和 GEO 的用户行为。模力通 APP 行为暂定四项。具体以产品传输内容为准。</td>
               </tr>
             </tfoot>
           </table>
         </div>
       </div>
+
     </div>
 
     <div slot="footer">
@@ -1528,11 +1601,12 @@
     </div>
   </el-dialog>
 
-  <el-dialog title="打标签" :visible.sync="custTagVisible" width="420px" append-to-body :close-on-click-modal="false">
+  <el-dialog title="打标签" :visible.sync="custTagVisible" width="560px" append-to-body :close-on-click-modal="false">
     <p style="margin:0 0 12px;color:#606266;font-size:13px;">{{ custActionRow.name || custActionRow.nickname || custActionRow.mobile || '-' }}</p>
-    <el-radio-group v-model="custTagDraft" class="grade-radios">
-      <el-radio v-for="t in gradeOptions" :key="t" :label="t">{{ t }}</el-radio>
-    </el-radio-group>
+    <p style="margin:0 0 8px;color:#909399;font-size:12px;">标签（可多选）</p>
+    <el-checkbox-group v-model="custTagDraft" class="grade-radios">
+      <el-checkbox v-for="t in tagOptions" :key="t" :label="t">{{ t }}</el-checkbox>
+    </el-checkbox-group>
     <span slot="footer">
       <el-button @click="custTagVisible = false">取消</el-button>
       <el-button type="primary" @click="saveCustTags">确定</el-button>
@@ -1574,6 +1648,30 @@
     <span slot="footer">
       <el-button @click="custFormVisible = false">取消</el-button>
       <el-button type="primary" @click="confirmConvertForm">确认转表单</el-button>
+    </span>
+  </el-dialog>
+
+  <el-dialog title="发短信" :visible.sync="custSmsVisible" width="620px" append-to-body :close-on-click-modal="false">
+    <p style="margin:0 0 8px;color:#606266;font-size:13px;">按联系人来源匹配话术：GEO 用 9.9 元评估，模力通用 15 天体验 / 99 元年包。发短信不写入行为记录。</p>
+    <div class="sms-targets" style="margin-bottom:12px;">
+      发送对象（{{ custSmsTargets.length }}）：{{ custSmsTargetNames }}
+    </div>
+    <el-form label-width="88px" size="small">
+      <el-form-item label="运营来源">{{ custSmsSourceText }}</el-form-item>
+      <el-form-item label="短信模板">
+        <el-select v-model="custSmsTemplateId" placeholder="请选择模板" style="width:100%">
+          <el-option-group v-for="g in custSmsTemplateGroups" :key="g.source" :label="g.source">
+            <el-option v-for="t in g.list" :key="t.id" :label="t.name" :value="t.id" />
+          </el-option-group>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="短信预览">
+        <div class="sms-preview">{{ custSmsPreview }}</div>
+      </el-form-item>
+    </el-form>
+    <span slot="footer">
+      <el-button @click="custSmsVisible = false">取消</el-button>
+      <el-button type="primary" @click="sendCustSms">发送</el-button>
     </span>
   </el-dialog>
 
@@ -2419,50 +2517,165 @@ const INV_MOCK = [
 const GEO_LINE = '蜜度GEO小程序评估套餐';
 const GEO_PURCHASED = '蜜度GEO';
 const YQ_LINE = '舆情平台';
+const MOLITONG_LINE = '模力通';
 const PRODUCT_SHORT = {
   '蜜度GEO小程序评估套餐': '蜜度GEO',
-  '舆情平台': '舆情平台'
+  '舆情平台': '舆情平台',
+  '模力通': '模力通'
 };
-const SOURCE_OPTIONS = ['模力通App', 'GEO小程序'];
-const GRADE_OPTIONS = ['S', 'A', 'B', 'C'];
+const SOURCE_OPTIONS = ['模力通App', 'GEO小程序', '蜜度官网注册', '销售后台', '学习强国'];
+  const GRADE_OPTIONS = ['S', 'A', 'B', 'C'];
+  const BEHAVIOR_TAG_OPTIONS = ['已注册未下单', '体验中', '已充值', '已下单未开票', '已绑定主体', '已开票'];
+const TAG_OPTIONS = BEHAVIOR_TAG_OPTIONS.concat(GRADE_OPTIONS);
 const FORM_PRODUCT_OPTIONS = ['蜜度GEO', '舆情平台', '模力通'];
+const TRACK_PRODUCT_OPTIONS = ['模力通', '蜜度GEO'];
 const TRACK_ACTION_OPTIONS = [
-  '完成注册 + 授权手机号 + 同意协议',
+  '注册',
   '登录',
-  '浏览产品页',
+  '功能使用-写作',
+  '功能使用-会议纪要'
+];
+const GEO_TRACK_ACTIONS = [
+  '注册',
+  '登录',
   '点击 9.9 元体验',
-  '填写表单',
-  '预约演示',
   '进入订单页',
-  '下单',
-  '支付成功',
   '绑定主体',
   '提交开票'
 ];
 const KEY_BEHAVIOR_OPTIONS = [
+  '功能使用-写作',
+  '功能使用-会议纪要',
   '点击 9.9 元体验',
-  '填写表单',
-  '预约演示',
   '进入订单页',
-  '下单',
-  '支付成功',
   '绑定主体',
   '提交开票'
 ];
 const BEHAVIOR_SCORE_MAP = {
-  '完成注册 + 授权手机号 + 同意协议': 10,
-  '完成注册 + 授权手机号 + 同意协议': 10,
+  '注册': 10,
   '登录': 2,
-  '浏览产品页': 3,
+  '功能使用-写作': 8,
+  '功能使用-会议纪要': 8,
   '点击 9.9 元体验': 10,
-  '填写表单': 8,
-  '预约演示': 12,
   '进入订单页': 15,
-  '下单': 15,
-  '支付成功': 20,
   '绑定主体': 20,
   '提交开票': 10
 };
+function inferTrackProduct(action, source) {
+  if (source === 'GEO小程序') return '蜜度GEO';
+  if (String(action || '') === '点击 9.9 元体验') return '蜜度GEO';
+  return '模力通';
+}
+function normalizeTrackAction(action, product) {
+  const a = String(action || '');
+  if (!a || a.indexOf('短信') !== -1) return '';
+  if (product === '蜜度GEO') {
+    if (a === '完成注册 + 授权手机号 + 同意协议' || a === '注册') return '注册';
+    if (a === '登录') return '登录';
+    if (GEO_TRACK_ACTIONS.indexOf(a) !== -1) return a;
+    return a;
+  }
+  if (a === '完成注册 + 授权手机号 + 同意协议' || a === '注册') return '注册';
+  if (a === '登录') return '登录';
+  if (TRACK_ACTION_OPTIONS.indexOf(a) !== -1) return a;
+  if (['浏览产品页', '领取15天体验', '填写表单', '预约演示'].indexOf(a) !== -1) return '功能使用-写作';
+  if (['进入订单页', '下单', '支付成功', '支付99元年包', '绑定主体', '提交开票'].indexOf(a) !== -1) return '功能使用-会议纪要';
+  return '';
+}
+const MEMBER_PACK_OPTIONS = ['9.9元体验套餐', '15天体验版', '99元年包'];
+const SMS_LINK = {
+  '模力通App': 'https://mt.cn/m99',
+  'GEO小程序': 'https://geo.midu.cn/t99',
+  '蜜度官网注册': 'https://mt.cn/m99',
+  '销售后台': 'https://mt.cn/m99',
+  '学习强国': 'https://mt.cn/m99'
+};
+const SMS_TEMPLATES = [
+  { id: 'mt-unreg', source: '模力通App', slot: 'unreg', name: '未注册联系人', body: '【模力通】{昵称}，你的15天3000点免费体验已开通，核心功能可直接用。点此领取→{链接} 回T退订' },
+  { id: 'mt-norecharge', source: '模力通App', slot: 'norecharge', name: '已注册未领体验', body: '【模力通】{昵称}，你已注册模力通，3000点免费体验还没领。15天有效，点此领取→{链接} 回T退订' },
+  { id: 'mt-trial7', source: '模力通App', slot: 'trial7', name: '体验中第7天', body: '【模力通】{昵称}，你已用模力通完成{次数}次操作，3000点还剩{剩余}点。继续体验→{链接} 回T退订' },
+  { id: 'mt-trial12', source: '模力通App', slot: 'trial12', name: '体验到期前3天', body: '【模力通】{昵称}，15天3000点体验还剩3天，你已用{已用}点。现在升级99元年度包，剩余点数不清零+额外送1000点→{链接} 回T退订' },
+  { id: 'mt-expired', source: '模力通App', slot: 'expired', name: '体验到期', body: '【模力通】{昵称}，你的15天3000点体验已到期。过去15天你完成了{次数}次操作。3天内升级99元年度包，抵10元→{链接} 回T退订' },
+  { id: 'mt-recharged', source: '模力通App', slot: 'recharged', name: '已充值引导推荐', body: '【模力通】{昵称}，你的专属推广码已生成。好友领15天3000点体验，你得200积分；好友充值99元，你得500。点此分享→{链接} 回T退订' },
+  { id: 'mt-silent', source: '模力通App', slot: 'silent', name: '沉默老用户', body: '【模力通】{昵称}，你上次使用模力通是{天数}天前，账户还有{剩余}点未用。点击查看可兑换权益→{链接} 回T退订' },
+  { id: 'geo-unreg', source: 'GEO小程序', slot: 'unreg', name: '未注册联系人', body: '【蜜度GEO】{昵称}，9.9元小程序评估套餐可体验核心能力。点此领取→{链接} 回T退订' },
+  { id: 'geo-norecharge', source: 'GEO小程序', slot: 'norecharge', name: '已注册未下单', body: '【蜜度GEO】{昵称}，你已注册GEO小程序，9.9元评估套餐还没开通。点此领取→{链接} 回T退订' },
+  { id: 'geo-trial7', source: 'GEO小程序', slot: 'trial7', name: '体验中引导升级', body: '【蜜度GEO】{昵称}，你已完成评估体验。升级正式版可看全量监测报告→{链接} 回T退订' },
+  { id: 'geo-trial12', source: 'GEO小程序', slot: 'trial12', name: '评估待转化', body: '【蜜度GEO】{昵称}，9.9元评估即将到期。现在升级可保留报告并解锁监测→{链接} 回T退订' },
+  { id: 'geo-expired', source: 'GEO小程序', slot: 'expired', name: '体验到期', body: '【蜜度GEO】{昵称}，你的9.9元评估已到期。3天内升级抵10元→{链接} 回T退订' },
+  { id: 'geo-recharged', source: 'GEO小程序', slot: 'recharged', name: '已购引导推荐', body: '【蜜度GEO】{昵称}，你的专属推广码已生成。好友领9.9元评估，你得权益。点此分享→{链接} 回T退订' },
+  { id: 'geo-silent', source: 'GEO小程序', slot: 'silent', name: '沉默召回', body: '【蜜度GEO】{昵称}，你上次使用GEO是{天数}天前。点此查看评估报告和升级权益→{链接} 回T退订' }
+];
+function smsCampaignOf(source) {
+  return source === 'GEO小程序' ? 'GEO小程序' : '模力通App';
+}
+function smsLinkOf(row) {
+  return SMS_LINK[(row && row.source)] || SMS_LINK['模力通App'];
+}
+function smsSlotOf(row) {
+  const pack = (row && row.memberPack) || '';
+  const tag = (row && row.identityStatus) || '';
+  const day = Number((row && row.trialDay) || 0);
+  const lastUse = Number((row && row.lastUseDays) || 0);
+  if (!pack) {
+    if (tag === '已注册未下单') return 'norecharge';
+    return 'unreg';
+  }
+  if (pack === '99元年包' || tag === '已开票' || tag === '已绑定主体' || tag === '已下单未开票') {
+    if (lastUse >= 14) return 'silent';
+    return 'recharged';
+  }
+  if (pack === '15天体验版' || pack === '9.9元体验套餐') {
+    if (day >= 15) return 'expired';
+    if (day >= 12) return 'trial12';
+    if (lastUse >= 14) return 'silent';
+    return 'trial7';
+  }
+  return 'unreg';
+}
+function findSmsTemplate(source, slot) {
+  const campaign = smsCampaignOf(source);
+  return SMS_TEMPLATES.filter(function (t) { return t.source === campaign && t.slot === slot; })[0]
+    || SMS_TEMPLATES.filter(function (t) { return t.source === campaign; })[0]
+    || SMS_TEMPLATES[0];
+}
+function fillSmsBody(body, row) {
+  const r = row || {};
+  return String(body || '')
+    .replace(/\{昵称\}/g, r.nickname || r.name || '用户')
+    .replace(/\{链接\}/g, smsLinkOf(r))
+    .replace(/\{次数\}/g, String(r.opCountApp || 0))
+    .replace(/\{剩余\}/g, String(r.pointsRemain || 0))
+    .replace(/\{已用\}/g, String(r.pointsUsed || 0))
+    .replace(/\{天数\}/g, String(r.lastUseDays || 0));
+}
+function defaultSmsTemplateId(row) {
+  return findSmsTemplate(smsCampaignOf((row && row.source) || '模力通App'), smsSlotOf(row)).id;
+}
+function latestSourceTagOf(row) {
+  const tracks = ((row && row.behaviorTrack) || []).slice().sort(function (a, b) {
+    return String(a.time || '').localeCompare(String(b.time || ''));
+  });
+  for (var i = tracks.length - 1; i >= 0; i--) {
+    if (tracks[i] && tracks[i].sourceTag) return tracks[i].sourceTag;
+  }
+  const tags = (row && row.sourceTags) || [];
+  return tags.length ? tags[tags.length - 1] : '';
+}
+function invoiceStatusText(row) {
+  if (row && row.invoiceStatus) return row.invoiceStatus;
+  const st = (row && row.identityStatus) || '';
+  if (st === '已开票') return '已开票';
+  if (st === '已下单未开票') return '待开票';
+  if (st === '已绑定主体') return '待开票';
+  return '-';
+}
+function packHasPoints(pack) {
+  return pack === '15天体验版' || pack === '99元年包';
+}
+function packPointsText(row) {
+  return packHasPoints(row && row.memberPack) ? row.pointsRemain : '-';
+}
 const CHANNEL_TREE = {
   '线上渠道': {
     '官网': ['官网注册', '官网表单', 'SEO自然'],
@@ -2494,9 +2707,9 @@ const SOURCE_TAG_OPTIONS = [
   '预约人工演示', '预约演示', '咨询产品', '尊享卡激活'
 ];
 const BEHAVIOR_LEVEL_RULES = [
-  { level: '冷', score: '10–20分', rule: '刚完成注册或零星登录，销售暂不跟进。' },
-  { level: '温', score: '21–45分', rule: '有浏览、点击 9.9 元体验或填写表单，可由 SDR 初步触达。' },
-  { level: '热', score: '46分以上', rule: '进入订单页、绑定主体、提交开票或已支付，销售需立刻跟进。' }
+  { level: '冷', score: '10–20分', rule: '刚注册或零星登录，销售暂不跟进。' },
+  { level: '温', score: '21–45分', rule: '有功能使用（写作 / 会议纪要），可由 SDR 初步触达。' },
+  { level: '热', score: '46分以上', rule: '多次功能使用，销售需立刻跟进。' }
 ];
 
 function trackScoreTotal(row) {
@@ -2531,9 +2744,15 @@ function orderStats(row) {
 function contactRow(o) {
   return Object.assign({
     customerSubjectName: '',
+    customerSubjectId: '',
+    userId: '',
+    miduNewId: '',
+    invoiceStatus: '',
     email: '',
     name: '',
     nickname: '',
+    wechat: '',
+    remark: '',
     openid: '',
     unionid: '',
     source: '',
@@ -2541,7 +2760,17 @@ function contactRow(o) {
     channel2: '',
     channel3: '',
     sourceTags: [],
+    tags: [],
     grade: '',
+    behaviorTag: '',
+    memberPack: '',
+    trialDay: 0,
+    pointsTotal: 0,
+    pointsUsed: 0,
+    pointsRemain: 0,
+    opCountApp: 0,
+    lastUseDays: null,
+    smsLogs: [],
     formNo: '',
     lastOperator: '系统',
     intentLines: [],
@@ -2568,17 +2797,29 @@ const CONTACT_MOCK = [
     email: 'zhangwei@midu.com',
     name: '张伟',
     nickname: '老张在路上',
+    wechat: 'zhangwei_wx',
+    remark: '官网迁入，已开通99元年包',
+    memberPack: '99元年包',
+    pointsTotal: 12000,
+    pointsUsed: 3200,
+    pointsRemain: 8800,
+    opCountApp: 48,
+    lastUseDays: 1,
+    smsLogs: [
+      { time: '2026-09-20 10:12:00', template: '已充值引导推荐', content: '【模力通】老张在路上，你的专属推广码已生成。好友领15天3000点体验，你得200积分；好友充值99元，你得500。点此分享→https://mt.cn/m99 回T退订', status: '已点击' }
+    ],
     openid: 'oX8fT5zhangwei001',
     unionid: 'un_zw_001',
-    source: '模力通App',
+    source: '蜜度官网注册',
     channel1: '线上渠道',
     channel2: '蜜度官网',
     channel3: '官网注册',
     sourceTags: ['用户注册'],
     grade: 'S',
+    behaviorTag: '已开票',
     formNo: '200018',
-    intentLines: [GEO_LINE, YQ_LINE],
-    purchasedLines: [GEO_PURCHASED],
+    intentLines: [MOLITONG_LINE, GEO_LINE, YQ_LINE],
+    purchasedLines: [MOLITONG_LINE, GEO_PURCHASED],
     identityStatus: '已开票',
     dataStatus: '正常',
     createdAt: '2026-03-12 10:24:18',
@@ -2598,11 +2839,15 @@ const CONTACT_MOCK = [
       { time: '2026-03-12 10:24:18', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-03-12 10:26:02', action: '登录', score: 2 },
       { time: '2026-08-05 10:18:00', action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-08-05 10:19:00', action: '领取15天体验', score: 10 },
       { time: '2026-08-05 10:20:36', action: '进入订单页', score: 15 },
+      { time: '2026-08-22 14:22:00', action: '支付99元年包', score: 20 },
       { time: '2026-08-10 10:02:18', action: '登录', score: 2 },
       { time: '2026-08-22 14:18:00', action: '点击 9.9 元体验', score: 10 },
       { time: '2026-08-28 14:02:11', action: '绑定主体', score: 20 },
-      { time: '2026-08-28 14:08:40', action: '提交开票', score: 10 }
+      { time: '2026-08-28 14:08:40', action: '提交开票', score: 10 },
+      { time: '2026-09-20 10:12:00', action: '短信发送', score: 0 },
+      { time: '2026-09-20 10:18:22', action: '短信点击链接', score: 5 }
     ]
   }),
   contactRow({
@@ -2613,6 +2858,13 @@ const CONTACT_MOCK = [
     email: 'lina@example.com',
     name: '李娜',
     nickname: '娜娜呀',
+    wechat: 'lina_geo',
+    remark: '小程序9.9体验后已购蜜度GEO',
+    memberPack: '9.9元体验套餐',
+    lastUseDays: 1,
+    smsLogs: [
+      { time: '2026-09-03 10:00:00', template: 'GEO小程序 / 已购引导推荐', content: '【蜜度GEO】娜娜呀，你的专属推广码已生成。好友领9.9元评估，你得权益。点此分享→https://geo.midu.cn/t99 回T退订', status: '已点击' }
+    ],
     openid: 'oX8fT5lina002',
     unionid: 'un_ln_002',
     source: 'GEO小程序',
@@ -2621,6 +2873,7 @@ const CONTACT_MOCK = [
     channel3: 'GEO小程序',
     sourceTags: ['产品官网'],
     grade: 'A',
+    behaviorTag: '已充值',
     formNo: '200102',
     intentLines: [GEO_LINE],
     purchasedLines: [GEO_PURCHASED],
@@ -2641,13 +2894,21 @@ const CONTACT_MOCK = [
       { time: '2026-04-08 16:13:10', action: '登录', score: 2 },
       { time: '2026-09-01 16:08:02', action: '点击 9.9 元体验', score: 10 },
       { time: '2026-09-01 16:08:40', action: '进入订单页', score: 15 },
-      { time: '2026-09-01 16:20:08', action: '绑定主体', score: 20 }
+      { time: '2026-09-01 16:20:08', action: '绑定主体', score: 20 },
+      { time: '2026-09-03 10:00:00', action: '短信发送', score: 0 },
+      { time: '2026-09-03 10:04:18', action: '短信点击链接', score: 5 }
     ]
   }),
   contactRow({
     contactId: 'C202609020003',
     officialAccountId: 'wangqiang',
     nickname: '强子',
+    wechat: 'wangqiang_geo',
+    remark: 'GEO 已注册，多次进入订单页未支付9.9',
+    lastUseDays: 10,
+    smsLogs: [
+      { time: '2026-09-08 11:20:00', template: 'GEO小程序 / 已注册未下单', content: '【蜜度GEO】强子，你已注册GEO小程序，9.9元评估套餐还没开通。点此领取→https://geo.midu.cn/t99 回T退订', status: '已点击' }
+    ],
     mobile: '13917445566',
     source: 'GEO小程序',
     channel1: '线上渠道',
@@ -2655,6 +2916,7 @@ const CONTACT_MOCK = [
     channel3: 'GEO小程序',
     sourceTags: ['立即试用'],
     grade: 'A',
+    behaviorTag: '已注册未充值',
     openid: 'oX8fT5wangqiang003',
     unionid: 'un_wq_003',
     intentLines: [GEO_LINE],
@@ -2677,13 +2939,27 @@ const CONTACT_MOCK = [
       { time: '2026-09-02 09:16:40', action: '登录', score: 2 },
       { time: '2026-09-02 09:17:11', action: '登录', score: 2 },
       { time: '2026-09-02 09:18:00', action: '登录', score: 2 },
-      { time: '2026-09-02 09:18:22', action: '登录', score: 2 }
+      { time: '2026-09-02 09:18:22', action: '登录', score: 2 },
+      { time: '2026-09-08 11:20:00', action: '短信发送', score: 0 },
+      { time: '2026-09-08 11:22:40', action: '短信点击链接', score: 5 }
     ]
   }),
   contactRow({
     contactId: 'C202608040004',
     officialAccountId: 'chenjing',
     nickname: 'Jing',
+    wechat: 'jing_molitong',
+    remark: '15天体验第7天，已消耗过半点数',
+    memberPack: '15天体验版',
+    trialDay: 7,
+    pointsTotal: 3000,
+    pointsUsed: 1680,
+    pointsRemain: 1320,
+    opCountApp: 12,
+    lastUseDays: 0,
+    smsLogs: [
+      { time: '2026-08-04 09:00:00', template: '体验中第7天', content: '【模力通】Jing，你已用模力通完成12次操作，3000点还剩1320点。继续体验→https://mt.cn/m99 回T退订', status: '已点击' }
+    ],
     mobile: '15821997701',
     source: '模力通App',
     channel1: '线上渠道',
@@ -2691,8 +2967,9 @@ const CONTACT_MOCK = [
     channel3: '官网表单',
     sourceTags: ['领取资料'],
     grade: 'B',
+    behaviorTag: '体验中',
     openid: 'oX8fT5chenjing004',
-    intentLines: [GEO_LINE],
+    intentLines: [MOLITONG_LINE],
     identityStatus: '已注册未下单',
     dataStatus: '正常',
     createdAt: '2026-06-02 14:18:09',
@@ -2709,6 +2986,9 @@ const CONTACT_MOCK = [
       { time: '2026-07-15 08:22:51', action: '登录', score: 2 },
       { time: '2026-08-04 16:10:18', action: '登录', score: 2 },
       { time: '2026-08-04 16:11:40', action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-08-04 16:11:50', action: '领取15天体验', score: 10 },
+      { time: '2026-08-04 09:00:00', action: '短信发送', score: 0 },
+      { time: '2026-08-04 09:06:12', action: '短信点击链接', score: 5 },
       { time: '2026-08-04 16:12:22', action: '登录', score: 2 },
       { time: '2026-08-04 16:13:01', action: '登录', score: 2 },
       { time: '2026-08-04 16:13:40', action: '登录', score: 2 }
@@ -2722,12 +3002,17 @@ const CONTACT_MOCK = [
     email: 'zhaomin@midu.com',
     name: '赵敏',
     nickname: '敏敏',
+    wechat: 'zhaomin_wx',
+    remark: '已付9.9元评估套餐，待开票',
+    memberPack: '9.9元体验套餐',
+    lastUseDays: 2,
     source: 'GEO小程序',
     channel1: '线上渠道',
     channel2: '微信公众号',
     channel3: 'GEO小程序',
     sourceTags: ['用户注册'],
     grade: 'A',
+    behaviorTag: '体验中',
     formNo: '200215',
     openid: 'oX8fT5zhaomin005',
     unionid: 'un_zm_005',
@@ -2756,6 +3041,12 @@ const CONTACT_MOCK = [
     contactId: 'C202607010006',
     officialAccountId: 'linxiao',
     nickname: '晓晓',
+    wechat: 'linxiao_wx',
+    remark: 'GEO 注册后长期未回访',
+    lastUseDays: 103,
+    smsLogs: [
+      { time: '2026-09-25 15:00:00', template: 'GEO小程序 / 沉默召回', content: '【蜜度GEO】晓晓，你上次使用GEO是103天前。点此查看评估报告和升级权益→https://geo.midu.cn/t99 回T退订', status: '发送成功' }
+    ],
     mobile: '13905031234',
     source: 'GEO小程序',
     channel1: '线上渠道',
@@ -2763,6 +3054,7 @@ const CONTACT_MOCK = [
     channel3: 'GEO小程序',
     openid: 'oX8fT5linxiao006',
     grade: 'C',
+    behaviorTag: '沉默',
     intentLines: [GEO_LINE],
     identityStatus: '已注册未下单',
     dataStatus: '正常',
@@ -2775,13 +3067,26 @@ const CONTACT_MOCK = [
     lastBehavior: '登录',
     behaviorTrack: [
       { time: '2026-07-01 15:40:18', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
-      { time: '2026-07-01 15:41:02', action: '登录', score: 2 }
+      { time: '2026-07-01 15:41:02', action: '登录', score: 2 },
+      { time: '2026-09-25 15:00:00', action: '短信发送', score: 0 }
     ]
   }),
   contactRow({
     contactId: 'C202607150007',
     officialAccountId: 'zhoulei',
     nickname: 'Lei',
+    wechat: 'zhoulei_app',
+    remark: '体验到期后长期未回访',
+    memberPack: '15天体验版',
+    trialDay: 15,
+    pointsTotal: 3000,
+    pointsUsed: 200,
+    pointsRemain: 2800,
+    opCountApp: 2,
+    lastUseDays: 86,
+    smsLogs: [
+      { time: '2026-09-28 11:00:00', template: '沉默老用户', content: '【模力通】Lei，你上次使用模力通是86天前，账户还有2800点未用。点击查看可兑换权益→https://mt.cn/m99 回T退订', status: '发送成功' }
+    ],
     mobile: '17621717517',
     source: '模力通App',
     channel1: '线上渠道',
@@ -2789,7 +3094,8 @@ const CONTACT_MOCK = [
     channel3: '官网注册',
     sourceTags: ['用户注册'],
     grade: 'C',
-    intentLines: [GEO_LINE],
+    behaviorTag: '沉默',
+    intentLines: [MOLITONG_LINE],
     identityStatus: '已注册未下单',
     dataStatus: '正常',
     createdAt: '2026-07-15 08:22:51',
@@ -2802,13 +3108,24 @@ const CONTACT_MOCK = [
     behaviorTrack: [
       { time: '2026-07-15 08:22:51', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-07-15 08:23:10', action: '登录', score: 2 },
-      { time: '2026-07-16 09:10:00', action: '登录', score: 2 }
+      { time: '2026-07-16 09:10:00', action: '登录', score: 2 },
+      { time: '2026-07-16 09:12:00', action: '领取15天体验', score: 10 },
+      { time: '2026-09-28 11:00:00', action: '短信发送', score: 0 }
     ]
   }),
   contactRow({
     contactId: 'C202607280008',
     officialAccountId: 'wuqian',
     nickname: '浅浅',
+    wechat: 'wuqian_wx',
+    remark: '活动领取15天体验，第3天',
+    memberPack: '15天体验版',
+    trialDay: 3,
+    pointsTotal: 3000,
+    pointsUsed: 420,
+    pointsRemain: 2580,
+    opCountApp: 5,
+    lastUseDays: 1,
     mobile: '13501668890',
     source: '模力通App',
     channel1: '线上渠道',
@@ -2816,7 +3133,8 @@ const CONTACT_MOCK = [
     channel3: '官网表单',
     sourceTags: ['活动申请试用'],
     grade: 'B',
-    intentLines: [GEO_LINE],
+    behaviorTag: '体验中',
+    intentLines: [MOLITONG_LINE],
     identityStatus: '已注册未下单',
     dataStatus: '正常',
     createdAt: '2026-07-28 19:44:10',
@@ -2830,7 +3148,8 @@ const CONTACT_MOCK = [
     behaviorTrack: [
       { time: '2026-07-28 19:44:10', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-07-28 19:45:00', action: '登录', score: 2 },
-      { time: '2026-07-28 19:50:00', action: '点击 9.9 元体验', score: 10 }
+      { time: '2026-07-28 19:50:00', action: '点击 9.9 元体验', score: 10 },
+      { time: '2026-07-28 19:51:00', action: '领取15天体验', score: 10 }
     ]
   }),
   contactRow({
@@ -2841,15 +3160,24 @@ const CONTACT_MOCK = [
     email: 'zhenghao@example.com',
     name: '郑浩',
     nickname: '浩克',
-    source: '模力通App',
+    wechat: 'zhenghao_wx',
+    remark: '朋友推荐已充99元年包，数据已标无效',
+    memberPack: '99元年包',
+    pointsTotal: 12000,
+    pointsUsed: 2900,
+    pointsRemain: 9100,
+    opCountApp: 18,
+    lastUseDays: 8,
+    source: '销售后台',
     channel1: '线下渠道',
     channel2: '朋友推荐',
     channel3: '直销跟进',
     sourceTags: ['合作代理'],
     grade: 'B',
+    behaviorTag: '已充值',
     formNo: '200331',
-    intentLines: [GEO_LINE],
-    purchasedLines: [GEO_PURCHASED],
+    intentLines: [MOLITONG_LINE, GEO_LINE],
+    purchasedLines: [MOLITONG_LINE, GEO_PURCHASED],
     identityStatus: '已下单未开票',
     dataStatus: '无效',
     createdAt: '2026-08-04 10:11:26',
@@ -2866,22 +3194,29 @@ const CONTACT_MOCK = [
       { time: '2026-08-04 10:11:26', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-08-04 10:12:00', action: '登录', score: 2 },
       { time: '2026-08-04 10:40:00', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-08-04 11:06:18', action: '进入订单页', score: 15 }
+      { time: '2026-08-04 11:06:18', action: '进入订单页', score: 15 },
+      { time: '2026-08-04 11:20:00', action: '支付99元年包', score: 20 }
     ]
   }),
   contactRow({
     contactId: 'C202608120010',
     officialAccountId: 'sunyue',
     nickname: '月月',
+    wechat: '',
+    remark: '短信触达未注册，已合并',
+    smsLogs: [
+      { time: '2026-08-20 09:30:00', template: '未注册联系人', content: '【模力通】月月，你的15天3000点免费体验已开通，核心功能可直接用。点此领取→https://mt.cn/m99 回T退订', status: '发送成功' }
+    ],
     mobile: '18817556621',
-    source: '模力通App',
+    source: '销售后台',
     channel1: '合作伙伴',
     channel2: '电信转介绍',
     channel3: '华东代理',
     sourceTags: ['生态合作'],
     grade: 'C',
+    behaviorTag: '未注册',
     openid: 'oX8fT5sunyue010',
-    intentLines: [GEO_LINE],
+    intentLines: [MOLITONG_LINE],
     identityStatus: '已注册未下单',
     dataStatus: '已合并',
     createdAt: '2026-08-12 13:28:40',
@@ -2893,20 +3228,28 @@ const CONTACT_MOCK = [
     lastBehavior: '登录',
     behaviorTrack: [
       { time: '2026-08-12 13:28:40', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
-      { time: '2026-08-12 13:29:00', action: '登录', score: 2 }
+      { time: '2026-08-12 13:29:00', action: '登录', score: 2 },
+      { time: '2026-08-20 09:30:00', action: '短信发送', score: 0 }
     ]
   }),
   contactRow({
     contactId: 'C202608200011',
     officialAccountId: 'heting',
     nickname: 'Ting',
+    wechat: '',
+    remark: '官网留下手机号未完成注册，短信已退订',
+    smsLogs: [
+      { time: '2026-08-21 10:00:00', template: '未注册联系人', content: '【模力通】Ting，你的15天3000点免费体验已开通，核心功能可直接用。点此领取→https://mt.cn/m99 回T退订', status: '已退订' }
+    ],
     mobile: '13601669988',
-    source: '模力通App',
+    source: '蜜度官网注册',
     channel1: '线上渠道',
     channel2: '蜜度官网',
     channel3: '官网注册',
+    sourceTags: ['用户注册'],
     grade: 'C',
-    intentLines: [GEO_LINE],
+    behaviorTag: '已注册未下单',
+    intentLines: [MOLITONG_LINE],
     identityStatus: '已注册未下单',
     dataStatus: '正常',
     createdAt: '2026-08-20 17:02:15',
@@ -2914,7 +3257,9 @@ const CONTACT_MOCK = [
     lastOperator: '系统',
     lastBehavior: '完成注册 + 授权手机号 + 同意协议',
     behaviorTrack: [
-      { time: '2026-08-20 17:02:15', action: '完成注册 + 授权手机号 + 同意协议', score: 10 }
+      { time: '2026-08-20 17:02:15', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
+      { time: '2026-08-21 10:00:00', action: '短信发送', score: 0 },
+      { time: '2026-08-21 10:02:18', action: '短信退订', score: 0 }
     ]
   }),
   contactRow({
@@ -2925,12 +3270,20 @@ const CONTACT_MOCK = [
     email: 'machao@example.com',
     name: '马超',
     nickname: '超超',
+    wechat: 'machao_geo',
+    remark: 'GEO 高频登录并完成开票',
+    memberPack: '9.9元体验套餐',
+    lastUseDays: 0,
+    smsLogs: [
+      { time: '2026-09-04 09:30:00', template: 'GEO小程序 / 已购引导推荐', content: '【蜜度GEO】超超，你的专属推广码已生成。好友领9.9元评估，你得权益。点此分享→https://geo.midu.cn/t99 回T退订', status: '已点击' }
+    ],
     source: 'GEO小程序',
     channel1: '线上渠道',
     channel2: '微信公众号',
     channel3: 'GEO小程序',
     sourceTags: ['立即购买', '立即试用'],
     grade: 'S',
+    behaviorTag: '高活跃',
     formNo: '200448',
     openid: 'oX8fT5machao012',
     unionid: 'un_mc_012',
@@ -2955,10 +3308,231 @@ const CONTACT_MOCK = [
       { time: '2026-09-02 11:06:18', action: '进入订单页', score: 15 },
       { time: '2026-09-02 11:40:00', action: '绑定主体', score: 20 },
       { time: '2026-09-02 11:42:00', action: '提交开票', score: 10 },
-      { time: '2026-09-02 15:22:41', action: '登录', score: 2 }
+      { time: '2026-09-02 15:22:41', action: '登录', score: 2 },
+      { time: '2026-09-04 09:30:00', action: '短信发送', score: 0 },
+      { time: '2026-09-04 09:33:08', action: '短信点击链接', score: 5 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202610010013',
+    officialAccountId: 'liuyang',
+    mobile: '13901776655',
+    name: '刘洋',
+    nickname: '洋洋',
+    wechat: 'liuyang_mt',
+    remark: '官网迁入，已注册未领3000点体验',
+    source: '蜜度官网注册',
+    channel1: '线上渠道',
+    channel2: '蜜度官网',
+    channel3: '官网注册',
+    sourceTags: ['用户注册', '立即试用'],
+    grade: 'B',
+    behaviorTag: '已注册未充值',
+    intentLines: [MOLITONG_LINE],
+    identityStatus: '已注册未下单',
+    dataStatus: '正常',
+    createdAt: '2026-09-18 14:20:00',
+    updatedAt: '2026-10-08 09:12:00',
+    lastOperator: '李运营',
+    firstLoginAt: '2026-09-18 14:22:00',
+    loginCount: 2,
+    lastActiveAt: '2026-09-18 14:40:00',
+    lastBehavior: '登录',
+    opCountApp: 0,
+    lastUseDays: 24,
+    smsLogs: [
+      { time: '2026-10-08 09:12:00', template: '已注册未领体验', content: '【模力通】洋洋，你已注册模力通，3000点免费体验还没领。15天有效，点此领取→https://mt.cn/m99 回T退订', status: '已点击' }
+    ],
+    behaviorTrack: [
+      { time: '2026-09-18 14:20:00', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
+      { time: '2026-09-18 14:22:00', action: '登录', score: 2 },
+      { time: '2026-10-08 09:12:00', action: '短信发送', score: 0 },
+      { time: '2026-10-08 09:16:40', action: '短信点击链接', score: 5 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202610050014',
+    officialAccountId: 'huangshan',
+    mobile: '13701669901',
+    name: '黄珊',
+    nickname: '珊珊',
+    wechat: 'huangshan_mt',
+    remark: '体验第14天，到期转化窗口',
+    source: '模力通App',
+    channel1: '线上渠道',
+    channel2: '短信',
+    channel3: '官网注册',
+    sourceTags: ['体验', '领取权益'],
+    grade: 'A',
+    behaviorTag: '体验中',
+    memberPack: '15天体验版',
+    trialDay: 14,
+    pointsTotal: 3000,
+    pointsUsed: 2460,
+    pointsRemain: 540,
+    opCountApp: 22,
+    lastUseDays: 0,
+    intentLines: [MOLITONG_LINE],
+    identityStatus: '已注册未下单',
+    dataStatus: '正常',
+    createdAt: '2026-09-28 10:00:00',
+    updatedAt: '2026-10-11 18:20:00',
+    lastOperator: '系统',
+    firstLoginAt: '2026-09-28 10:02:00',
+    loginCount: 9,
+    lastActiveAt: '2026-10-11 18:20:00',
+    lastBehavior: '领取15天体验',
+    keyEventCount: 1,
+    smsLogs: [
+      { time: '2026-10-11 09:00:00', template: '体验到期前3天', content: '【模力通】珊珊，15天3000点体验还剩3天，你已用2460点。现在升级99元年度包，剩余点数不清零+额外送1000点→https://mt.cn/m99 回T退订', status: '已点击' }
+    ],
+    behaviorTrack: [
+      { time: '2026-09-28 10:00:00', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
+      { time: '2026-09-28 10:02:00', action: '登录', score: 2 },
+      { time: '2026-09-28 10:08:00', action: '领取15天体验', score: 10 },
+      { time: '2026-10-11 09:00:00', action: '短信发送', score: 0 },
+      { time: '2026-10-11 09:04:22', action: '短信点击链接', score: 5 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202610080015',
+    officialAccountId: 'qianjin',
+    mobile: '18621558899',
+    customerSubjectName: '上海模力信息技术有限公司',
+    email: 'qianjin@example.com',
+    name: '钱进',
+    nickname: '进取',
+    wechat: 'qianjin_mt',
+    remark: '99元年包高活跃，已生成推广码',
+    source: '学习强国',
+    channel1: '线上渠道',
+    channel2: '蜜度官网',
+    channel3: '官网注册',
+    sourceTags: ['立即购买', '用户注册'],
+    grade: 'S',
+    behaviorTag: '高活跃',
+    memberPack: '99元年包',
+    pointsTotal: 13000,
+    pointsUsed: 7600,
+    pointsRemain: 5400,
+    opCountApp: 86,
+    lastUseDays: 0,
+    intentLines: [MOLITONG_LINE],
+    purchasedLines: [MOLITONG_LINE],
+    identityStatus: '已开票',
+    dataStatus: '正常',
+    createdAt: '2026-08-01 09:00:00',
+    updatedAt: '2026-10-12 08:40:00',
+    lastOperator: '系统',
+    firstLoginAt: '2026-08-01 09:02:00',
+    loginCount: 42,
+    lastActiveAt: '2026-10-12 08:40:00',
+    lastBehavior: '支付99元年包',
+    keyEventCount: 3,
+    hasOrder: 1,
+    orders: [{ product: '模力通', amount: 99, paid: true }],
+    smsLogs: [
+      { time: '2026-10-10 16:00:00', template: '已充值引导推荐', content: '【模力通】进取，你的专属推广码已生成。好友领15天3000点体验，你得200积分；好友充值99元，你得500。点此分享→https://mt.cn/m99 回T退订', status: '已点击' }
+    ],
+    behaviorTrack: [
+      { time: '2026-08-01 09:00:00', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
+      { time: '2026-08-01 09:02:00', action: '登录', score: 2 },
+      { time: '2026-08-01 09:10:00', action: '领取15天体验', score: 10 },
+      { time: '2026-08-16 11:20:00', action: '支付99元年包', score: 20 },
+      { time: '2026-10-10 16:00:00', action: '短信发送', score: 0 },
+      { time: '2026-10-10 16:03:11', action: '短信点击链接', score: 5 }
+    ]
+  }),
+  contactRow({
+    contactId: 'C202610120016',
+    officialAccountId: 'wuyue',
+    mobile: '13301668821',
+    nickname: '小悦',
+    wechat: '',
+    remark: 'GEO 投放入库，尚未完成注册',
+    source: 'GEO小程序',
+    channel1: '线上渠道',
+    channel2: '微信公众号',
+    channel3: 'GEO小程序',
+    sourceTags: ['立即试用'],
+    grade: 'C',
+    behaviorTag: '未注册',
+    intentLines: [GEO_LINE],
+    identityStatus: '已注册未下单',
+    dataStatus: '正常',
+    createdAt: '2026-10-08 11:00:00',
+    updatedAt: '2026-10-10 09:00:00',
+    lastOperator: '系统',
+    lastUseDays: 2,
+    smsLogs: [
+      { time: '2026-10-10 09:00:00', template: 'GEO小程序 / 未注册联系人', content: '【蜜度GEO】小悦，9.9元小程序评估套餐可体验核心能力。点此领取→https://geo.midu.cn/t99 回T退订', status: '发送成功' }
+    ],
+    behaviorTrack: [
+      { time: '2026-10-10 09:00:00', action: '短信发送', score: 0 }
     ]
   })
 ];
+
+CONTACT_MOCK.forEach(function (row, i) {
+  const n = 10086001 + i;
+  if (!row.userId) row.userId = String(n);
+  if (!row.miduNewId) row.miduNewId = 'MDN' + n;
+  if (row.customerSubjectName && !row.customerSubjectId) {
+    const d = String(row.createdAt || '20260801').replace(/\D/g, '').slice(0, 8);
+    const seq = ('000' + (i + 1)).slice(-4);
+    row.customerSubjectId = 'SUB' + d + seq;
+  }
+  if (BEHAVIOR_TAG_OPTIONS.indexOf(row.behaviorTag) === -1) {
+    row.behaviorTag = row.identityStatus || '已注册未下单';
+  }
+  const mergedTags = [];
+  function pushContactTag(v) {
+    if (!v || TAG_OPTIONS.indexOf(v) === -1) return;
+    if (mergedTags.indexOf(v) === -1) mergedTags.push(v);
+  }
+  (row.tags || []).forEach(pushContactTag);
+  pushContactTag(row.behaviorTag);
+  pushContactTag(row.grade);
+  row.tags = TAG_OPTIONS.filter(function (t) { return mergedTags.indexOf(t) !== -1; });
+  if (!row.invoiceStatus) {
+    if (row.identityStatus === '已开票') row.invoiceStatus = '已开票';
+    else if (row.identityStatus === '已下单未开票' && row.dataStatus === '无效') row.invoiceStatus = '已作废';
+    else if (row.identityStatus === '已下单未开票') row.invoiceStatus = row.contactId === 'C202608180005' ? '开票中' : '待开票';
+    else if (row.identityStatus === '已绑定主体') row.invoiceStatus = '待开票';
+    else row.invoiceStatus = '';
+  }
+  row.behaviorTrack = (row.behaviorTrack || []).map(function (t) {
+    const product = t.product || inferTrackProduct(t.action, row.source);
+    const action = normalizeTrackAction(t.action, product);
+    if (!action) return null;
+    const scored = BEHAVIOR_SCORE_MAP[action] != null ? BEHAVIOR_SCORE_MAP[action] : 0;
+    return {
+      time: t.time,
+      action: action,
+      product: product,
+      score: scored,
+      sourceTag: t.sourceTag
+    };
+  }).filter(Boolean);
+  const tags = row.sourceTags || [];
+  const tracks = row.behaviorTrack;
+  tracks.forEach(function (t, ti) {
+    if (t.sourceTag) return;
+    if (!tags.length) return;
+    t.sourceTag = tags[Math.min(ti, tags.length - 1)];
+  });
+  if (tracks.length && tags.length) {
+    tracks[tracks.length - 1].sourceTag = tags[tags.length - 1];
+  }
+  const sorted = tracks.slice().sort(function (a, b) {
+    return String(a.time || '').localeCompare(String(b.time || ''));
+  });
+  const last = sorted[sorted.length - 1];
+  if (last) row.lastActiveAt = last.time;
+  const keys = sorted.filter(function (t) { return KEY_BEHAVIOR_OPTIONS.indexOf(t.action) !== -1; });
+  row.keyEventCount = keys.length;
+  row.lastBehavior = keys.length ? keys[keys.length - 1].action : (last ? last.action : '');
+});
 
 new Vue({
   el: '#app',
@@ -2967,46 +3541,57 @@ new Vue({
       collapsed: false,
       currentMenu: pageFromQuery(),
       sourceOptions: SOURCE_OPTIONS,
-      gradeOptions: GRADE_OPTIONS,
+      tagOptions: TAG_OPTIONS,
+      memberPackOptions: MEMBER_PACK_OPTIONS,
+      smsTemplates: SMS_TEMPLATES,
       formProductOptions: FORM_PRODUCT_OPTIONS,
       channelTree: CHANNEL_TREE,
       sourceTagOptions: SOURCE_TAG_OPTIONS,
       behaviorLevelRules: BEHAVIOR_LEVEL_RULES,
-      productLineOptions: [GEO_LINE, YQ_LINE],
-      purchasedLineOptions: [GEO_PURCHASED],
+      productLineOptions: [GEO_LINE, MOLITONG_LINE, YQ_LINE],
+      purchasedLineOptions: [GEO_PURCHASED, MOLITONG_LINE],
       identityStatusOptions: ['已注册未下单', '已下单未开票', '已绑定主体', '已开票'],
       behaviorLevelOptions: ['冷', '温', '热'],
       dataStatusOptions: ['正常', '无效', '已合并'],
       convertedOptions: ['是', '否'],
       custQuery: {
-        name: '', mobile: '', nickname: '', email: '', customerSubjectName: '',
-        officialAccountId: '', source: '',
-        channel1: '', channel2: '', channel3: '', sourceTag: '', grade: '', converted: '',
+        name: '', mobile: '', wechat: '', nickname: '', email: '',
+        customerSubjectName: '', customerSubjectId: '', officialAccountId: '',
+        userId: '', miduNewId: '', source: '', tags: [], memberPack: '', remark: '',
+        channel1: '', channel2: '', channel3: '', sourceTag: '', converted: '',
         intentLine: '', purchasedLine: '', identityStatus: '',
         behaviorLevel: '', dataStatus: '', createdAt: []
       },
       custList: JSON.parse(JSON.stringify(CONTACT_MOCK)),
+      custSels: [],
       custPage: 1,
       custPageSize: 10,
       custCols: {
-        name: true, mobile: true, nickname: true, email: true,
-        customerSubjectName: true, officialAccountId: true, source: true, channel2: true,
-        sourceTags: true, grade: true, intentLines: true, purchasedLines: true,
+        name: true, mobile: true, officialAccountId: true, customerSubjectName: true,
+        customerSubjectId: true, email: true, wechat: true, nickname: true,
+        userId: true, miduNewId: true, source: true, tags: true,
+        memberPack: true, channel2: true,
+        sourceTags: true, intentLines: true, purchasedLines: true,
         identityStatus: true, behaviorLevel: true, behaviorScore: true, dataStatus: true,
         formNo: true, createdAt: true, updatedAt: true, lastOperator: true,
-        openid: true, unionid: true
+        remark: true, openid: true, unionid: true
       },
       custColList: [
         { key: 'name', label: '联系人姓名' },
         { key: 'mobile', label: '手机号' },
-        { key: 'nickname', label: '昵称' },
-        { key: 'email', label: '邮箱' },
+        { key: 'officialAccountId', label: '官网账号' },
         { key: 'customerSubjectName', label: '客户主体名称' },
-        { key: 'officialAccountId', label: '官网账号ID' },
+        { key: 'customerSubjectId', label: '客户主体ID' },
+        { key: 'email', label: '邮箱' },
+        { key: 'wechat', label: '微信' },
+        { key: 'nickname', label: '微信昵称' },
+        { key: 'userId', label: 'UserId' },
+        { key: 'miduNewId', label: '蜜度NewId' },
         { key: 'source', label: '来源' },
+        { key: 'tags', label: '标签' },
+        { key: 'memberPack', label: '运营套餐' },
         { key: 'channel2', label: '二级渠道' },
         { key: 'sourceTags', label: '来源标签' },
-        { key: 'grade', label: '标签' },
         { key: 'intentLines', label: '意向产品线' },
         { key: 'purchasedLines', label: '已购产品线' },
         { key: 'identityStatus', label: '身份状态' },
@@ -3017,16 +3602,22 @@ new Vue({
         { key: 'createdAt', label: '入库时间' },
         { key: 'updatedAt', label: '更新时间' },
         { key: 'lastOperator', label: '最新操作人' },
+        { key: 'remark', label: '备注' },
         { key: 'openid', label: '小程序openid' },
         { key: 'unionid', label: '微信unionid' }
       ],
       custDetailVisible: false,
       custTrackDate: [],
+      custTrackProduct: '',
+      trackProductOptions: TRACK_PRODUCT_OPTIONS,
       custCurrent: {},
       custTagVisible: false,
       custFormVisible: false,
       custActionRow: {},
-      custTagDraft: '',
+      custTagDraft: [],
+      custSmsVisible: false,
+      custSmsTargets: [],
+      custSmsTemplateId: '',
       custFormDraft: {
         company: '', name: '', mobile: '', product: '',
         email: '', source: '', follower: '', remark: ''
@@ -3038,8 +3629,8 @@ new Vue({
         { name: '线索统计', icon: 'el-icon-s-data' },
         { name: '行业管理', icon: 'el-icon-office-building' },
         { name: '线索管理', icon: 'el-icon-connection' },
-        { name: '客户管理', icon: 'el-icon-user', badge: 1 },
         { name: '联系人管理', icon: 'el-icon-phone-outline' },
+        { name: '客户管理', icon: 'el-icon-user', badge: 1 },
         { name: '合作伙伴管理', icon: 'el-icon-s-custom' },
         { name: '日报管理', icon: 'el-icon-date' },
         { name: '商机管理', icon: 'el-icon-s-flag' },
@@ -3128,13 +3719,21 @@ new Vue({
         { field: '关键事件次数', value: c.keyEventCount == null ? '-' : c.keyEventCount },
         { field: '是否下单', value: stats.hasOrder ? '是' : '否' },
         { field: '订单数', value: stats.count },
-        { field: '订单金额', value: stats.amount ? this.money(stats.amount) : '-' }
+        { field: '订单金额', value: stats.amount ? this.money(stats.amount) : '-' },
+        { field: '开票状态', value: invoiceStatusText(c) },
+        { field: '运营套餐', value: c.memberPack || '-' },
+        { field: '体验天数', value: c.trialDay ? ('第' + c.trialDay + '天') : '-' },
+        { field: 'App操作次数', value: packHasPoints(c.memberPack) ? (c.opCountApp || 0) : '-' }
       ];
     },
     custFilteredTrack() {
-      const rows = ((this.custCurrent && this.custCurrent.behaviorTrack) || []).slice().sort(function (a, b) {
+      const product = this.custTrackProduct;
+      let rows = ((this.custCurrent && this.custCurrent.behaviorTrack) || []).slice().sort(function (a, b) {
         return String(a.time || '').localeCompare(String(b.time || ''));
       });
+      if (product) {
+        rows = rows.filter(function (row) { return row.product === product; });
+      }
       const range = this.custTrackDate;
       if (!range || range.length !== 2 || !range[0] || !range[1]) return rows;
       const start = range[0];
@@ -3151,8 +3750,12 @@ new Vue({
     },
     custTrackEmptyText() {
       const range = this.custTrackDate;
-      if (range && range.length === 2 && range[0] && range[1]) return '该时间范围内暂无行为轨迹';
-      return '暂无行为轨迹';
+      const hasDate = range && range.length === 2 && range[0] && range[1];
+      const hasProduct = !!this.custTrackProduct;
+      if (hasDate && hasProduct) return '该筛选条件下暂无行为记录';
+      if (hasProduct) return '该产品暂无行为记录';
+      if (hasDate) return '该时间范围内暂无行为记录';
+      return '暂无行为记录';
     },
     custTrackScoreTotal() {
       return trackScoreTotal(this.custCurrent);
@@ -3165,16 +3768,23 @@ new Vue({
       return [
         { label: '联系人姓名', value: c.name || '-' },
         { label: '手机号', value: c.mobile || '-' },
-        { label: '昵称', value: c.nickname || '-' },
-        { label: '邮箱', value: c.email || '-' },
+        { label: '官网账号', value: c.officialAccountId || '-' },
         { label: '客户主体名称', value: c.customerSubjectName || '-' },
-        { label: '官网账号ID', value: c.officialAccountId || '-' },
+        { label: '客户主体ID', value: c.customerSubjectId || '-' },
+        { label: '邮箱', value: c.email || '-' },
+        { label: '微信', value: c.wechat || '-' },
+        { label: '微信昵称', value: c.nickname || '-' },
+        { label: 'UserId', value: c.userId || '-' },
+        { label: '蜜度NewId', value: c.miduNewId || '-' },
         { label: '来源', value: c.source || '-' },
+        { label: '标签', tags: (c.tags || []).slice() },
+        { label: '运营套餐', value: c.memberPack || '-' },
+        { label: '体验天数', value: c.trialDay ? ('第' + c.trialDay + '天') : '-' },
+        { label: 'App操作次数', value: packHasPoints(c.memberPack) ? (c.opCountApp || 0) : '-' },
         { label: '一级渠道', value: c.channel1 || '-' },
         { label: '二级渠道', value: c.channel2 || '-' },
         { label: '三级渠道', value: c.channel3 || '-' },
-        { label: '来源标签', value: this.joinLines(c.sourceTags) },
-        { label: '标签', value: c.grade || '-', tag: true },
+        { label: '来源标签', value: latestSourceTagOf(c) || '-' },
         { label: '意向产品线', value: this.joinLines(c.intentLines) },
         { label: '已购产品线', value: this.joinLines(c.purchasedLines) },
         { label: '身份状态', value: c.identityStatus || '-', tag: true },
@@ -3185,6 +3795,7 @@ new Vue({
         { label: '入库时间', value: c.createdAt || '-' },
         { label: '更新时间', value: c.updatedAt || '-' },
         { label: '最新操作人', value: c.lastOperator || '-' },
+        { label: '备注', value: c.remark || '-' },
         { label: '小程序openid', value: c.openid || '-' },
         { label: '微信unionid', value: c.unionid || '-' }
       ];
@@ -3298,16 +3909,26 @@ new Vue({
       return this.custList.filter(row => {
         if (q.name && !(row.name || '').includes(q.name)) return false;
         if (q.mobile && !(row.mobile || '').includes(q.mobile)) return false;
+        if (q.wechat && !(row.wechat || '').includes(q.wechat)) return false;
         if (q.nickname && !(row.nickname || '').includes(q.nickname)) return false;
         if (q.email && !(row.email || '').includes(q.email)) return false;
         if (q.customerSubjectName && !(row.customerSubjectName || '').includes(q.customerSubjectName)) return false;
+        if (q.customerSubjectId && !(row.customerSubjectId || '').includes(q.customerSubjectId)) return false;
         if (q.officialAccountId && !(row.officialAccountId || '').includes(q.officialAccountId)) return false;
+        if (q.userId && !(row.userId || '').includes(q.userId)) return false;
+        if (q.miduNewId && !(row.miduNewId || '').includes(q.miduNewId)) return false;
         if (q.source && row.source !== q.source) return false;
+        if (q.tags && q.tags.length) {
+          const rowTags = row.tags || [];
+          const miss = q.tags.some(function (t) { return rowTags.indexOf(t) === -1; });
+          if (miss) return false;
+        }
+        if (q.memberPack && row.memberPack !== q.memberPack) return false;
+        if (q.remark && !(row.remark || '').includes(q.remark)) return false;
         if (q.channel1 && !(row.channel1 || '').includes(q.channel1)) return false;
         if (q.channel2 && !(row.channel2 || '').includes(q.channel2)) return false;
         if (q.channel3 && !(row.channel3 || '').includes(q.channel3)) return false;
-        if (q.sourceTag && (row.sourceTags || []).indexOf(q.sourceTag) === -1) return false;
-        if (q.grade && row.grade !== q.grade) return false;
+        if (q.sourceTag && latestSourceTagOf(row) !== q.sourceTag) return false;
         if (q.converted === '是' && !row.formNo) return false;
         if (q.converted === '否' && row.formNo) return false;
         if (q.intentLine && (row.intentLines || []).indexOf(q.intentLine) === -1) return false;
@@ -3325,11 +3946,54 @@ new Vue({
     custPaged() {
       const start = (this.custPage - 1) * this.custPageSize;
       return this.custFiltered.slice(start, start + this.custPageSize);
+    },
+    custAllChecked() {
+      const rows = this.custPaged;
+      if (!rows.length) return false;
+      const sels = this.custSels || [];
+      return rows.every(function (r) { return sels.indexOf(r.contactId) !== -1; });
+    },
+    custSmsTargetNames() {
+      return (this.custSmsTargets || []).map(function (r) {
+        return (r.name || r.nickname || r.mobile || '-') + ' / ' + (r.mobile || '-') + '（' + (r.source || '-') + '）';
+      }).join('、');
+    },
+    custSmsSourceText() {
+      const srcs = [];
+      (this.custSmsTargets || []).forEach(function (r) {
+        if (r.source && srcs.indexOf(r.source) === -1) srcs.push(r.source);
+      });
+      return srcs.length ? srcs.join('、') : '-';
+    },
+    custSmsTemplateGroups() {
+      const srcs = [];
+      (this.custSmsTargets || []).forEach(function (r) {
+        if (r.source && srcs.indexOf(r.source) === -1) srcs.push(r.source);
+      });
+      const use = srcs.length ? srcs : SOURCE_OPTIONS;
+      const all = this.smsTemplates || [];
+      return use.map(function (source) {
+        const campaign = smsCampaignOf(source);
+        return {
+          source: source,
+          list: all.filter(function (t) { return t.source === campaign; })
+        };
+      });
+    },
+    custSmsPreview() {
+      const id = this.custSmsTemplateId;
+      const tpl = (this.smsTemplates || []).filter(function (t) { return t.id === id; })[0];
+      if (!tpl) return '请选择模板';
+      const rows = this.custSmsTargets || [];
+      const match = rows.filter(function (r) { return smsCampaignOf(r.source) === tpl.source; })[0] || rows[0] || {};
+      return fillSmsBody(tpl.body, match);
     }
   },
   methods: {
     money,
     daysBetween,
+    packPointsText,
+    latestSourceTagOf,
     unpaidAmount(row) {
       const n = Number(row.invoiceAmount || 0) - Number(row.receivedAmount || 0);
       return n > 0 ? n : 0;
@@ -3374,9 +4038,10 @@ new Vue({
     onCustSearch() { this.custPage = 1; this.$message.success('已按条件筛选'); },
     onCustReset() {
       this.custQuery = {
-        name: '', mobile: '', nickname: '', email: '', customerSubjectName: '',
-        officialAccountId: '', source: '',
-        channel1: '', channel2: '', channel3: '', sourceTag: '', grade: '', converted: '',
+        name: '', mobile: '', wechat: '', nickname: '', email: '',
+        customerSubjectName: '', customerSubjectId: '', officialAccountId: '',
+        userId: '', miduNewId: '', source: '', tags: [], memberPack: '', remark: '',
+        channel1: '', channel2: '', channel3: '', sourceTag: '', converted: '',
         intentLine: '', purchasedLine: '', identityStatus: '',
         behaviorLevel: '', dataStatus: '', createdAt: []
       };
@@ -3389,20 +4054,59 @@ new Vue({
     openCustDetail(row) {
       this.custCurrent = row;
       this.custTrackDate = [];
+      this.custTrackProduct = '';
       this.custDetailVisible = true;
     },
     openCustTag(row) {
       this.custActionRow = row;
-      this.custTagDraft = row.grade || '';
+      this.custTagDraft = (row.tags || []).slice();
       this.custTagVisible = true;
     },
     saveCustTags() {
-      if (!this.custTagDraft) return this.$message.warning('请选择标签');
-      this.$set(this.custActionRow, 'grade', this.custTagDraft);
+      const next = TAG_OPTIONS.filter(function (t) {
+        return (this.custTagDraft || []).indexOf(t) !== -1;
+      }.bind(this));
+      this.$set(this.custActionRow, 'tags', next);
       this.$set(this.custActionRow, 'lastOperator', '当前用户');
       this.$set(this.custActionRow, 'updatedAt', this.now());
       this.custTagVisible = false;
-      this.$message.success('已更新标签为 ' + this.custTagDraft);
+      this.$message.success(next.length ? ('已更新标签为 ' + next.join('、')) : '已清空标签');
+    },
+    toggleAllCust(e) {
+      const ids = this.custPaged.map(function (r) { return r.contactId; });
+      if (e.target.checked) {
+        const set = {};
+        this.custSels.concat(ids).forEach(function (id) { set[id] = true; });
+        this.custSels = Object.keys(set);
+      } else {
+        this.custSels = this.custSels.filter(function (id) { return ids.indexOf(id) === -1; });
+      }
+    },
+    openCustSms(row) {
+      if (!row.mobile) return this.$message.warning('该联系人无手机号，无法发短信');
+      this.custSmsTargets = [row];
+      this.custSmsTemplateId = defaultSmsTemplateId(row);
+      this.custSmsVisible = true;
+    },
+    sendCustSms() {
+      const id = this.custSmsTemplateId;
+      const picked = (this.smsTemplates || []).filter(function (t) { return t.id === id; })[0];
+      if (!picked) return this.$message.warning('请选择短信模板');
+      const now = this.now();
+      const self = this;
+      this.custSmsTargets.forEach(function (row) {
+        const tpl = smsCampaignOf(row.source) === picked.source
+          ? picked
+          : findSmsTemplate(row.source || picked.source, picked.slot);
+        const content = fillSmsBody(tpl.body, row);
+        const logs = (row.smsLogs || []).slice();
+        logs.unshift({ time: now, template: (row.source || '') + ' / ' + tpl.name, content: content, status: '发送成功' });
+        self.$set(row, 'smsLogs', logs);
+        self.$set(row, 'lastOperator', '当前用户');
+        self.$set(row, 'updatedAt', now);
+      });
+      this.custSmsVisible = false;
+      this.$message.success('已发送 ' + this.custSmsTargets.length + ' 条短信，已按来源匹配 GEO / 模力通话术');
     },
     openCustConvert(row) {
       if (row.formNo) {
@@ -3411,11 +4115,15 @@ new Vue({
       }
       this.custActionRow = row;
       const intent = (row.intentLines && row.intentLines[0]) || '';
+      let product = '';
+      if (intent === GEO_LINE || row.source === 'GEO小程序') product = '蜜度GEO';
+      else if (intent === MOLITONG_LINE || row.source === '模力通App' || row.source === '蜜度官网注册' || row.source === '销售后台' || row.source === '学习强国') product = '模力通';
+      else if (intent === YQ_LINE) product = '舆情平台';
       this.custFormDraft = {
         company: row.customerSubjectName || '',
         name: row.name || '',
         mobile: row.mobile || '',
-        product: intent === GEO_LINE ? '蜜度GEO' : (intent === YQ_LINE ? '舆情平台' : ''),
+        product: product,
         email: row.email || '',
         source: row.source || '',
         follower: '当前用户',
@@ -3484,6 +4192,15 @@ new Vue({
         'A': 'tag-a',
         'B': 'tag-b',
         'C': 'tag-c',
+        '未注册': 'tag-unreg',
+        '已注册未充值': 'tag-norecharge',
+        '体验中': 'tag-trial',
+        '已充值': 'tag-recharged',
+        '沉默': 'tag-silent',
+        '高活跃': 'tag-active',
+        '发送成功': 'tag-ok',
+        '已点击': 'tag-clicked',
+        '已退订': 'tag-unsub',
         '已注册未下单': 'tag-mute',
         '已下单未开票': 'tag-warn',
         '已绑定主体': 'tag-info',
