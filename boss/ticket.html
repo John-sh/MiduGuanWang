@@ -238,7 +238,13 @@
     }
     .boss-table tbody tr:nth-child(even) td { background: #fcfdfe; }
     .boss-table tbody tr:hover td { background: #f3f7ff; cursor: pointer; }
-    .boss-table .sticky-op {
+    .boss-table .sticky-account {
+      position: sticky; left: 0; background: #fff; z-index: 2;
+      box-shadow: 8px 0 12px -10px rgba(0,0,0,.12);
+    }
+    .boss-table th.sticky-account { background: #f7f8fa; z-index: 3; }
+    .boss-table tbody tr:nth-child(even) td.sticky-account { background: #fcfdfe; }
+    .boss-table tbody tr:hover td.sticky-account { background: #f3f7ff; }
       position: sticky; right: 0; background: #fff; z-index: 1;
       box-shadow: -8px 0 12px -10px rgba(0,0,0,.12);
     }
@@ -313,6 +319,18 @@
     .mine-filter .el-form-item { margin-bottom: 12px; }
     .mine-empty { text-align: center; color: #909399; padding: 48px 0; }
     .mine-id { color: var(--primary); cursor: pointer; }
+    .track-steps { display: flex; margin: 0 0 16px; }
+    .track-step { flex: 1; text-align: center; position: relative; font-size: 12px; color: #909399; }
+    .track-step::before { content: ""; position: absolute; top: 11px; left: -50%; right: 50%; height: 2px; background: #e4e7ed; }
+    .track-step:first-child::before { display: none; }
+    .track-dot { width: 22px; height: 22px; margin: 0 auto 6px; border-radius: 50%; background: #e4e7ed; color: #fff; line-height: 22px; font-size: 12px; position: relative; z-index: 1; }
+    .track-step.done { color: #1677ff; }
+    .track-step.done .track-dot, .track-step.done::before, .track-step.current::before { background: #1677ff; }
+    .track-step.current { color: #1677ff; font-weight: 600; }
+    .track-step.current .track-dot { background: #1677ff; box-shadow: 0 0 0 4px rgba(22, 119, 255, .16); }
+    .ai-brief { background: #f7f9fc; border: 1px solid #e6eef8; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.7; color: #606266; }
+    .ai-brief h4 { margin: 0 0 8px; font-size: 13px; color: #303133; }
+    .ai-brief b { color: #303133; font-weight: 600; }
     .mine-drawer .el-drawer__body { display: flex; flex-direction: column; height: calc(100% - 56px); padding: 0 20px 16px; box-sizing: border-box; }
     .mine-drawer-form { flex: 1; overflow: auto; padding-right: 4px; }
     .mine-drawer .role-switch { max-width: none; }
@@ -323,7 +341,9 @@
     .sat-red { color: #f5222d; } .sat-red i { background: #f5222d; }
     .sat-yellow { color: #d48806; } .sat-yellow i { background: #faad14; }
     .sat-green { color: #389e0d; } .sat-green i { background: #52c41a; }
-    .op-gap { display: inline-flex; gap: 8px; }
+    .op-links { display: flex; flex-wrap: wrap; gap: 2px 10px; max-width: 280px; white-space: normal; }
+    .boss-table td.op-cell { white-space: normal; }
+    .op-links .el-button--text { padding: 0; margin: 0; }
     .info-label { color: var(--text-muted); width: 96px; flex-shrink: 0; text-align: right; padding-right: 8px; }
     .info-value { flex: 1; min-width: 0; word-break: break-all; }
 
@@ -763,6 +783,7 @@
             <table class="boss-table">
               <thead>
                 <tr>
+                  <th class="sticky-account">客户账号</th>
                   <th>线索id</th>
                   <th>客户id</th>
                   <th>客户负责人</th>
@@ -786,11 +807,11 @@
                   <th>处理结果</th>
                   <th>满意度</th>
                   <th class="sticky-op">操作</th>
-                  <th>更多</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="t in pagedTickets" :key="t.id">
+                  <td class="sticky-account">{{ t.account || '—' }}</td>
                   <td>{{ t.leadId || '—' }}</td>
                   <td>{{ t.customerId || '—' }}</td>
                   <td>{{ t.customerOwner || '—' }}</td>
@@ -816,26 +837,16 @@
                     <span v-if="satLevel(t)" class="sat-tag" :class="'sat-'+satLevel(t)" :title="satTip(t)"><i></i>{{ satLabel(satLevel(t)) }}</span>
                     <span v-else>—</span>
                   </td>
-                  <td @click.stop>
-                    <el-dropdown trigger="click" @command="onListOp">
-                      <el-button type="text" size="mini">操作</el-button>
-                      <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item :command="{action:'follow', id:t.id}">添加跟进记录</el-dropdown-item>
-                        <el-dropdown-item :command="{action:'hold', id:t.id}">挂起</el-dropdown-item>
-                        <el-dropdown-item :command="{action:'upgrade', id:t.id}">申请升级</el-dropdown-item>
-                        <el-dropdown-item :command="{action:'reissue', id:t.id}">转工单</el-dropdown-item>
-                        <el-dropdown-item :command="{action:'close', id:t.id}">确认完结</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
-                  </td>
-                  <td @click.stop>
-                    <el-dropdown trigger="click" @command="onListOp">
-                      <el-button type="text" size="mini">更多</el-button>
-                      <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item :command="{action:'detail', id:t.id}">详情</el-dropdown-item>
-                        <el-dropdown-item :command="{action:'track', id:t.id}">跟踪进度</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </el-dropdown>
+                  <td class="sticky-op op-cell" @click.stop>
+                    <div class="op-links">
+                      <el-button type="text" size="mini" @click="onListOp({action:'follow', id:t.id})">添加跟进记录</el-button>
+                      <el-button type="text" size="mini" @click="onListOp({action:'hold', id:t.id})">挂起</el-button>
+                      <el-button type="text" size="mini" @click="onListOp({action:'upgrade', id:t.id})">申请升级</el-button>
+                      <el-button type="text" size="mini" @click="onListOp({action:'reissue', id:t.id})">转工单</el-button>
+                      <el-button type="text" size="mini" @click="onListOp({action:'close', id:t.id})">确认完结</el-button>
+                      <el-button type="text" size="mini" @click="onListOp({action:'detail', id:t.id})">详情</el-button>
+                      <el-button type="text" size="mini" @click="onListOp({action:'track', id:t.id})">跟踪进度</el-button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -1037,14 +1048,32 @@
     </div>
   </div>
 
-  <el-dialog title="工单详情" :visible.sync="dlg.mine" width="720px" append-to-body>
-    <div class="info-grid mine-detail" v-if="mineCurrent.id">
+  <el-dialog title="工单详情" :visible.sync="dlg.mine" width="760px" append-to-body>
+    <div v-if="mineCurrent.id">
+    <div class="track-steps">
+      <div v-for="(name, i) in customerSteps" :key="name" class="track-step" :class="{ done: i < customerStepIndex(mineCurrent), current: i === customerStepIndex(mineCurrent) }">
+        <div class="track-dot">{{ i + 1 }}</div>
+        <div>{{ name }}</div>
+      </div>
+    </div>
+    <div class="ai-brief">
+      <div><b>客户问题：</b>{{ aiBrief(mineCurrent).problem }}</div>
+      <div><b>处理结果：</b>{{ aiBrief(mineCurrent).done }}</div>
+      <div><b>预计完成时间：</b>{{ aiBrief(mineCurrent).eta }}</div>
+    </div>
+    <div class="info-grid mine-detail">
       <div class="info-item"><div class="info-label">提报时间</div><div class="info-value">{{ mineCurrent.reportedAt || mineCurrent.createdAt || '—' }}</div></div>
       <div class="info-item"><div class="info-label">产品项目</div><div class="info-value">{{ mineCurrent.product || '—' }}</div></div>
       <div class="info-item"><div class="info-label">问题分类</div><div class="info-value">{{ mineCurrent.categoryL1 || mineCurrent.category1 || '—' }}</div></div>
-      <div class="info-item"><div class="info-label">处理进度</div><div class="info-value">{{ userProgress(mineCurrent) }}</div></div>
-      <div class="info-item"><div class="info-label">评价状态</div><div class="info-value">{{ listEval(mineCurrent) }}</div></div>
-      <div class="info-item"><div class="info-label">处理结果</div><div class="info-value">{{ userResult(mineCurrent) }}</div></div>
+      <div class="info-item"><div class="info-label">处理状态</div><div class="info-value">{{ userProgress(mineCurrent) === '处理中' ? '处理中' : userProgress(mineCurrent) }}</div></div>
+      <div class="info-item span3" v-if="userProgress(mineCurrent) !== '处理中'">
+        <div class="info-label">满意度评价</div>
+        <div class="info-value" v-if="mineHasEval(mineCurrent)">
+          <div>服务人员 {{ mineCurrent.staffScore }} 星，工单系统 {{ mineCurrent.systemScore }} 星</div>
+          <div v-if="mineSuggestion(mineCurrent)">建议与意见：{{ mineSuggestion(mineCurrent) }}</div>
+        </div>
+        <div class="info-value" v-else>待评价</div>
+      </div>
       <div class="info-item span3"><div class="info-label">问题详情</div><div class="info-value detail-rich" v-if="mineCurrent.detailHtml" v-html="mineCurrent.detailHtml"></div><div class="info-value" v-else>{{ mineCurrent.detail || mineCurrent.title }}</div></div>
       <div class="info-item span3" v-if="mineCurrent.files && mineCurrent.files.length">
         <div class="info-label">附件</div>
@@ -1056,6 +1085,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
     <span slot="footer">
       <el-button v-if="mineCurrent.evalStatus==='已推送'" type="primary" size="small" @click="goSurvey(mineCurrent)">去评价</el-button>
@@ -1391,9 +1421,19 @@
     </span>
   </el-dialog>
 
-  <el-dialog title="跟踪进度" :visible.sync="dlg.track" width="560px" append-to-body>
-    <p class="field-tip" style="margin-top:0;">以下内容给客户查看，由系统按当前进度生成摘要。</p>
-    <div class="panel" style="padding:12px 14px;line-height:1.7;">{{ aiTrack(current) }}</div>
+  <el-dialog title="跟踪进度" :visible.sync="dlg.track" width="760px" append-to-body>
+    <p class="field-tip" style="margin-top:0;">以下内容展示在客户的「我的工单」里。</p>
+    <div class="track-steps">
+      <div v-for="(name, i) in customerSteps" :key="'s'+name" class="track-step" :class="{ done: i < customerStepIndex(current), current: i === customerStepIndex(current) }">
+        <div class="track-dot">{{ i + 1 }}</div>
+        <div>{{ name }}</div>
+      </div>
+    </div>
+    <div class="ai-brief">
+      <div><b>客户问题：</b>{{ aiBrief(current).problem }}</div>
+      <div><b>处理结果：</b>{{ aiBrief(current).done }}</div>
+      <div><b>预计完成时间：</b>{{ aiBrief(current).eta }}</div>
+    </div>
     <span slot="footer">
       <el-button size="small" type="primary" @click="dlg.track=false">知道了</el-button>
     </span>
@@ -1638,6 +1678,9 @@ const CUSTOMER_BOOK = {
   '227012': { name: '南京某某网络', status: '正式客户', account: 'jdt_227012' },
   '715004': { name: '合作伙伴-星云', status: '协议商谈', account: 'mlt_715004' }
 };
+TICKETS.forEach(function (t) {
+  if (!t.account && CUSTOMER_BOOK[t.customerId]) t.account = CUSTOMER_BOOK[t.customerId].account;
+});
 
 new Vue({
   el: '#app',
@@ -1656,6 +1699,7 @@ new Vue({
       myQuery: { status: '', product: '', dates: null, keyword: '' },
       myApplied: { status: '', product: '', dates: null, keyword: '' },
       userProgressOptions: ['处理中', '待评价', '已完结', '已评价'],
+      customerSteps: ['已受理', '排查中', '研发处理中', '待您确认', '已完成'],
       mineCreateVisible: false,
       survey: { ticketId: '', staffScore: 0, systemScore: 0, suggestion: '' },
       mineCurrent: {},
@@ -1920,7 +1964,15 @@ new Vue({
       return '处理中';
     },
     userResult(t) {
-      return this.userProgress(t) === '处理中' ? '正在处理' : '工单已完结';
+      if (!t || this.userProgress(t) === '处理中') return '处理中';
+      return t.result || t.solution || t.externalReply || '工单已完结';
+    },
+    mineHasEval(t) {
+      return !!(t && (t.staffScore || t.systemScore));
+    },
+    mineSuggestion(t) {
+      if (!t) return '';
+      return String(t.surveySuggestion || t.evalText || '').trim();
     },
     isClosedTicket(t) {
       return ['已完结', '已评价', '超时完结'].indexOf(t.stage || t.status) >= 0;
@@ -1995,10 +2047,41 @@ new Vue({
         '挂起': '等研发反馈、业务部门审批等不用走工单的内部流程'
       }[stage] || '';
     },
-    aiTrack(t) {
-      if (!t || !t.id) return '';
-      const result = t.result || t.solution;
-      return '您反馈的「' + (t.title || t.detail || '问题') + '」当前进度是' + (t.stage || '处理中') + '。' + (result ? '处理说明：' + result + '。' : '我们正在处理，请稍候。');
+    customerStepIndex(t) {
+      if (!t) return 0;
+      const stage = t.stage || '';
+      if (stage === '已完结' || stage === '超时完结' || stage === '已评价') return 4;
+      if (stage === '待确认完结') return 3;
+      if (stage === '挂起') return 2;
+      if (stage.indexOf('处理中') >= 0) return 1;
+      return 0;
+    },
+    aiBrief(t) {
+      const empty = { problem: '', done: '', next: '', eta: '' };
+      if (!t || !t.id) return empty;
+      const idx = this.customerStepIndex(t);
+      const problem = String(t.detail || t.title || '您提交的问题').replace(/\s+/g, ' ').trim();
+      const result = t.result || t.solution || '';
+      const doneMap = [
+        '工单已受理，尚未开始排查。',
+        '已接收问题，正在复现现象并核对账号与使用情况。',
+        '客服已完成初步排查，问题已交给研发继续处理。',
+        result ? '处理已经完成：' + result : '处理已经完成，等待您确认。',
+        result ? '处理已经完成：' + result : '处理已经完成。'
+      ];
+      const nextMap = [
+        '客服将在 2 小时内响应并开始排查。',
+        '继续排查原因，确认后同步处理进展。',
+        '研发处理完成后，会请您确认结果。',
+        '请您确认问题是否已经解决。确认后将邀请您评价。',
+        '工单已完成，无需进一步处理。'
+      ];
+      let next = nextMap[idx];
+      if ((t.stage || '').indexOf('退回') >= 0) next = '请补充问题描述后重新提交。';
+      let eta = t.deadline ? '预计 ' + t.deadline + ' 前完成' : '待确认';
+      if (idx === 0) eta = '预计 2 小时内响应';
+      if (idx === 4) eta = '已于 ' + (t.closedAt || t.statusAt || '—') + ' 完成';
+      return { problem: problem, done: doneMap[idx], next: next, eta: eta };
     },
     openDetail(t) {
       this.current = Object.assign({}, t);
