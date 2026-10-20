@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>蜜度BOSS系统 - 统一客户反馈工单</title>
   <link rel="stylesheet" href="vendor/element-ui.css" />
   <style>
@@ -226,34 +226,57 @@
       width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px;
     }
     .boss-table {
-      border-collapse: collapse; font-size: 12px; min-width: 1680px; width: 100%;
+      border-collapse: collapse; font-size: 13px; min-width: 1220px; width: 100%; table-layout: fixed;
     }
     .boss-table th {
-      background: #f7f8fa; color: var(--text-secondary); font-weight: 600;
-      padding: 10px 12px; white-space: nowrap; border-bottom: 1px solid var(--line); text-align: left;
+      background: #fafafa; color: var(--text); font-weight: 500;
+      padding: 10px 12px; white-space: nowrap; border-bottom: 1px solid var(--line); text-align: left; font-size: 13px;
     }
     .boss-table td {
       padding: 10px 12px; border-bottom: 1px solid #f0f2f5; background: #fff;
-      white-space: nowrap; vertical-align: middle;
+      white-space: nowrap; vertical-align: middle; font-size: 13px;
     }
-    .boss-table tbody tr:nth-child(even) td { background: #fcfdfe; }
-    .boss-table tbody tr:hover td { background: #f3f7ff; cursor: pointer; }
-    .boss-table .sticky-account {
-      position: sticky; left: 0; background: #fff; z-index: 2;
-      box-shadow: 8px 0 12px -10px rgba(0,0,0,.12);
+    .boss-table tbody tr:hover td { background: #fafafa; }
+    .list-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 16px; }
+    .list-head h2 { margin: 0; font-size: 20px; font-weight: 600; line-height: 28px; }
+    .list-hint { margin: 4px 0 0; font-size: 12px; color: var(--text-muted); max-width: 420px; line-height: 1.6; }
+    .filter-box { border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    .filter-item { display: flex; flex-direction: column; gap: 4px; }
+    .filter-item label { font-size: 12px; color: var(--text-secondary); }
+    .filter-actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+    .more-filters { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+    .account-cell .account-link { font-weight: 500; color: var(--primary); cursor: pointer; }
+    .account-cell .account-link:hover { text-decoration: underline; }
+    .account-cell .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .id-cell { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: var(--text-secondary); }
+    .detail-cell {
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; color: var(--text-secondary); line-height: 1.4; max-height: 2.8em;
+      white-space: normal; word-break: break-all;
     }
-    .boss-table th.sticky-account { background: #f7f8fa; z-index: 3; }
-    .boss-table tbody tr:nth-child(even) td.sticky-account { background: #fcfdfe; }
-    .boss-table tbody tr:hover td.sticky-account { background: #f3f7ff; }
-      position: sticky; right: 0; background: #fff; z-index: 1;
-      box-shadow: -8px 0 12px -10px rgba(0,0,0,.12);
+    .boss-table td.wrap-cell { white-space: normal; }
+    .tag {
+      display: inline-flex; align-items: center; height: 22px; padding: 0 7px; border-radius: 4px;
+      font-size: 12px; line-height: 20px; border: 1px solid transparent; white-space: nowrap;
     }
-    .boss-table th.sticky-op { background: #f7f8fa; z-index: 2; }
-    .boss-table tbody tr:nth-child(even) td.sticky-op { background: #fcfdfe; }
-    .boss-table tbody tr:hover td.sticky-op { background: #f3f7ff; }
-    .ellipsis {
-      max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
+    .tag-blue { color: #1677ff; background: #e6f4ff; border-color: #91caff; }
+    .tag-cyan { color: #08979c; background: #e6fffb; border-color: #87e8de; }
+    .tag-purple { color: #722ed1; background: #f9f0ff; border-color: #d3adf7; }
+    .tag-geekblue { color: #1d39c4; background: #f0f5ff; border-color: #adc6ff; }
+    .tag-red { color: #cf1322; background: #fff1f0; border-color: #ffa39e; }
+    .tag-orange { color: #d46b08; background: #fff7e6; border-color: #ffd591; }
+    .tag-green { color: #389e0d; background: #f6ffed; border-color: #b7eb8f; }
+    .tag-default { color: var(--text-secondary); background: #fafafa; border-color: #d9d9d9; }
+    .tag-magenta { color: #c41d7f; background: #fff0f6; border-color: #ffadd2; }
+    .tag-gold { color: #d48806; background: #fffbe6; border-color: #ffe58f; }
+    .overdue { color: var(--danger); font-weight: 500; white-space: nowrap; }
+    .muted-time { color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+    .action-cell { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .action-link { color: var(--primary); cursor: pointer; font-size: 13px; background: none; border: none; padding: 0; }
+    .action-link:hover { color: var(--primary-dark); }
+    .col-account { width: 11%; } .col-lead, .col-custid { width: 8%; } .col-product, .col-channel, .col-category, .col-risk, .col-handler { width: 7%; }
+    .col-detail { width: 14%; } .col-stage { width: 9%; } .col-remain { width: 10%; } .col-sat { width: 5%; } .col-action { width: 12%; }
 
     .pill {
       display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; line-height: 18px;
@@ -319,6 +342,75 @@
     .mine-filter .el-form-item { margin-bottom: 12px; }
     .mine-empty { text-align: center; color: #909399; padding: 48px 0; }
     .mine-id { color: var(--primary); cursor: pointer; }
+    .main.portal-main { background: #eaf3fb; }
+    .customer-portal { display: flex; align-items: flex-start; gap: 28px; min-height: 680px; padding: 28px 12px 12px; }
+    .portal-nav { width: 132px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 36px; }
+    .portal-nav button {
+      height: 52px; border: 0; border-radius: 6px; background: rgba(255,255,255,.72);
+      color: #3d4a5c; font-size: 15px; cursor: pointer; box-shadow: 0 1px 2px rgba(22,80,160,.04);
+    }
+    .portal-nav button.active { background: #1677ff; color: #fff; box-shadow: 0 8px 18px rgba(22,119,255,.28); }
+    .portal-card {
+      flex: 1; min-width: 0; background: #fff; border-radius: 10px; min-height: 680px;
+      padding: 36px 48px 48px; box-shadow: 0 10px 30px rgba(22, 80, 160, .06);
+    }
+    .portal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+    .portal-head h2 { margin: 0; font-size: 22px; font-weight: 600; }
+    .portal-head p { margin: 6px 0 0; font-size: 13px; color: var(--text-muted); }
+    .portal-field { margin-bottom: 22px; }
+    .portal-field > label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text); }
+    .portal-field > label i { color: #ff4d4f; font-style: normal; margin-right: 4px; }
+    .type-grid, .product-pills { display: flex; flex-wrap: wrap; gap: 12px; }
+    .type-card {
+      position: relative; width: calc(33.33% - 8px); min-height: 96px; padding: 14px 16px;
+      border: 1px solid #e6ebf2; border-radius: 8px; background: #fff; text-align: left; cursor: pointer;
+    }
+    .type-card:hover { border-color: #91caff; }
+    .type-card.active { border-color: #1677ff; box-shadow: 0 0 0 1px #1677ff; }
+    .type-card.active::after {
+      content: ""; position: absolute; top: 0; right: 0;
+      border-width: 0 26px 26px 0; border-style: solid; border-color: transparent #1677ff transparent transparent;
+    }
+    .type-card .name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .type-card .desc { font-size: 12px; color: #8c8c8c; line-height: 1.5; }
+    .product-pills button {
+      height: 36px; padding: 0 18px; border-radius: 18px; border: 1px solid #e6ebf2; background: #fff; cursor: pointer; color: var(--text);
+    }
+    .product-pills button.active { color: #1677ff; border-color: #1677ff; background: #e8f3ff; }
+    .portal-editor { min-height: 160px; }
+    .upload-box {
+      border: 1px dashed #d9e2ef; border-radius: 8px; padding: 16px; background: #fafcff;
+    }
+    .portal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
+    .portal-submit {
+      min-width: 128px; height: 40px; padding: 0 24px; border: 0; border-radius: 6px;
+      background: #1677ff; color: #fff; font-size: 15px; cursor: pointer;
+    }
+    .portal-submit:hover { background: #4096ff; }
+    .portal-ghost {
+      min-width: 96px; height: 40px; padding: 0 18px; border-radius: 6px; border: 1px solid #d9e2ef;
+      background: #fff; color: var(--text-secondary); cursor: pointer;
+    }
+    .customer-portal .role-switch { max-width: 360px; margin: 0 0 24px; }
+    .customer-portal .role-switch button { height: 36px; }
+    .mine-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 720px; }
+    .mine-table th { text-align: left; padding: 12px; background: #fafafa; color: var(--text-secondary); font-weight: 500; border-bottom: 1px solid #f0f0f0; }
+    .mine-table td { padding: 14px 12px; border-bottom: 1px solid #f5f5f5; background: #fff; white-space: nowrap; }
+    .mine-table tbody tr { cursor: pointer; }
+    .mine-table tbody tr:hover td { background: #f7fbff; }
+    .mine-title { max-width: 360px; overflow: hidden; text-overflow: ellipsis; }
+    .mine-status { display: inline-flex; height: 22px; align-items: center; padding: 0 8px; border-radius: 11px; font-size: 12px; }
+    .mine-status.is-ing { color: #1677ff; background: #e8f3ff; }
+    .mine-status.is-wait { color: #d48806; background: #fff7e6; }
+    .mine-status.is-done { color: #389e0d; background: #f6ffed; }
+    .mine-status.is-rated { color: #722ed1; background: #f9f0ff; }
+    @media (max-width: 1100px) {
+      .customer-portal { flex-direction: column; padding-top: 8px; }
+      .portal-nav { flex-direction: row; width: auto; padding-top: 0; }
+      .portal-nav button { width: 132px; }
+      .type-card { width: 100%; }
+      .portal-card { padding: 24px 18px 32px; }
+    }
     .track-steps { display: flex; margin: 0 0 16px; }
     .track-step { flex: 1; text-align: center; position: relative; font-size: 12px; color: #909399; }
     .track-step::before { content: ""; position: absolute; top: 11px; left: -50%; right: 50%; height: 2px; background: #e4e7ed; }
@@ -346,6 +438,59 @@
     .op-links .el-button--text { padding: 0; margin: 0; }
     .info-label { color: var(--text-muted); width: 96px; flex-shrink: 0; text-align: right; padding-right: 8px; }
     .info-value { flex: 1; min-width: 0; word-break: break-all; }
+    .transfer-page { min-height: 100vh; background: #f4f6f8; padding: 24px 16px 48px; }
+    .transfer-card { max-width: 920px; margin: 0 auto; background: #fff; border-radius: 10px; padding: 28px 32px 36px; box-shadow: 0 1px 8px rgba(31,45,61,.06); }
+    .transfer-card h1 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
+    .transfer-lead { margin: 0 0 20px; color: #909399; font-size: 13px; line-height: 1.7; }
+    .transfer-block { margin: 18px 0; }
+    .transfer-block h3 { margin: 0 0 12px; font-size: 15px; font-weight: 600; }
+    .field-phase { margin-left: 8px; font-size: 12px; color: #8c8c8c; font-weight: 400; }
+    .transfer-card .field-tip { margin: 6px 0 0; }
+    .readonly-box { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 6px; padding: 10px 12px; line-height: 1.7; white-space: pre-wrap; word-break: break-all; }
+    .transfer-links a { display: block; color: #1677ff; }
+    .sys-grid { display: grid; grid-template-columns: 120px 1fr; gap: 10px 12px; background: #f7f9fc; border-radius: 8px; padding: 14px 16px; font-size: 13px; }
+    .sys-grid .k { color: #909399; }
+    .transfer-done { padding: 12px 0 4px; }
+    .transfer-done h2 { margin: 0 0 8px; font-size: 18px; }
+    .submit-success-dialog { border-radius: 16px; }
+    .submit-success-dialog .el-dialog__header { display: none; }
+    .submit-success-dialog .el-dialog__body { padding: 32px 28px 24px; }
+    .ok-mark {
+      width: 72px; height: 72px; margin: 0 auto 18px; border-radius: 50%;
+      background: #e8f8ee; color: #22a06b; display: flex; align-items: center; justify-content: center;
+      font-size: 36px; font-weight: 700;
+    }
+    .ok-title { margin: 0; text-align: center; font-size: 24px; font-weight: 700; }
+    .ok-sub { margin: 10px 0 18px; text-align: center; color: #8c8c8c; font-size: 14px; }
+    .ok-no {
+      margin: 0 auto; max-width: 280px; padding: 14px 12px; text-align: center;
+      border: 1px solid #eef0f3; border-radius: 8px; background: #fafafa;
+      font-size: 20px; font-weight: 700; letter-spacing: .4px;
+    }
+    .ok-no-tip { margin: 8px 0 16px; text-align: center; color: #b0b0b0; font-size: 13px; }
+    .ok-tip {
+      margin: 0 0 14px; padding: 12px 14px; border-radius: 8px; background: #e8f3ff; color: #1677ff;
+      font-size: 14px; line-height: 1.7; font-weight: 600;
+    }
+    .ok-status {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px 8px; border: 1px solid #f0f0f0; border-radius: 10px 10px 0 0; background: #fafafa;
+      font-weight: 600;
+    }
+    .ok-pill { display: inline-flex; align-items: center; gap: 6px; color: #1677ff; font-size: 13px; font-weight: 500; background: #e8f3ff; border-radius: 12px; padding: 2px 10px; }
+    .ok-pill i { width: 6px; height: 6px; border-radius: 50%; background: #1677ff; display: inline-block; }
+    .ok-note { margin: 0 0 18px; padding: 0 16px 14px; border: 1px solid #f0f0f0; border-top: 0; border-radius: 0 0 10px 10px; background: #fafafa; color: #8c8c8c; font-size: 13px; }
+    .ok-primary {
+      width: 100%; height: 46px; border: 0; border-radius: 8px; background: #1677ff; color: #fff;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+    }
+    .ok-primary:hover { background: #4096ff; }
+    .ok-row { display: flex; gap: 12px; margin-top: 12px; }
+    .ok-ghost {
+      flex: 1; height: 44px; border-radius: 8px; border: 1px solid #e6e8eb; background: #fff;
+      color: #595959; font-size: 15px; cursor: pointer;
+    }
+    .ok-ghost:hover { color: #1677ff; border-color: #91caff; }
 
     .timeline { position: relative; padding-left: 18px; }
     .timeline::before {
@@ -412,13 +557,190 @@
       .kpi-row { grid-template-columns: repeat(3, 1fr); }
       .detail-grid, .board-2, .two-col, .channel-grid { grid-template-columns: 1fr; }
     }
+
+    .nav-toggle, .nav-mask { display: none; }
+    @media (max-width: 768px) {
+      html, body, #app, .layout { height: auto; min-height: 100%; }
+      .layout { min-height: 100vh; min-height: 100dvh; }
+      .nav-toggle {
+        display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+        width: 36px; height: 36px; border: 0; border-radius: 8px;
+        background: rgba(255,255,255,.18); color: #fff; font-size: 18px; cursor: pointer;
+      }
+      .topbar { height: auto; min-height: 52px; padding: 8px 12px; gap: 8px; }
+      .topbar-left { min-width: 0; flex: 1; gap: 8px; }
+      .sys-name { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .sys-slogan, .topbar-right { display: none; }
+      .body { display: block; }
+      .aside {
+        position: fixed; top: 0; left: 0; bottom: 0; z-index: 40; width: 240px;
+        transform: translateX(-105%); transition: transform .2s ease;
+        box-shadow: 8px 0 24px rgba(15, 35, 70, .12); padding-top: 8px;
+      }
+      .aside.open { transform: none; }
+      .nav-mask { display: block; position: fixed; inset: 0; background: rgba(15, 23, 42, .45); z-index: 39; }
+      .main { padding: 12px 12px calc(16px + env(safe-area-inset-bottom)); }
+      .panel { padding: 14px 12px; }
+      .kpi-row { grid-template-columns: 1fr 1fr; }
+      .loop-sources { grid-template-columns: 1fr; }
+      .loop-row { flex-direction: column; }
+      .list-head { flex-direction: column; gap: 12px; }
+      .list-metrics { margin-left: 0; width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+      .list-metric { min-width: 0; }
+      .filter-item, .filter-actions { width: 100%; margin-left: 0; }
+      .filter-item .el-select, .filter-item .el-input { width: 100% !important; }
+      .toolbar { align-items: stretch; }
+      .toolbar .el-pagination { white-space: normal; }
+      .table-scroll { -webkit-overflow-scrolling: touch; }
+      .rule-table { min-width: 720px; }
+      .main.portal-main { padding: 8px 8px calc(12px + env(safe-area-inset-bottom)); }
+      .customer-portal { flex-direction: column; gap: 10px; min-height: 0; padding: 4px 0 0; }
+      .portal-nav { width: 100%; flex-direction: row; padding-top: 0; }
+      .portal-nav button { flex: 1; width: auto; height: 44px; }
+      .portal-card { min-height: 0; padding: 18px 14px 24px; }
+      .portal-head { flex-direction: column; margin-bottom: 16px; }
+      .portal-head .portal-submit, .portal-actions .portal-submit, .portal-actions .portal-ghost { width: 100%; }
+      .portal-actions { flex-direction: column-reverse; }
+      .customer-portal .role-switch { max-width: none; }
+      .role-switch button { height: 44px; }
+      .type-card { width: 100%; }
+      .attach-hint { display: block; margin: 8px 0 0; }
+      .mine-filter .el-form-item { display: block; margin-right: 0; width: 100%; }
+      .mine-filter .el-select, .mine-filter .el-input, .mine-filter .el-date-editor { width: 100% !important; }
+      .detail-top { height: auto; align-items: flex-start; flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+      .detail-top .left { flex-wrap: wrap; min-width: 0; }
+      .detail-top .title { font-size: 14px; word-break: break-all; }
+      .detail-body { padding: 12px; }
+      .detail-grid, .info-grid, .mine-detail.info-grid { grid-template-columns: 1fr; }
+      .info-item.span2, .info-item.span3 { grid-column: auto; }
+      .info-label { width: 84px; text-align: left; }
+      .track-steps { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .track-step { min-width: 68px; font-size: 11px; }
+      .transfer-page { padding: 12px 12px calc(24px + env(safe-area-inset-bottom)); }
+      .transfer-card { padding: 18px 14px 24px; }
+      .el-dialog { width: calc(100vw - 24px) !important; margin: 6vh auto 16px !important; }
+      .el-dialog__body { max-height: calc(100vh - 160px); overflow: auto; -webkit-overflow-scrolling: touch; }
+      .el-dialog .el-form-item__label,
+      .transfer-page .el-form-item__label,
+      .survey-card .el-form-item__label {
+        float: none; display: block; width: auto !important; text-align: left; line-height: 22px; padding: 0 0 4px;
+      }
+      .el-dialog .el-form-item__content,
+      .transfer-page .el-form-item__content,
+      .survey-card .el-form-item__content { margin-left: 0 !important; }
+      .el-message-box { width: calc(100vw - 32px) !important; }
+      .el-input__inner, .el-textarea__inner { font-size: 16px; }
+      .score-row { flex-wrap: wrap; }
+      .score-caption { width: 100%; }
+      .submit-success-dialog .el-dialog__body { padding: 24px 16px 16px; }
+      .ok-row { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
 <div id="app" v-cloak>
-  <div class="layout">
+  <div v-if="transferMode" class="transfer-page">
+    <div class="transfer-card">
+      <h1>转工单</h1>
+      <p class="transfer-lead">外部反馈进入列表后，由客服按客户需求转工单。外部带入的字段保持原样，客服只补充分流信息。客户原话不改写。</p>
+      <div v-if="transferMissing" class="mine-empty">未找到外部工单。请回到客户反馈工单列表，重新点击转工单。</div>
+      <div v-else-if="transferDone" class="transfer-done">
+        <h2>已转工单</h2>
+        <div class="sys-grid">
+          <div class="k">问题来源</div><div>客户反馈</div>
+          <div class="k">外部反馈ID</div><div>{{ transferDone.externalId }}</div>
+          <div class="k">工单类型</div><div>{{ transferDone.ticketKind }}</div>
+          <div class="k">问题类型</div><div>{{ transferDone.problemType }}</div>
+          <div class="k">优先级</div><div>{{ transferDone.priority }}</div>
+        </div>
+        <div class="portal-actions">
+          <button type="button" class="portal-submit" @click="closeTransferTab">关闭页签</button>
+        </div>
+      </div>
+      <div v-else>
+        <el-form label-width="168px" size="small">
+            <el-form-item label="问题来源" required>
+              <el-input value="客户反馈" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="外部反馈ID" required>
+              <el-input :value="internalForm.externalId" disabled></el-input>
+              <div class="field-tip">外部系统主键，单独存储，不写入描述正文。</div>
+            </el-form-item>
+            <el-form-item label="客户提交时间" required>
+              <el-input :value="internalForm.customerSubmitAt || '—'" disabled></el-input>
+              <div class="field-tip">精确到秒。不作为内部响应时效的起算时间。</div>
+            </el-form-item>
+            <el-form-item label="客户名称" required>
+              <el-input :value="internalForm.customerName || '外部系统未提供'" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="租户ID（客户账号）">
+              <el-input :value="internalForm.tenantId || '无租户'" disabled></el-input>
+              <div class="field-tip">与产品账号一致。无租户时允许为空。</div>
+            </el-form-item>
+            <el-form-item label="客户原话" required>
+              <div class="readonly-box">{{ internalForm.originalText || '—' }}</div>
+              <div class="field-tip">原样导入，不可改写。客服补充说明记入处理过程，不覆盖本字段。</div>
+            </el-form-item>
+            <el-form-item label="附件链接">
+              <div v-if="!internalForm.attachments.length" class="readonly-box">无</div>
+              <div v-else class="readonly-box transfer-links">
+                <a v-for="(f, i) in internalForm.attachments" :key="'att'+i" :href="f.url" target="_blank">{{ f.name || f.url }}</a>
+              </div>
+              <div class="field-tip">只保存链接。不用描述里的图片占位代替附件。</div>
+            </el-form-item>
+            <el-form-item label="产品线" required>
+              <el-select v-model="internalForm.productLine" placeholder="请选择内部产品线" style="width:100%">
+                <el-option v-for="p in productOptions" :key="'pl'+p" :label="p" :value="p"></el-option>
+              </el-select>
+              <div class="field-tip">外部产品线可初筛带入。不一致时由客服改选。</div>
+            </el-form-item>
+            <el-form-item label="工单类型" required>
+              <el-select v-model="internalForm.ticketKind" placeholder="请选择" style="width:100%">
+                <el-option label="问题" value="问题"></el-option>
+                <el-option label="需求" value="需求"></el-option>
+              </el-select>
+              <div class="field-tip">缺陷、计费、配置操作记为「问题」；功能优化记为「需求」。业务咨询在外部系统闭环，不推送内部系统。</div>
+            </el-form-item>
+            <el-form-item label="内部工单标题" required>
+              <el-input v-model="internalForm.title" maxlength="80" placeholder="用一句话概括现象，不要粘贴客户原话全文"></el-input>
+              <div class="field-tip"><span class="field-phase">后续补充</span>供内部列表识别。</div>
+            </el-form-item>
+            <el-form-item label="问题类型" required>
+              <el-select v-model="internalForm.problemType" placeholder="请选择" style="width:100%" @change="onInternalProblemType">
+                <el-option label="业务咨询" value="业务咨询"></el-option>
+                <el-option label="配置操作问题" value="配置操作问题"></el-option>
+                <el-option label="产品Bug" value="产品Bug"></el-option>
+                <el-option label="功能优化建议" value="功能优化建议"></el-option>
+                <el-option label="计费投诉" value="计费投诉"></el-option>
+              </el-select>
+              <div class="field-tip"><span class="field-phase">后续补充</span>研发以后可以修正类型，并记录变更原因。</div>
+            </el-form-item>
+            <el-form-item label="优先级" required>
+              <el-select v-model="internalForm.priority" placeholder="请选择" style="width:100%">
+                <el-option label="P1" value="P1"></el-option>
+                <el-option label="P2" value="P2"></el-option>
+                <el-option label="P3" value="P3"></el-option>
+              </el-select>
+              <div class="field-tip"><span class="field-phase">后续补充</span>客服初判。本期不带入外部工单的风险等级。</div>
+            </el-form-item>
+            <el-form-item label="客服补充说明">
+              <el-input type="textarea" :rows="3" v-model="internalForm.note" placeholder="补充排查信息。不会覆盖客户原话。"></el-input>
+            </el-form-item>
+        </el-form>
+        <div class="portal-actions">
+          <button type="button" class="portal-ghost" @click="closeTransferTab">取消</button>
+          <button type="button" class="portal-submit" @click="submitInternal">转工单</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-else class="layout">
     <div class="topbar">
       <div class="topbar-left">
+        <button type="button" class="nav-toggle" aria-label="菜单" @click="navOpen=!navOpen">
+          <i class="el-icon-close" v-if="navOpen"></i>
+          <i class="el-icon-s-unfold" v-else></i>
+        </button>
         <div class="logo-mark">蜜</div>
         <div>
           <div class="sys-name">蜜度 BOSS · 统一客户反馈工单</div>
@@ -432,15 +754,16 @@
     </div>
 
     <div class="body">
-      <aside class="aside">
-        <div class="menu">
+      <div class="nav-mask" v-show="navOpen" @click="navOpen=false"></div>
+      <aside class="aside" :class="{open: navOpen}">
+        <div class="menu" @click="navOpen=false">
           <div class="menu-group">总览</div>
           <div class="menu-item" :class="{active: page==='flow'}" @click="page='flow'">
             <i class="el-icon-share"></i> 闭环流程
           </div>
           <div class="menu-group">工单中心</div>
           <div class="menu-item" :class="{active: page==='form'}" @click="page='form'">
-            <i class="el-icon-edit-outline"></i> 提报工单
+            <i class="el-icon-edit-outline"></i> 客户反馈
           </div>
           <div class="menu-item" :class="{active: page==='mine'}" @click="page='mine'">
             <i class="el-icon-user"></i> 我的工单
@@ -459,7 +782,7 @@
         </div>
       </aside>
 
-      <main class="main">
+      <main class="main" :class="{'portal-main': page==='form' || page==='mine'}">
         <!-- 闭环流程 -->
         <div v-if="page==='flow'">
           <div class="panel">
@@ -546,49 +869,68 @@
           </div>
         </div>
 
-        <div v-if="page==='form'" class="panel">
-          <div class="page-title"><h2>提报工单</h2></div>
-          <p class="page-desc">客户信息只填写账号，账号是唯一值。销售和客服再选择反馈渠道。问题详情可粘贴文字和图片，也可上传附件。</p>
-          <div class="role-switch">
-            <button type="button" :class="{active: intake.reportType==='客户提交'}" @click="setIntakeRole('客户提交')">客户</button>
-            <button type="button" :class="{active: intake.reportType==='销售提交'}" @click="setIntakeRole('销售提交')">销售</button>
-            <button type="button" :class="{active: intake.reportType==='客服提交'}" @click="setIntakeRole('客服提交')">客服</button>
-          </div>
-          <el-form label-width="108px" size="small" style="max-width:720px;">
-            <el-form-item label="账号" required>
-              <el-input v-model="intake.account" placeholder="客户使用的产品账号"></el-input>
-            </el-form-item>
-            <el-form-item v-if="intake.reportType!=='客户提交'" label="反馈渠道" required>
+        <div v-if="page==='form' || page==='mine'" class="customer-portal">
+          <nav class="portal-nav">
+            <button type="button" :class="{active: page==='form'}" @click="page='form'">客户反馈</button>
+            <button type="button" :class="{active: page==='mine'}" @click="page='mine'">我的工单</button>
+          </nav>
+
+          <div v-if="page==='form'" class="portal-card">
+            <div class="portal-head">
+              <div>
+                <h2>客户反馈</h2>
+                <p>选择问题类型后描述具体情况。账号可以不填。</p>
+              </div>
+            </div>
+            <div class="role-switch">
+              <button type="button" :class="{active: intake.reportType==='客户提交'}" @click="setIntakeRole('客户提交')">客户</button>
+              <button type="button" :class="{active: intake.reportType==='销售提交'}" @click="setIntakeRole('销售提交')">销售</button>
+              <button type="button" :class="{active: intake.reportType==='客服提交'}" @click="setIntakeRole('客服提交')">客服</button>
+            </div>
+            <div class="portal-field">
+              <label>账号</label>
+              <el-input v-model="intake.account" placeholder="选填，便于定位客户"></el-input>
+            </div>
+            <div class="portal-field" v-if="intake.reportType!=='客户提交'">
+              <label><i>*</i>反馈渠道</label>
               <el-select v-model="intake.channel" :placeholder="intake.reportType==='销售提交' ? '请选择客户反馈给您的渠道' : '请选择反馈渠道'" style="width:100%">
                 <el-option v-for="c in channelNames" :key="c" :label="c" :value="c"></el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="联系方式" :required="contactRequired">
+            </div>
+            <div class="portal-field">
+              <label><i v-if="contactRequired">*</i>联系方式</label>
               <el-input v-model="intake.contact" :placeholder="intake.reportType==='销售提交' ? '若您希望将工单的处理结果同步给客户，请填写联系方式。' : (contactRequired ? '电话、在线咨询、邮箱渠道必填' : '电话、微信或邮箱，可不填')"></el-input>
-            </el-form-item>
-            <el-form-item label="产品项目" required>
-              <el-select v-model="intake.product" placeholder="请选择产品项目" style="width:100%">
-                <el-option v-for="p in productOptions" :key="p" :label="p" :value="p"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="问题分类" required>
-              <el-select v-model="intake.categoryL1" placeholder="请选择" style="width:100%">
-                <el-option v-for="c in level1Options" :key="c" :label="c" :value="c"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="问题详情" required>
+            </div>
+            <div class="portal-field">
+              <label><i>*</i>产品项目</label>
+              <div class="product-pills">
+                <button type="button" v-for="p in productOptions" :key="p" :class="{active: intake.product===p}" @click="intake.product=p">{{ p }}</button>
+              </div>
+            </div>
+            <div class="portal-field">
+              <label><i>*</i>请选择问题类型</label>
+              <div class="type-grid">
+                <button type="button" class="type-card" v-for="c in level1Options" :key="c" :class="{active: intake.categoryL1===c}" @click="intake.categoryL1=c">
+                  <div class="name">{{ c }}</div>
+                  <div class="desc">{{ categoryBlurb(c) }}</div>
+                </button>
+              </div>
+            </div>
+            <div class="portal-field">
+              <label><i>*</i>问题描述</label>
               <div
                 ref="detailEditor"
-                class="rich-editor"
+                class="rich-editor portal-editor"
                 :class="{ empty: !intake.detail && !detailHasImage }"
                 contenteditable="true"
                 data-placeholder="请描述问题，可直接粘贴文字和图片"
                 @paste="onDetailPaste"
                 @input="syncDetail"
               ></div>
-            </el-form-item>
-            <el-form-item label="附件">
-              <div>
+            </div>
+            <div class="portal-field">
+              <label>附件</label>
+              <div class="upload-box">
                 <el-button size="small" @click="pickAttachment">上传附件</el-button>
                 <span class="attach-hint">可选，可上传多个文件，单个不超过 10MB</span>
                 <input ref="attachInput" class="attach-input" type="file" multiple @change="onIntakeFiles">
@@ -601,75 +943,79 @@
                   </li>
                 </ul>
               </div>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitIntake">提交</el-button>
-              <el-button @click="resetIntake">清空</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-
-        <div v-if="page==='mine'" class="panel">
-          <div class="page-title"><h2>我的工单</h2></div>
-          <div class="mine-tip"><i class="el-icon-info"></i> 查看、创建并跟进您的工单处理进度。</div>
-          <el-form :inline="true" size="small" class="mine-filter">
-            <el-form-item label="工单状态">
-              <el-select v-model="myQuery.status" clearable placeholder="全部" style="width:140px">
-                <el-option v-for="s in userProgressOptions" :key="s" :label="s" :value="s"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="产品/服务">
-              <el-select v-model="myQuery.product" clearable placeholder="全部" style="width:140px">
-                <el-option v-for="p in productOptions" :key="p" :label="p" :value="p"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="创建时间">
-              <el-date-picker v-model="myQuery.dates" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:260px"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="工单搜索">
-              <el-input v-model="myQuery.keyword" clearable placeholder="工单号 / 标题" style="width:180px" @keyup.enter.native="doMyQuery"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="doMyQuery">查询</el-button>
-              <el-button @click="resetMyQuery">重置</el-button>
-              <el-button type="primary" icon="el-icon-plus" @click="openMineCreate">创建工单</el-button>
-            </el-form-item>
-          </el-form>
-          <div class="table-scroll">
-            <table class="boss-table">
-              <thead>
-                <tr>
-                  <th>工单号</th>
-                  <th>产品/服务</th>
-                  <th>问题类型</th>
-                  <th>工单标题</th>
-                  <th>工单状态</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-if="!pagedMyTickets.length">
-                  <td colspan="5"><div class="mine-empty">暂无工单</div></td>
-                </tr>
-                <tr v-for="t in pagedMyTickets" :key="t.id" @click="openMine(t)">
-                  <td><span class="mine-id">{{ t.id }}</span></td>
-                  <td>{{ t.product || '—' }}</td>
-                  <td>{{ t.categoryL1 || t.category1 || '—' }}</td>
-                  <td><div class="ellipsis" :title="t.title || t.detail">{{ t.title || t.detail }}</div></td>
-                  <td>{{ userProgress(t) }}</td>
-                </tr>
-              </tbody>
-            </table>
+            </div>
+            <div class="portal-actions">
+              <button type="button" class="portal-ghost" @click="resetIntake">清空</button>
+              <button type="button" class="portal-submit" @click="submitIntake">提交</button>
+            </div>
           </div>
-          <div class="toolbar" v-if="myFilteredTickets.length > pageSize">
-            <span style="font-size:12px;color:#909399;">共 {{ myFilteredTickets.length }} 条</span>
-            <el-pagination
-              background
-              layout="prev, pager, next"
-              :total="myFilteredTickets.length"
-              :page-size="pageSize"
-              :current-page.sync="myPage"
-              small
-            />
+
+          <div v-else class="portal-card">
+            <div class="portal-head">
+              <div>
+                <h2>我的工单</h2>
+                <p>查看、跟进您提交的反馈处理进度。</p>
+              </div>
+              <button type="button" class="portal-submit" @click="openMineCreate">创建工单</button>
+            </div>
+            <el-form :inline="true" size="small" class="mine-filter">
+              <el-form-item label="工单状态">
+                <el-select v-model="myQuery.status" clearable placeholder="全部" style="width:140px">
+                  <el-option v-for="s in userProgressOptions" :key="s" :label="s" :value="s"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="产品/服务">
+                <el-select v-model="myQuery.product" clearable placeholder="全部" style="width:140px">
+                  <el-option v-for="p in productOptions" :key="p" :label="p" :value="p"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="创建时间">
+                <el-date-picker v-model="myQuery.dates" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:260px"></el-date-picker>
+              </el-form-item>
+              <el-form-item label="工单搜索">
+                <el-input v-model="myQuery.keyword" clearable placeholder="工单号 / 标题" style="width:180px" @keyup.enter.native="doMyQuery"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="doMyQuery">查询</el-button>
+                <el-button @click="resetMyQuery">重置</el-button>
+              </el-form-item>
+            </el-form>
+            <div class="table-scroll">
+              <table class="mine-table">
+                <thead>
+                  <tr>
+                    <th>工单号</th>
+                    <th>产品/服务</th>
+                    <th>问题类型</th>
+                    <th>工单标题</th>
+                    <th>工单状态</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="!pagedMyTickets.length">
+                    <td colspan="5"><div class="mine-empty">暂无工单</div></td>
+                  </tr>
+                  <tr v-for="t in pagedMyTickets" :key="t.id" @click="openMine(t)">
+                    <td><span class="mine-id">{{ t.id }}</span></td>
+                    <td>{{ t.product || '—' }}</td>
+                    <td>{{ t.categoryL1 || t.category1 || '—' }}</td>
+                    <td><div class="mine-title" :title="t.title || t.detail">{{ t.title || t.detail }}</div></td>
+                    <td><span class="mine-status" :class="mineStatusClass(t)">{{ userProgress(t) }}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="toolbar" v-if="myFilteredTickets.length > pageSize">
+              <span style="font-size:12px;color:#909399;">共 {{ myFilteredTickets.length }} 条</span>
+              <el-pagination
+                background
+                layout="prev, pager, next"
+                :total="myFilteredTickets.length"
+                :page-size="pageSize"
+                :current-page.sync="myPage"
+                small
+              />
+            </div>
           </div>
         </div>
 
@@ -708,8 +1054,11 @@
         </div>
 
         <div v-if="page==='list'" class="panel">
-          <div class="page-title">
-            <h2>客户反馈工单</h2>
+          <div class="list-head">
+            <div>
+              <h2>客户反馈工单</h2>
+              <p class="list-hint">列表展示全部反馈工单；待处理 SLA 为 2 小时。满意度以色标区分（红 / 黄 / 绿）。</p>
+            </div>
             <div class="list-metrics">
               <div class="list-metric" v-for="m in listMetrics" :key="m.label">
                 <div class="label">{{ m.label }}</div>
@@ -718,60 +1067,71 @@
               </div>
             </div>
           </div>
-          <p class="page-desc">列表按线索、客户、提交、问题、风险、阶段和处理结果展示。满意度综合两道评分和建议内容标红、黄、绿。待处理阶段按 2 小时响应。</p>
 
-          <el-form :inline="true" :model="query" size="small" class="filter-form" label-width="108px">
-            <el-form-item label="反馈渠道">
-              <el-select v-model="query.channel" clearable placeholder="全部" style="width:140px">
-                <el-option v-for="c in channelNames" :key="c" :label="c" :value="c" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="工单阶段">
-              <el-select v-model="query.stage" clearable placeholder="全部" style="width:160px">
-                <el-option v-for="s in stageOptions" :key="s" :label="s" :value="s" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="问题分类">
-              <el-select v-model="query.categoryL1" clearable placeholder="全部" style="width:160px">
-                <el-option v-for="c in level1Options" :key="c" :label="c" :value="c" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="客户状态">
-              <el-select v-model="query.customerStatus" clearable placeholder="全部" style="width:150px">
-                <el-option v-for="s in customerStatusOptions" :key="s" :label="s" :value="s" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="首次解决">
-              <el-select v-model="query.firstResolved" clearable placeholder="全部" style="width:100px">
-                <el-option label="Y" value="Y" />
-                <el-option label="N" value="N" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="工单满意度">
-              <el-select v-model="query.satLevel" clearable placeholder="全部" style="width:120px">
-                <el-option label="红色" value="red" />
-                <el-option label="黄色" value="yellow" />
-                <el-option label="绿色" value="green" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="线索id">
-              <el-input v-model="query.leadId" clearable placeholder="2开头6位" style="width:140px" />
-            </el-form-item>
-            <el-form-item>
-              <el-button size="small" @click="resetQuery">重置</el-button>
-              <el-button type="primary" size="small" @click="doQuery">查询</el-button>
-              <el-button size="small" @click="dlg.trial = true">开通试用</el-button>
-            </el-form-item>
-          </el-form>
+          <div class="filter-box">
+            <div class="filter-row">
+              <div class="filter-item">
+                <label>反馈渠道</label>
+                <el-select v-model="query.channel" clearable placeholder="全部" size="small" style="width:140px">
+                  <el-option v-for="c in channelNames" :key="c" :label="c" :value="c" />
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>工单阶段</label>
+                <el-select v-model="query.stage" clearable placeholder="全部" size="small" style="width:160px">
+                  <el-option v-for="s in stageOptions" :key="s" :label="s" :value="s" />
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>问题分类</label>
+                <el-select v-model="query.categoryL1" clearable placeholder="全部" size="small" style="width:160px">
+                  <el-option v-for="c in level1Options" :key="c" :label="c" :value="c" />
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>线索ID</label>
+                <el-input v-model="query.leadId" clearable placeholder="请输入线索ID" size="small" style="width:160px" />
+              </div>
+              <div class="filter-actions">
+                <el-button type="text" @click="moreFiltersOpen = !moreFiltersOpen">更多筛选 <i :class="moreFiltersOpen ? 'el-icon-arrow-up' : 'el-icon-arrow-down'"></i></el-button>
+                <el-button size="small" @click="resetQuery">重置</el-button>
+                <el-button type="primary" size="small" @click="doQuery">查询</el-button>
+              </div>
+            </div>
+            <div class="more-filters" v-show="moreFiltersOpen">
+              <div class="filter-item">
+                <label>客户状态</label>
+                <el-select v-model="query.customerStatus" clearable placeholder="全部" size="small" style="width:150px">
+                  <el-option v-for="s in customerStatusOptions" :key="s" :label="s" :value="s" />
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>首次解决</label>
+                <el-select v-model="query.firstResolved" clearable placeholder="全部" size="small" style="width:120px">
+                  <el-option label="Y" value="Y"></el-option>
+                  <el-option label="N" value="N"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>工单满意度</label>
+                <el-select v-model="query.satLevel" clearable placeholder="全部" size="small" style="width:120px">
+                  <el-option label="红" value="red"></el-option>
+                  <el-option label="黄" value="yellow"></el-option>
+                  <el-option label="绿" value="green"></el-option>
+                </el-select>
+              </div>
+            </div>
+          </div>
 
           <div class="toolbar">
             <div>
-              <el-button size="mini" plain @click="openExport">导出</el-button>
-              <span style="margin-left:10px;font-size:12px;color:#909399;">共 {{ filteredTickets.length }} 条 · 演示数据</span>
+              <el-button size="small" @click="openExport">导出</el-button>
+              <el-button size="small" @click="dlg.trial = true">开通试用</el-button>
+              <span style="margin-left:10px;font-size:13px;color:#909399;">共 {{ filteredTickets.length }} 条 · 演示数据</span>
             </div>
             <el-pagination
               background
-              layout="prev, pager, next, jumper"
+              layout="prev, pager, next"
               :total="filteredTickets.length"
               :page-size="pageSize"
               :current-page.sync="listPage"
@@ -783,69 +1143,59 @@
             <table class="boss-table">
               <thead>
                 <tr>
-                  <th class="sticky-account">客户账号</th>
-                  <th>线索id</th>
-                  <th>客户id</th>
-                  <th>客户负责人</th>
-                  <th>部门</th>
-                  <th>提交类型</th>
-                  <th>提交人</th>
-                  <th>反馈渠道</th>
-                  <th>产品项目</th>
-                  <th>联系方式</th>
-                  <th>客户状态</th>
-                  <th>账号是否在有效期</th>
-                  <th>入库时间</th>
-                  <th>问题分类</th>
-                  <th>问题详情</th>
-                  <th>风险等级</th>
-                  <th>工单阶段</th>
-                  <th>首次响应时间</th>
-                  <th>是否首次解决</th>
-                  <th>完结剩余时间</th>
-                  <th>当前处理人</th>
-                  <th>处理结果</th>
-                  <th>满意度</th>
-                  <th class="sticky-op">操作</th>
+                  <th class="col-account">客户账号</th>
+                  <th class="col-lead">线索id</th>
+                  <th class="col-custid">客户id</th>
+                  <th class="col-product">产品项目</th>
+                  <th class="col-channel">反馈渠道</th>
+                  <th class="col-category">问题分类</th>
+                  <th class="col-detail">问题详情</th>
+                  <th class="col-risk">风险等级</th>
+                  <th class="col-stage">工单阶段</th>
+                  <th class="col-remain">完结剩余时间</th>
+                  <th class="col-handler">当前处理人</th>
+                  <th class="col-sat">满意度</th>
+                  <th class="col-action">操作</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="t in pagedTickets" :key="t.id">
-                  <td class="sticky-account">{{ t.account || '—' }}</td>
-                  <td>{{ t.leadId || '—' }}</td>
-                  <td>{{ t.customerId || '—' }}</td>
-                  <td>{{ t.customerOwner || '—' }}</td>
-                  <td>{{ t.department || '—' }}</td>
-                  <td>{{ t.reportType || '—' }}</td>
-                  <td>{{ t.submitterName || t.submitter || '—' }}</td>
-                  <td><span class="pill pill-blue">{{ t.channel }}</span></td>
-                  <td>{{ t.product || '—' }}</td>
-                  <td>{{ t.contact || '—' }}</td>
-                  <td>{{ t.customerStatus || '—' }}</td>
-                  <td>{{ t.accountValid || '—' }}</td>
-                  <td>{{ t.reportedAt || t.createdAt || '—' }}</td>
-                  <td>{{ t.categoryL1 || t.category1 || '—' }}</td>
-                  <td><div class="ellipsis" :title="t.detail || t.title">{{ t.detail || t.title }}</div></td>
-                  <td>{{ t.risk || '—' }}</td>
-                  <td :title="stageHint(t.stage)">{{ t.stage || t.status }}</td>
-                  <td>{{ t.firstResponseAt || '—' }}</td>
-                  <td>{{ firstResolvedText(t) }}</td>
-                  <td>{{ closeRemainText(t) }}</td>
-                  <td>{{ t.handler || '—' }}</td>
-                  <td><div class="ellipsis" :title="resultText(t)">{{ resultText(t) }}</div></td>
-                  <td>
-                    <span v-if="satLevel(t)" class="sat-tag" :class="'sat-'+satLevel(t)" :title="satTip(t)"><i></i>{{ satLabel(satLevel(t)) }}</span>
-                    <span v-else>—</span>
+                  <td class="account-cell wrap-cell">
+                    <a v-if="t.account" class="account-link" @click="onListOp({action:'detail', id:t.id})">{{ t.account }}</a>
+                    <span v-else class="muted-time">—</span>
+                    <div class="sub" :title="accountSub(t)">{{ accountSub(t) }}</div>
                   </td>
-                  <td class="sticky-op op-cell" @click.stop>
-                    <div class="op-links">
-                      <el-button type="text" size="mini" @click="onListOp({action:'follow', id:t.id})">添加跟进记录</el-button>
-                      <el-button type="text" size="mini" @click="onListOp({action:'hold', id:t.id})">挂起</el-button>
-                      <el-button type="text" size="mini" @click="onListOp({action:'upgrade', id:t.id})">申请升级</el-button>
-                      <el-button type="text" size="mini" @click="onListOp({action:'reissue', id:t.id})">转工单</el-button>
-                      <el-button type="text" size="mini" @click="onListOp({action:'close', id:t.id})">确认完结</el-button>
-                      <el-button type="text" size="mini" @click="onListOp({action:'detail', id:t.id})">详情</el-button>
-                      <el-button type="text" size="mini" @click="onListOp({action:'track', id:t.id})">跟踪进度</el-button>
+                  <td class="id-cell" :title="'线索id：' + (t.leadId || '—')">{{ t.leadId || '—' }}</td>
+                  <td class="id-cell" :title="'客户id：' + (t.customerId || '—')">{{ t.customerId || '—' }}</td>
+                  <td>{{ t.product || '—' }}</td>
+                  <td><span class="tag" :class="channelTagClass(t.channel)">{{ t.channel }}</span></td>
+                  <td>{{ t.categoryL1 || t.category1 || '—' }}</td>
+                  <td class="wrap-cell"><div class="detail-cell" :title="t.detail || t.title">{{ t.detail || t.title }}</div></td>
+                  <td><span class="tag" :class="riskView(t.risk).cls" :title="t.risk">{{ riskView(t.risk).label }}</span></td>
+                  <td><span class="tag" :class="stageView(t.stage || t.status).cls" :title="stageHint(t.stage)">{{ stageView(t.stage || t.status).label }}</span></td>
+                  <td>
+                    <span v-if="isRemainOverdue(t)" class="overdue">{{ closeRemainText(t) }}</span>
+                    <span v-else class="muted-time">{{ closeRemainText(t) }}</span>
+                  </td>
+                  <td>{{ t.handler || '—' }}</td>
+                  <td>
+                    <span v-if="satLevel(t)" class="tag" :class="satTagClass(satLevel(t))" :title="satTip(t)">{{ satLabel(satLevel(t)) }}</span>
+                    <span v-else class="tag tag-default">—</span>
+                  </td>
+                  <td class="wrap-cell" @click.stop>
+                    <div class="action-cell">
+                      <button type="button" class="action-link" @click="onListOp({action:'detail', id:t.id})">详情</button>
+                      <button type="button" class="action-link" @click="onListOp({action:'follow', id:t.id})">跟进</button>
+                      <el-dropdown trigger="click" @command="onListOp">
+                        <button type="button" class="action-link">更多 <i class="el-icon-arrow-down"></i></button>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item :command="{action:'hold', id:t.id}">挂起</el-dropdown-item>
+                          <el-dropdown-item :command="{action:'upgrade', id:t.id}">申请升级</el-dropdown-item>
+                          <el-dropdown-item :command="{action:'reissue', id:t.id}">转工单</el-dropdown-item>
+                          <el-dropdown-item :command="{action:'close', id:t.id}">确认完结</el-dropdown-item>
+                          <el-dropdown-item :command="{action:'track', id:t.id}">跟踪进度</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </el-dropdown>
                     </div>
                   </td>
                 </tr>
@@ -854,35 +1204,11 @@
           </div>
         </div>
 
-        <div v-if="page==='reissue'" class="panel">
-          <div class="page-title"><h2>转工单</h2></div>
-          <p class="page-desc">从原工单 {{ reissueFrom && reissueFrom.id }} 开一张新工单。新工单单独流转，原工单保留。</p>
-          <el-form label-width="108px" size="small" style="max-width:720px;">
-            <el-form-item label="账号"><el-input :value="reissueFrom && reissueFrom.account" disabled></el-input></el-form-item>
-            <el-form-item label="产品项目" required>
-              <el-select v-model="reissue.product" style="width:100%">
-                <el-option v-for="p in productOptions" :key="'rp'+p" :label="p" :value="p"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="问题分类" required>
-              <el-select v-model="reissue.categoryL1" style="width:100%">
-                <el-option v-for="c in level1Options" :key="'rc'+c" :label="c" :value="c"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="问题详情" required>
-              <el-input type="textarea" :rows="4" v-model="reissue.detail"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" size="small" @click="submitReissue">提交新工单</el-button>
-              <el-button size="small" @click="page='list'">返回列表</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-
         <!-- 渠道与评价 -->
         <div v-if="page==='channel'" class="panel">
           <div class="page-title"><h2>渠道接入与评价原路回传规则</h2></div>
           <p class="page-desc">对齐图二：工单完结（或渠道约定时机）后，按原渠道推送满意度评价，结果回写工单并关联客服与工单编号。</p>
+          <div class="table-scroll">
           <table class="rule-table">
             <thead>
               <tr>
@@ -905,6 +1231,7 @@
               </tr>
             </tbody>
           </table>
+          </div>
 
           <div class="page-title" style="margin-top:24px;"><h2>系统打通示意</h2></div>
           <div class="channel-grid">
@@ -956,7 +1283,10 @@
               <div class="info-item"><div class="info-label">反馈渠道</div><div class="info-value">{{ current.channel }}</div></div>
               <div class="info-item"><div class="info-label">产品项目</div><div class="info-value">{{ current.product || '—' }}</div></div>
               <div class="info-item"><div class="info-label">客户主体</div><div class="info-value">{{ current.customer }}</div></div>
+              <div class="info-item"><div class="info-label">客户账号</div><div class="info-value">{{ current.account || '—' }}</div></div>
+              <div class="info-item" v-if="current.internalId"><div class="info-label">内部工单ID</div><div class="info-value">{{ current.internalId }} · {{ current.internalStatus || '新增' }}</div></div>
               <div class="info-item"><div class="info-label">客户id</div><div class="info-value">{{ current.customerId || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">账号有效期</div><div class="info-value">{{ current.accountValid || '—' }}</div></div>
               <div class="info-item"><div class="info-label">线索id</div><div class="info-value">{{ current.leadId || '—' }}</div></div>
               <div class="info-item"><div class="info-label">客户状态</div><div class="info-value">{{ current.customerStatus || '—' }}</div></div>
               <div class="info-item"><div class="info-label">提报类型</div><div class="info-value">{{ current.reportType || '—' }}</div></div>
@@ -1458,6 +1788,25 @@
       <el-button size="small" type="primary" @click="saveTrial">确认开通</el-button>
     </span>
   </el-dialog>
+
+  <el-dialog :visible.sync="submitSuccessVisible" width="440px" append-to-body custom-class="submit-success-dialog" :show-close="false" :close-on-click-modal="false">
+    <div class="ok-mark"><i class="el-icon-check"></i></div>
+    <h2 class="ok-title">提交成功</h2>
+    <p class="ok-sub">我们已收到您的反馈，将尽快处理</p>
+    <div class="ok-no">{{ submitSuccessTicket && submitSuccessTicket.id }}</div>
+    <p class="ok-no-tip">反馈单号 · 请妥善保存</p>
+    <div class="ok-tip">{{ submitSuccessTicket && submitSuccessTicket.account ? '已按账号记录本次反馈，无需填写线索 ID 或客户 ID。' : '本次未填写账号。无需填写线索 ID 或客户 ID。' }}</div>
+    <div class="ok-status">
+      <span>当前状态</span>
+      <span class="ok-pill"><i></i>已受理</span>
+    </div>
+    <p class="ok-note">预计 2 小时内响应。处理进度可在「我的工单」查看。</p>
+    <button type="button" class="ok-primary" @click="viewSubmitProgress">查看处理进度</button>
+    <div class="ok-row">
+      <button type="button" class="ok-ghost" @click="backSubmitHome">返回首页</button>
+      <button type="button" class="ok-ghost" @click="submitAnother">再提交一条</button>
+    </div>
+  </el-dialog>
 </div>
 
 <script src="vendor/vue.js"></script>
@@ -1686,13 +2035,24 @@ new Vue({
   el: '#app',
   data() {
     return {
+      transferMode: !!new URLSearchParams(location.search).get('transfer'),
+      transferMissing: false,
+      transferDone: null,
+      submitSuccessVisible: false,
+      submitSuccessTicket: null,
+      internalForm: {
+        externalId: '', customerSubmitAt: '', customerName: '', tenantId: '', originalText: '',
+        attachments: [], productLine: '', ticketKind: '', title: '', problemType: '', priority: '', note: ''
+      },
       page: 'flow',
+      navOpen: false,
       currentUser: { name: '客服主管', account: '演示账号' },
       detailVisible: false,
       current: {},
       query: { channel: '', stage: '', categoryL1: '', customerStatus: '', firstResolved: '', satLevel: '', leadId: '' },
       reissueFrom: null,
       reissue: { product: '', categoryL1: '', category2: '', detail: '' },
+      moreFiltersOpen: false,
       listPage: 1,
       myPage: 1,
       pageSize: 10,
@@ -1941,6 +2301,16 @@ new Vue({
       }
     }
   },
+  mounted() {
+    if (this.transferMode) {
+      this.loadTransfer();
+      return;
+    }
+    this.consumeInternalResults();
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'boss-internal-results') this.consumeInternalResults();
+    });
+  },
   methods: {
     statusPill(s) {
       const map = {
@@ -1955,6 +2325,20 @@ new Vue({
     },
     listEval(t) {
       return t && t.evalStatus === '已评价' ? '已评价' : '未评价';
+    },
+    categoryBlurb(name) {
+      return {
+        '产品故障': '使用中遇到阻断或影响正常使用的功能缺陷',
+        '数据问题': '数据缺失、不准、延迟，或导出、预警异常',
+        '产品/功能咨询': '想了解某个功能在具体场景下怎么用',
+        '账号问题': '登录、权限、账号状态等相关问题',
+        '联系商务': '购买、续费、报价，或需要商务对接',
+        '投诉': '对服务过程或处理结果不满意',
+        '其他': '以上都不是时，请在这里说明具体情况'
+      }[name] || '';
+    },
+    mineStatusClass(t) {
+      return { '处理中': 'is-ing', '待评价': 'is-wait', '已完结': 'is-done', '已评价': 'is-rated' }[this.userProgress(t)] || '';
     },
     userProgress(t) {
       if (!t) return '—';
@@ -2038,6 +2422,49 @@ new Vue({
     },
     resultText(t) {
       return (t && (t.result || t.solution)) || '—';
+    },
+    accountSub(t) {
+      if (!t) return '—';
+      const owner = t.customerOwner || '—';
+      const dept = t.department || '—';
+      if (owner === '—' && dept === '—') return '—';
+      return owner + ' · ' + dept;
+    },
+    channelTagClass(name) {
+      return {
+        '电话': 'tag-blue',
+        '在线咨询': 'tag-cyan',
+        '企微1v1': 'tag-purple',
+        '企微客户群': 'tag-purple',
+        '产品支持群': 'tag-purple',
+        '邮箱': 'tag-geekblue',
+        '蜜度官网': 'tag-blue'
+      }[name] || 'tag-default';
+    },
+    riskView(risk) {
+      const text = risk || '';
+      if (text.indexOf('P0') === 0) return { cls: 'tag-red', label: 'P0 紧急' };
+      if (text.indexOf('P1') === 0) return { cls: 'tag-orange', label: 'P1 高' };
+      if (text.indexOf('P2') === 0) return { cls: 'tag-blue', label: 'P2 中' };
+      if (text.indexOf('P3') === 0) return { cls: 'tag-green', label: 'P3 低' };
+      return { cls: 'tag-default', label: text || '—' };
+    },
+    stageView(stage) {
+      return {
+        '待处理（2小时）': { cls: 'tag-orange', label: '待处理 · 2h' },
+        '处理中（72小时）': { cls: 'tag-blue', label: '处理中 · 72h' },
+        '已完结': { cls: 'tag-green', label: '已完结' },
+        '退回/驳回': { cls: 'tag-default', label: '退回 · 驳回' },
+        '超时完结': { cls: 'tag-magenta', label: '超时结单' },
+        '挂起': { cls: 'tag-gold', label: '挂起' },
+        '待确认完结': { cls: 'tag-cyan', label: '待确认完结' }
+      }[stage] || { cls: 'tag-default', label: stage || '—' };
+    },
+    satTagClass(level) {
+      return { red: 'tag-red', yellow: 'tag-gold', green: 'tag-green' }[level] || 'tag-default';
+    },
+    isRemainOverdue(t) {
+      return this.remainText(t).indexOf('已超时') === 0;
     },
     stageHint(stage) {
       return {
@@ -2486,7 +2913,6 @@ new Vue({
       const isCustomer = form.reportType === '客户提交';
       this.syncDetail();
       const fields = [
-        { label: '账号', value: form.account },
         { label: '产品项目', value: form.product },
         { label: '问题分类', value: form.categoryL1 }
       ];
@@ -2560,7 +2986,7 @@ new Vue({
         files: (form.files || []).slice(),
         logs: [{
           time: time,
-          text: form.reportType + '已在智齿界面提报，同步到 BOSS。账号：' + form.account + '。原路回复：' + this.replyPath(channel)
+          text: form.reportType + '已在智齿界面提报，同步到 BOSS。账号：' + (form.account || '未填写') + '。原路回复：' + this.replyPath(channel)
             + ((form.files && form.files.length) ? ' 附件 ' + form.files.length + ' 个。' : ''),
           actor: '系统',
           level: ''
@@ -2580,9 +3006,31 @@ new Vue({
       this.resetIntake();
       this.intake.reportType = form.reportType;
       this.intake.channel = form.reportType === '客户提交' ? '蜜度官网' : '';
+      if (isCustomer) {
+        this.submitSuccessTicket = ticket;
+        this.submitSuccessVisible = true;
+        return;
+      }
       this.page = 'list';
       this.listPage = 1;
       this.$message.success('已提报，进入待处理');
+    },
+    viewSubmitProgress() {
+      const ticket = this.submitSuccessTicket;
+      this.submitSuccessVisible = false;
+      if (!ticket) return;
+      this.page = 'mine';
+      this.openMine(ticket);
+    },
+    backSubmitHome() {
+      this.submitSuccessVisible = false;
+      this.page = 'form';
+    },
+    submitAnother() {
+      this.submitSuccessVisible = false;
+      this.intake.reportType = '客户提交';
+      this.resetIntake();
+      this.page = 'form';
     },
     openMine(t) {
       this.mineCurrent = Object.assign({}, t);
@@ -2869,14 +3317,7 @@ new Vue({
         return;
       }
       if (cmd === 'reissue') {
-        this.reissueFrom = Object.assign({}, t);
-        this.reissue = {
-          product: t.product || '',
-          categoryL1: t.categoryL1 || t.category1 || '',
-          category2: t.category2 || '',
-          detail: t.detail || t.title || ''
-        };
-        this.page = 'reissue';
+        this.openInternalTransfer(t);
         return;
       }
       if (cmd === 'close') this.openConfirm();
@@ -2912,6 +3353,128 @@ new Vue({
       });
       this.dlg.upgradeApply = false;
       this.$message.success('已提交给上级');
+    },
+    openInternalTransfer(t) {
+      if (!t || !t.id) return;
+      const book = (typeof CUSTOMER_BOOK !== 'undefined' && CUSTOMER_BOOK[t.customerId]) || null;
+      const customerName = (t.customer && t.customer !== '—') ? t.customer : ((book && book.name) || '');
+      const productLine = this.productOptions.indexOf(t.product) >= 0 ? t.product : '';
+      const payload = {
+        externalId: t.id,
+        customerSubmitAt: t.reportedAt || t.createdAt || t.occurredAt || '',
+        customerName: customerName,
+        tenantId: t.account || '',
+        originalText: String(t.detail || t.title || '').trim(),
+        attachments: (t.files || []).filter(file => file && file.url).map(file => ({ name: file.name || file.url, url: file.url })),
+        productLine: productLine
+      };
+      localStorage.setItem('boss-transfer-' + t.id, JSON.stringify(payload));
+      window.open('ticket.html?transfer=' + encodeURIComponent(t.id), '_blank');
+    },
+    loadTransfer() {
+      const id = new URLSearchParams(location.search).get('transfer');
+      let raw = '';
+      try { raw = localStorage.getItem('boss-transfer-' + id) || ''; } catch (error) { raw = ''; }
+      if (!raw) {
+        this.transferMissing = true;
+        return;
+      }
+      const data = JSON.parse(raw);
+      this.internalForm = {
+        externalId: data.externalId || '',
+        customerSubmitAt: data.customerSubmitAt || '',
+        customerName: data.customerName || '',
+        tenantId: data.tenantId || '',
+        originalText: data.originalText || '',
+        attachments: data.attachments || [],
+        productLine: data.productLine || '',
+        ticketKind: '',
+        title: '',
+        problemType: '',
+        priority: '',
+        note: ''
+      };
+    },
+    onInternalProblemType(value) {
+      if (value === '功能优化建议') this.internalForm.ticketKind = '需求';
+      else if (value === '产品Bug' || value === '配置操作问题' || value === '计费投诉') this.internalForm.ticketKind = '问题';
+      else if (value === '业务咨询') this.internalForm.ticketKind = '';
+    },
+    submitInternal() {
+      const form = this.internalForm;
+      if (form.problemType === '业务咨询') {
+        this.$message.warning('业务咨询在外部系统闭环，不推送内部系统');
+        return;
+      }
+      if (!form.customerName) {
+        this.$message.warning('客户名称缺失，无法转入内部系统');
+        return;
+      }
+      if (!form.customerSubmitAt || !form.originalText || !form.externalId) {
+        this.$message.warning('外部反馈信息不完整，无法转入');
+        return;
+      }
+      if (!this.requireFields([
+        { label: '产品线', value: form.productLine },
+        { label: '工单类型', value: form.ticketKind },
+        { label: '内部工单标题', value: form.title },
+        { label: '问题类型', value: form.problemType },
+        { label: '优先级', value: form.priority }
+      ])) return;
+      if (form.title.trim() === form.originalText.trim()) {
+        this.$message.warning('内部工单标题请概括现象，不要粘贴客户原话全文');
+        return;
+      }
+      const kindMap = { '产品Bug': '问题', '配置操作问题': '问题', '计费投诉': '问题', '功能优化建议': '需求' };
+      if (kindMap[form.problemType] && kindMap[form.problemType] !== form.ticketKind) {
+        this.$message.warning(form.problemType + '应记为「' + kindMap[form.problemType] + '」');
+        return;
+      }
+      const receivedAt = this.nowText();
+      const result = {
+        externalId: form.externalId,
+        customerSubmitAt: form.customerSubmitAt,
+        customerName: form.customerName,
+        tenantId: form.tenantId,
+        originalText: form.originalText,
+        attachments: form.attachments,
+        productLine: form.productLine,
+        ticketKind: form.ticketKind,
+        problemSource: '客户反馈',
+        receivedAt: receivedAt,
+        internalId: 'IN-' + receivedAt.slice(0, 10).replace(/-/g, '') + '-' + String(Date.now()).slice(-5),
+        status: '新增',
+        title: form.title.trim(),
+        problemType: form.problemType,
+        priority: form.priority,
+        note: (form.note || '').trim()
+      };
+      const list = this.readInternalResults();
+      list.push(result);
+      localStorage.setItem('boss-internal-results', JSON.stringify(list));
+      this.transferDone = result;
+      this.$message.success('已转入内部工单 ' + result.internalId);
+    },
+    readInternalResults() {
+      try { return JSON.parse(localStorage.getItem('boss-internal-results') || '[]'); } catch (error) { return []; }
+    },
+    consumeInternalResults() {
+      this.readInternalResults().forEach(result => this.applyInternalResult(result));
+    },
+    applyInternalResult(result) {
+      if (!result || !result.externalId || !result.internalId) return;
+      const ticket = this.tickets.find(item => item.id === result.externalId);
+      if (!ticket || ticket.internalId) return;
+      ticket.internalId = result.internalId;
+      ticket.internalStatus = result.status || '新增';
+      ticket.internalReceivedAt = result.receivedAt;
+      ticket.logs = ticket.logs || [];
+      ticket.logs.push({ time: result.receivedAt, text: '已转工单 ' + result.internalId + '。类型 ' + result.ticketKind + ' / ' + result.problemType + '，优先级 ' + result.priority + '。', actor: this.currentUser.name, level: 'ok' });
+      if (result.note) ticket.logs.push({ time: result.receivedAt, text: '客服补充说明：' + result.note, actor: this.currentUser.name, level: '' });
+      this.$message.success(result.externalId + ' 已转入内部工单 ' + result.internalId);
+    },
+    closeTransferTab() {
+      window.close();
     },
     submitReissue() {
       const src = this.reissueFrom || {};
