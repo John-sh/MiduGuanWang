@@ -307,16 +307,18 @@
       display: flex; flex-direction: column;
     }
     .detail-top {
-      height: 52px; background: #fff; border-bottom: 1px solid var(--line);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 20px; flex-shrink: 0;
+      min-height: 52px; height: auto; background: #fff; border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+      padding: 8px 20px; flex-shrink: 0;
     }
-    .detail-top .left { display: flex; align-items: center; gap: 12px; }
+    .detail-top .left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .detail-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
     .detail-top .title { font-size: 16px; font-weight: 600; }
     .detail-body { flex: 1; overflow: auto; padding: 16px 20px 24px; }
     .detail-grid {
       display: grid; grid-template-columns: 1fr 340px; gap: 16px; align-items: start;
     }
+    .detail-grid.detail-grid-full { grid-template-columns: 1fr; }
     .block {
       background: #fff; border: 1px solid var(--line); border-radius: 8px;
       padding: 14px 18px 16px; margin-bottom: 16px;
@@ -1357,18 +1359,20 @@
         <span class="pill" :class="statusPill(current.stage || current.status)">{{ current.stage || current.status }}</span>
         <span class="pill pill-blue">{{ current.channel }}</span>
       </div>
-      <div>
-        <el-button size="mini" @click="openTransfer">企微转办</el-button>
-        <el-button size="mini" @click="openSupervise">企微督办</el-button>
+      <div class="detail-actions">
+        <el-button size="mini" @click="onListOp({action:'follow', id:current.id})">跟进</el-button>
+        <el-button size="mini" @click="onListOp({action:'hold', id:current.id})">挂起</el-button>
+        <el-button size="mini" @click="onListOp({action:'upgrade', id:current.id})">申请升级</el-button>
+        <el-button size="mini" @click="onListOp({action:'reissue', id:current.id})">转工单</el-button>
+        <el-button size="mini" type="primary" :disabled="!canConfirmClose" @click="onListOp({action:'close', id:current.id})">确认完结</el-button>
+        <el-button size="mini" @click="onListOp({action:'track', id:current.id})">跟踪进度</el-button>
         <el-button size="mini" @click="openEscalate">升级</el-button>
-        <el-button size="mini" type="warning" plain @click="openPause">暂停 SLA</el-button>
         <el-button size="mini" :disabled="!canSubmitPending" @click="openPending">提交待确认完结</el-button>
-        <el-button size="mini" type="primary" :disabled="!canConfirmClose" @click="openConfirm">客服确认完结</el-button>
         <el-button size="mini" plain :disabled="current.evalStatus!=='已推送'" @click="dlg.auto = true">模拟48小时未评价</el-button>
       </div>
     </div>
     <div class="detail-body" v-if="current.id">
-      <div class="detail-grid">
+      <div class="detail-grid" :class="{ 'detail-grid-full': !(current.score && current.score<=3) }">
         <div>
           <div class="block">
             <div class="block-hd">客户基础信息</div>
@@ -1492,22 +1496,11 @@
           </div>
         </div>
 
-        <div>
+        <div v-if="current.score && current.score<=3">
           <div class="block">
             <div class="block-hd">快捷操作</div>
             <div style="display:flex;flex-direction:column;gap:8px;">
-              <el-button size="small" @click="openReply">填写有效回复</el-button>
-              <el-button size="small" @click="openCategoryEdit">修改问题分类</el-button>
-              <el-button size="small" @click="openFaq">加入 FAQ</el-button>
-              <el-button size="small" type="danger" plain @click="openFollow" v-if="current.score && current.score<=3">发起差评二次跟进</el-button>
-            </div>
-          </div>
-          <div class="block">
-            <div class="block-hd">外部系统</div>
-            <div class="info-grid" style="grid-template-columns:1fr;">
-              <div class="info-item"><div class="info-label">操作端</div><div class="info-value">{{ current.ops }}</div></div>
-              <div class="info-item"><div class="info-label">外部单号</div><div class="info-value">{{ current.extId || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">原路回复</div><div class="info-value">{{ replyPath(current.channel) }}</div></div>
+              <el-button size="small" type="danger" plain @click="openFollow">发起差评二次跟进</el-button>
             </div>
           </div>
         </div>
