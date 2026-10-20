@@ -226,7 +226,7 @@
       width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px;
     }
     .boss-table {
-      border-collapse: collapse; font-size: 13px; min-width: 1220px; width: 100%; table-layout: fixed;
+      border-collapse: collapse; font-size: 13px; min-width: 1280px; width: 100%; table-layout: fixed;
     }
     .boss-table th {
       background: #fafafa; color: var(--text); font-weight: 500;
@@ -275,8 +275,8 @@
     .action-cell { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
     .action-link { color: var(--primary); cursor: pointer; font-size: 13px; background: none; border: none; padding: 0; }
     .action-link:hover { color: var(--primary-dark); }
-    .col-account { width: 11%; } .col-lead, .col-custid { width: 8%; } .col-product, .col-channel, .col-category, .col-risk, .col-handler { width: 7%; }
-    .col-detail { width: 14%; } .col-stage { width: 9%; } .col-remain { width: 10%; } .col-sat { width: 5%; } .col-action { width: 12%; }
+    .col-lead, .col-custid { width: 8%; } .col-product, .col-channel, .col-category, .col-risk, .col-handler, .col-internal { width: 7%; }
+    .col-detail { width: 14%; } .col-result { width: 12%; } .col-stage { width: 9%; } .col-remain { width: 10%; } .col-sat { width: 5%; } .col-action { width: 12%; }
 
     .pill {
       display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; line-height: 18px;
@@ -334,6 +334,11 @@
     .info-item { display: flex; min-width: 0; line-height: 1.6; }
     .info-item.span2 { grid-column: span 2; }
     .info-item.span3 { grid-column: 1 / -1; }
+    .urge-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .urge-item { background: #fafafa; border-radius: 6px; padding: 8px 12px; font-size: 13px; line-height: 1.6; }
+    .urge-item .t { color: var(--text-muted); font-size: 12px; }
+    .ai-preview-box { margin-top: 12px; background: #f7f9fc; border: 1px solid #e6eef8; border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.7; color: #606266; }
+    .ai-preview-box .ai-label { font-size: 12px; color: #909399; margin-bottom: 4px; }
     .mine-detail.info-grid { grid-template-columns: 1fr 1fr; }
     .mine-tip {
       display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
@@ -404,6 +409,16 @@
     .mine-status.is-wait { color: #d48806; background: #fff7e6; }
     .mine-status.is-done { color: #389e0d; background: #f6ffed; }
     .mine-status.is-rated { color: #722ed1; background: #f9f0ff; }
+    .portal-note { margin: -2px 0 8px; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+    .id-stack { display: flex; flex-direction: column; gap: 8px; }
+    .mine-cards { display: none; }
+    .mine-card {
+      width: 100%; text-align: left; border: 1px solid #e6ebf2; border-radius: 10px; background: #fff;
+      padding: 14px 14px 12px; cursor: pointer;
+    }
+    .mine-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .mine-card-title { margin-top: 8px; font-size: 15px; font-weight: 600; line-height: 1.5; word-break: break-all; }
+    .mine-card-meta { margin-top: 6px; font-size: 12px; color: var(--text-muted); }
     @media (max-width: 1100px) {
       .customer-portal { flex-direction: column; padding-top: 8px; }
       .portal-nav { flex-direction: row; width: auto; padding-top: 0; }
@@ -436,7 +451,7 @@
     .op-links { display: flex; flex-wrap: wrap; gap: 2px 10px; max-width: 280px; white-space: normal; }
     .boss-table td.op-cell { white-space: normal; }
     .op-links .el-button--text { padding: 0; margin: 0; }
-    .info-label { color: var(--text-muted); width: 96px; flex-shrink: 0; text-align: right; padding-right: 8px; }
+    .info-label { color: var(--text-muted); width: 108px; flex-shrink: 0; text-align: right; padding-right: 8px; white-space: nowrap; }
     .info-value { flex: 1; min-width: 0; word-break: break-all; }
     .transfer-page { min-height: 100vh; background: #f4f6f8; padding: 24px 16px 48px; }
     .transfer-card { max-width: 920px; margin: 0 auto; background: #fff; border-radius: 10px; padding: 28px 32px 36px; box-shadow: 0 1px 8px rgba(31,45,61,.06); }
@@ -463,7 +478,7 @@
     .ok-title { margin: 0; text-align: center; font-size: 24px; font-weight: 700; }
     .ok-sub { margin: 10px 0 18px; text-align: center; color: #8c8c8c; font-size: 14px; }
     .ok-no {
-      margin: 0 auto; max-width: 280px; padding: 14px 12px; text-align: center;
+      margin: 0 auto 18px; max-width: 280px; padding: 14px 12px; text-align: center;
       border: 1px solid #eef0f3; border-radius: 8px; background: #fafafa;
       font-size: 20px; font-weight: 700; letter-spacing: .4px;
     }
@@ -567,18 +582,22 @@
         width: 36px; height: 36px; border: 0; border-radius: 8px;
         background: rgba(255,255,255,.18); color: #fff; font-size: 18px; cursor: pointer;
       }
-      .topbar { height: auto; min-height: 52px; padding: 8px 12px; gap: 8px; }
+      .topbar {
+        position: sticky; top: 0; z-index: 50; height: auto;
+        min-height: calc(52px + env(safe-area-inset-top));
+        padding: calc(8px + env(safe-area-inset-top)) 12px 8px; gap: 8px;
+      }
       .topbar-left { min-width: 0; flex: 1; gap: 8px; }
       .sys-name { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .sys-slogan, .topbar-right { display: none; }
       .body { display: block; }
       .aside {
-        position: fixed; top: 0; left: 0; bottom: 0; z-index: 40; width: 240px;
+        position: fixed; top: calc(52px + env(safe-area-inset-top)); left: 0; bottom: 0; z-index: 40; width: 240px;
         transform: translateX(-105%); transition: transform .2s ease;
         box-shadow: 8px 0 24px rgba(15, 35, 70, .12); padding-top: 8px;
       }
       .aside.open { transform: none; }
-      .nav-mask { display: block; position: fixed; inset: 0; background: rgba(15, 23, 42, .45); z-index: 39; }
+      .nav-mask { display: block; position: fixed; top: calc(52px + env(safe-area-inset-top)); right: 0; bottom: 0; left: 0; background: rgba(15, 23, 42, .45); z-index: 39; }
       .main { padding: 12px 12px calc(16px + env(safe-area-inset-bottom)); }
       .panel { padding: 14px 12px; }
       .kpi-row { grid-template-columns: 1fr 1fr; }
@@ -605,8 +624,13 @@
       .role-switch button { height: 44px; }
       .type-card { width: 100%; }
       .attach-hint { display: block; margin: 8px 0 0; }
-      .mine-filter .el-form-item { display: block; margin-right: 0; width: 100%; }
-      .mine-filter .el-select, .mine-filter .el-input, .mine-filter .el-date-editor { width: 100% !important; }
+      .mine-filter.el-form--inline .el-form-item { display: block; margin-right: 0; width: 100%; }
+      .mine-filter .el-form-item__label { float: none; display: block; width: auto !important; text-align: left; line-height: 22px; padding: 0 0 4px; }
+      .mine-filter .el-form-item__content { margin-left: 0 !important; width: 100%; }
+      .mine-filter .el-select, .mine-filter .el-input, .mine-filter .el-date-editor,
+      .mine-filter .el-date-editor--daterange { width: 100% !important; min-width: 0 !important; }
+      .mine-table-wrap { display: none; }
+      .mine-cards { display: flex; flex-direction: column; gap: 10px; }
       .detail-top { height: auto; align-items: flex-start; flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
       .detail-top .left { flex-wrap: wrap; min-width: 0; }
       .detail-top .title { font-size: 14px; word-break: break-all; }
@@ -648,7 +672,7 @@
         <h2>已转工单</h2>
         <div class="sys-grid">
           <div class="k">问题来源</div><div>客户反馈</div>
-          <div class="k">外部反馈ID</div><div>{{ transferDone.externalId }}</div>
+          <div class="k">外部反馈工单 ID</div><div>{{ transferDone.externalId }}</div>
           <div class="k">工单类型</div><div>{{ transferDone.ticketKind }}</div>
           <div class="k">问题类型</div><div>{{ transferDone.problemType }}</div>
           <div class="k">优先级</div><div>{{ transferDone.priority }}</div>
@@ -662,9 +686,9 @@
             <el-form-item label="问题来源" required>
               <el-input value="客户反馈" disabled></el-input>
             </el-form-item>
-            <el-form-item label="外部反馈ID" required>
+            <el-form-item label="外部反馈工单 ID" required>
               <el-input :value="internalForm.externalId" disabled></el-input>
-              <div class="field-tip">外部系统主键，单独存储，不写入描述正文。</div>
+              <div class="field-tip">从 CF00001 起编号。单独存储，不写入描述正文。</div>
             </el-form-item>
             <el-form-item label="客户提交时间" required>
               <el-input :value="internalForm.customerSubmitAt || '—'" disabled></el-input>
@@ -673,9 +697,11 @@
             <el-form-item label="客户名称" required>
               <el-input :value="internalForm.customerName || '外部系统未提供'" disabled></el-input>
             </el-form-item>
-            <el-form-item label="租户ID（客户账号）">
-              <el-input :value="internalForm.tenantId || '无租户'" disabled></el-input>
-              <div class="field-tip">与产品账号一致。无租户时允许为空。</div>
+            <el-form-item label="客户 ID" required>
+              <el-input v-model="internalForm.customerId" maxlength="6" placeholder="请输入 6 位客户 ID"></el-input>
+            </el-form-item>
+            <el-form-item label="客户账号">
+              <el-input v-model="internalForm.account" placeholder="选填"></el-input>
             </el-form-item>
             <el-form-item label="客户原话" required>
               <div class="readonly-box">{{ internalForm.originalText || '—' }}</div>
@@ -699,24 +725,21 @@
                 <el-option label="问题" value="问题"></el-option>
                 <el-option label="需求" value="需求"></el-option>
               </el-select>
-              <div class="field-tip">缺陷、计费、配置操作记为「问题」；功能优化记为「需求」。业务咨询在外部系统闭环，不推送内部系统。</div>
+              <div class="field-tip">客服选择「问题」或「需求」。</div>
             </el-form-item>
             <el-form-item label="内部工单标题" required>
               <el-input v-model="internalForm.title" maxlength="80" placeholder="用一句话概括现象，不要粘贴客户原话全文"></el-input>
               <div class="field-tip"><span class="field-phase">后续补充</span>供内部列表识别。</div>
             </el-form-item>
             <el-form-item label="问题类型" required>
-              <el-select v-model="internalForm.problemType" placeholder="请选择" style="width:100%" @change="onInternalProblemType">
-                <el-option label="业务咨询" value="业务咨询"></el-option>
-                <el-option label="配置操作问题" value="配置操作问题"></el-option>
-                <el-option label="产品Bug" value="产品Bug"></el-option>
-                <el-option label="功能优化建议" value="功能优化建议"></el-option>
-                <el-option label="计费投诉" value="计费投诉"></el-option>
+              <el-select v-model="internalForm.problemType" placeholder="请选择" style="width:100%">
+                <el-option v-for="c in level1Options" :key="'pt'+c" :label="c" :value="c"></el-option>
               </el-select>
               <div class="field-tip"><span class="field-phase">后续补充</span>研发以后可以修正类型，并记录变更原因。</div>
             </el-form-item>
             <el-form-item label="优先级" required>
               <el-select v-model="internalForm.priority" placeholder="请选择" style="width:100%">
+                <el-option label="P0" value="P0"></el-option>
                 <el-option label="P1" value="P1"></el-option>
                 <el-option label="P2" value="P2"></el-option>
                 <el-option label="P3" value="P3"></el-option>
@@ -729,6 +752,7 @@
         </el-form>
         <div class="portal-actions">
           <button type="button" class="portal-ghost" @click="closeTransferTab">取消</button>
+          <button type="button" class="portal-ghost" @click="saveInternal">保存</button>
           <button type="button" class="portal-submit" @click="submitInternal">转工单</button>
         </div>
       </div>
@@ -879,13 +903,26 @@
             <div class="portal-head">
               <div>
                 <h2>客户反馈</h2>
-                <p>选择问题类型后描述具体情况。账号可以不填。</p>
+                <p v-if="intake.reportType==='客户提交'">请填写单位全称，再描述具体情况。账号可以不填。</p>
+                <p v-else>请填写客户 ID 或线索 ID，两项至少填一项。账号可以不填。</p>
               </div>
             </div>
             <div class="role-switch">
               <button type="button" :class="{active: intake.reportType==='客户提交'}" @click="setIntakeRole('客户提交')">客户</button>
               <button type="button" :class="{active: intake.reportType==='销售提交'}" @click="setIntakeRole('销售提交')">销售</button>
               <button type="button" :class="{active: intake.reportType==='客服提交'}" @click="setIntakeRole('客服提交')">客服</button>
+            </div>
+            <div class="portal-field" v-if="intake.reportType==='客户提交'">
+              <label><i>*</i>单位全称</label>
+              <el-input v-model="intake.orgName" placeholder="请输入单位全称"></el-input>
+            </div>
+            <div class="portal-field" v-else>
+              <label><i>*</i>客户 ID / 线索 ID</label>
+              <p class="portal-note">两项至少填写一项。客户 ID 为 6 位数字，线索 ID 为 2 开头的 6 位数字。</p>
+              <div class="id-stack">
+                <el-input v-model="intake.customerId" maxlength="6" placeholder="客户 ID"></el-input>
+                <el-input v-model="intake.leadId" maxlength="6" placeholder="线索 ID"></el-input>
+              </div>
             </div>
             <div class="portal-field">
               <label>账号</label>
@@ -980,7 +1017,7 @@
                 <el-button @click="resetMyQuery">重置</el-button>
               </el-form-item>
             </el-form>
-            <div class="table-scroll">
+            <div class="table-scroll mine-table-wrap">
               <table class="mine-table">
                 <thead>
                   <tr>
@@ -996,7 +1033,7 @@
                     <td colspan="5"><div class="mine-empty">暂无工单</div></td>
                   </tr>
                   <tr v-for="t in pagedMyTickets" :key="t.id" @click="openMine(t)">
-                    <td><span class="mine-id">{{ t.id }}</span></td>
+                    <td><span class="mine-id">{{ t.cfId || t.id }}</span></td>
                     <td>{{ t.product || '—' }}</td>
                     <td>{{ t.categoryL1 || t.category1 || '—' }}</td>
                     <td><div class="mine-title" :title="t.title || t.detail">{{ t.title || t.detail }}</div></td>
@@ -1004,6 +1041,17 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <div class="mine-cards">
+              <div v-if="!pagedMyTickets.length" class="mine-empty">暂无工单</div>
+              <button type="button" class="mine-card" v-for="t in pagedMyTickets" :key="t.id" @click="openMine(t)">
+                <div class="mine-card-top">
+                  <span class="mine-id">{{ t.cfId || t.id }}</span>
+                  <span class="mine-status" :class="mineStatusClass(t)">{{ userProgress(t) }}</span>
+                </div>
+                <div class="mine-card-title">{{ t.title || t.detail || '—' }}</div>
+                <div class="mine-card-meta">{{ t.product || '—' }} · {{ t.categoryL1 || t.category1 || '—' }}</div>
+              </button>
             </div>
             <div class="toolbar" v-if="myFilteredTickets.length > pageSize">
               <span style="font-size:12px;color:#909399;">共 {{ myFilteredTickets.length }} 条</span>
@@ -1089,6 +1137,12 @@
                 </el-select>
               </div>
               <div class="filter-item">
+                <label>部门</label>
+                <el-select v-model="query.department" clearable placeholder="全部" size="small" style="width:150px">
+                  <el-option v-for="d in ticketDepartments" :key="d" :label="d" :value="d"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
                 <label>线索ID</label>
                 <el-input v-model="query.leadId" clearable placeholder="请输入线索ID" size="small" style="width:160px" />
               </div>
@@ -1099,6 +1153,49 @@
               </div>
             </div>
             <div class="more-filters" v-show="moreFiltersOpen">
+              <div class="filter-item">
+                <label>客户ID</label>
+                <el-input v-model="query.customerId" clearable placeholder="请输入客户ID" size="small" style="width:150px" />
+              </div>
+              <div class="filter-item">
+                <label>工单号</label>
+                <el-input v-model="query.ticketNo" clearable placeholder="CF 或工单号" size="small" style="width:150px" />
+              </div>
+              <div class="filter-item">
+                <label>产品项目</label>
+                <el-select v-model="query.product" clearable placeholder="全部" size="small" style="width:130px">
+                  <el-option v-for="p in productOptions" :key="'fp'+p" :label="p" :value="p"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>风险等级</label>
+                <el-select v-model="query.risk" clearable placeholder="全部" size="small" style="width:120px">
+                  <el-option label="P0 紧急" value="P0"></el-option>
+                  <el-option label="P1 高" value="P1"></el-option>
+                  <el-option label="P2 中" value="P2"></el-option>
+                  <el-option label="P3 低" value="P3"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>内部状态</label>
+                <el-select v-model="query.internalStatus" clearable placeholder="全部" size="small" style="width:120px">
+                  <el-option label="未转出" value="未转出"></el-option>
+                  <el-option label="已回传" value="已回传"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>当前处理人</label>
+                <el-select v-model="query.handler" clearable placeholder="全部" size="small" style="width:140px">
+                  <el-option v-for="p in ticketHandlers" :key="'fh'+p" :label="p" :value="p"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>是否逾期</label>
+                <el-select v-model="query.overdue" clearable placeholder="全部" size="small" style="width:110px">
+                  <el-option label="是" value="是"></el-option>
+                  <el-option label="否" value="否"></el-option>
+                </el-select>
+              </div>
               <div class="filter-item">
                 <label>客户状态</label>
                 <el-select v-model="query.customerStatus" clearable placeholder="全部" size="small" style="width:150px">
@@ -1143,7 +1240,6 @@
             <table class="boss-table">
               <thead>
                 <tr>
-                  <th class="col-account">客户账号</th>
                   <th class="col-lead">线索id</th>
                   <th class="col-custid">客户id</th>
                   <th class="col-product">产品项目</th>
@@ -1154,17 +1250,14 @@
                   <th class="col-stage">工单阶段</th>
                   <th class="col-remain">完结剩余时间</th>
                   <th class="col-handler">当前处理人</th>
+                  <th class="col-internal">内部状态</th>
+                  <th class="col-result">处理结果</th>
                   <th class="col-sat">满意度</th>
                   <th class="col-action">操作</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="t in pagedTickets" :key="t.id">
-                  <td class="account-cell wrap-cell">
-                    <a v-if="t.account" class="account-link" @click="onListOp({action:'detail', id:t.id})">{{ t.account }}</a>
-                    <span v-else class="muted-time">—</span>
-                    <div class="sub" :title="accountSub(t)">{{ accountSub(t) }}</div>
-                  </td>
                   <td class="id-cell" :title="'线索id：' + (t.leadId || '—')">{{ t.leadId || '—' }}</td>
                   <td class="id-cell" :title="'客户id：' + (t.customerId || '—')">{{ t.customerId || '—' }}</td>
                   <td>{{ t.product || '—' }}</td>
@@ -1178,6 +1271,8 @@
                     <span v-else class="muted-time">{{ closeRemainText(t) }}</span>
                   </td>
                   <td>{{ t.handler || '—' }}</td>
+                  <td><span class="tag" :class="returnState(t).cls">{{ returnState(t).label }}</span></td>
+                  <td class="wrap-cell"><div class="detail-cell" :title="listResultText(t)">{{ listResultText(t) }}</div></td>
                   <td>
                     <span v-if="satLevel(t)" class="tag" :class="satTagClass(satLevel(t))" :title="satTip(t)">{{ satLabel(satLevel(t)) }}</span>
                     <span v-else class="tag tag-default">—</span>
@@ -1276,38 +1371,39 @@
       <div class="detail-grid">
         <div>
           <div class="block">
+            <div class="block-hd">客户基础信息</div>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">客户账号</div><div class="info-value">{{ current.account || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">线索id</div><div class="info-value">{{ current.leadId || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">客户id</div><div class="info-value">{{ current.customerId || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">客户主体</div><div class="info-value">{{ current.customer || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">客户负责人</div><div class="info-value">{{ current.customerOwner || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">部门</div><div class="info-value">{{ current.department || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">提交类型</div><div class="info-value">{{ current.reportType || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">提交人</div><div class="info-value">{{ current.submitterName || current.submitter || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">联系方式</div><div class="info-value">{{ current.contact || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">客户状态</div><div class="info-value">{{ current.customerStatus || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">账号有效期</div><div class="info-value">{{ current.account ? (current.accountValid || '—') : '—' }}</div></div>
+              <div class="info-item"><div class="info-label">入库时间</div><div class="info-value">{{ current.reportedAt || current.createdAt || '—' }}</div></div>
+            </div>
+          </div>
+
+          <div class="block">
             <div class="block-hd">工单信息</div>
             <div class="info-grid">
-              <div class="info-item"><div class="info-label">工单编号</div><div class="info-value">{{ current.id }}</div></div>
-              <div class="info-item"><div class="info-label">外部关联号</div><div class="info-value">{{ current.extId || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">反馈渠道</div><div class="info-value">{{ current.channel }}</div></div>
+              <div class="info-item"><div class="info-label">工单编号</div><div class="info-value">{{ current.cfId || current.id }}</div></div>
               <div class="info-item"><div class="info-label">产品项目</div><div class="info-value">{{ current.product || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">客户主体</div><div class="info-value">{{ current.customer }}</div></div>
-              <div class="info-item"><div class="info-label">客户账号</div><div class="info-value">{{ current.account || '—' }}</div></div>
-              <div class="info-item" v-if="current.internalId"><div class="info-label">内部工单ID</div><div class="info-value">{{ current.internalId }} · {{ current.internalStatus || '新增' }}</div></div>
-              <div class="info-item"><div class="info-label">客户id</div><div class="info-value">{{ current.customerId || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">账号有效期</div><div class="info-value">{{ current.accountValid || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">线索id</div><div class="info-value">{{ current.leadId || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">客户状态</div><div class="info-value">{{ current.customerStatus || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">提报类型</div><div class="info-value">{{ current.reportType || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">提报时间</div><div class="info-value">{{ current.reportedAt || current.createdAt || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">联系方式</div><div class="info-value">{{ current.contact || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">部门</div><div class="info-value">{{ current.department || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">线索负责人</div><div class="info-value">{{ current.leadOwner || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">客户负责人</div><div class="info-value">{{ current.customerOwner || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">工单阶段</div><div class="info-value">{{ current.stage || current.status }}</div></div>
-              <div class="info-item"><div class="info-label">完结时限</div><div class="info-value">{{ remainText(current) }}</div></div>
-              <div class="info-item"><div class="info-label">完结权限</div><div class="info-value">客服确认。对外只发「工单已完结」</div></div>
-              <div class="info-item" v-if="current.externalReply"><div class="info-label">对外话术</div><div class="info-value">{{ current.externalReply }}</div></div>
-              <div class="info-item span3" v-if="current.internalNote"><div class="info-label">内部完结</div><div class="info-value">{{ current.internalNote }}</div></div>
+              <div class="info-item"><div class="info-label">反馈渠道</div><div class="info-value"><span class="tag" :class="channelTagClass(current.channel)">{{ current.channel || '—' }}</span></div></div>
               <div class="info-item"><div class="info-label">问题分类</div><div class="info-value">{{ current.categoryL1 || current.category1 || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">优先级</div><div class="info-value">{{ current.priority }}</div></div>
-              <div class="info-item"><div class="info-label">反馈人</div><div class="info-value">{{ current.submitter || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">风险等级</div><div class="info-value"><span class="tag" :class="riskView(current.risk).cls">{{ riskView(current.risk).label }}</span></div></div>
+              <div class="info-item"><div class="info-label">工单阶段</div><div class="info-value"><span class="tag" :class="stageView(current.stage || current.status).cls">{{ stageView(current.stage || current.status).label }}</span></div></div>
+              <div class="info-item"><div class="info-label">内部状态</div><div class="info-value"><span class="tag" :class="returnState(current).cls">{{ returnState(current).label }}</span></div></div>
+              <div class="info-item span3"><div class="info-label">问题详情</div><div class="info-value detail-rich" v-if="current.detailHtml" v-html="current.detailHtml"></div><div class="info-value" v-else>{{ current.detail || '—' }}</div></div>
               <div class="info-item"><div class="info-label">当前处理人</div><div class="info-value">{{ current.handler || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">产生时间</div><div class="info-value">{{ current.occurredAt }}</div></div>
-              <div class="info-item"><div class="info-label">建单时间</div><div class="info-value">{{ current.createdAt }}</div></div>
-              <div class="info-item"><div class="info-label">状态时间</div><div class="info-value">{{ current.statusAt }}</div></div>
-              <div class="info-item span3"><div class="info-label">问题详情</div><div class="info-value detail-rich" v-if="current.detailHtml" v-html="current.detailHtml"></div><div class="info-value" v-else>{{ current.detail }}</div></div>
+              <div class="info-item"><div class="info-label">技能组</div><div class="info-value">{{ current.skillGroup || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">完结剩余</div><div class="info-value">{{ closeRemainText(current) }}</div></div>
+              <div class="info-item span3"><div class="info-label">处理结果</div><div class="info-value">{{ listResultText(current) }}</div></div>
+              <div class="info-item"><div class="info-label">满意度</div><div class="info-value"><span class="tag" :class="satTagClass(satLevel(current))">{{ satLabel(satLevel(current)) }}</span></div></div>
               <div class="info-item span3">
                 <div class="info-label">附件</div>
                 <div class="info-value" v-if="!(current.files && current.files.length)">—</div>
@@ -1319,7 +1415,68 @@
                   </div>
                 </div>
               </div>
-              <div class="info-item span3"><div class="info-label">解决方案</div><div class="info-value">{{ current.solution || '（处理中尚未填写）' }}</div></div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-hd">SLA 与追责</div>
+            <div class="info-grid">
+              <div class="info-item span2"><div class="info-label">首响 SLA</div><div class="info-value">2 小时（实际：{{ current.firstResponseAt || '—' }}）</div></div>
+              <div class="info-item"><div class="info-label">完结 SLA</div><div class="info-value">72 小时</div></div>
+              <div class="info-item"><div class="info-label">是否逾期</div><div class="info-value"><span v-if="slaOverdueText(current) === '是 · 已逾期'" class="overdue">是 · 已逾期</span><span v-else>{{ slaOverdueText(current) }}</span></div></div>
+              <div class="info-item"><div class="info-label">催办次数</div><div class="info-value">{{ urgeRecords(current).length }}</div></div>
+              <div class="info-item"><div class="info-label">责任人</div><div class="info-value">{{ current.handler || '—' }}</div></div>
+              <div class="info-item span2"><div class="info-label">最近催办</div><div class="info-value">{{ lastUrgeTime(current) }}</div></div>
+            </div>
+            <div class="urge-list">
+              <div v-if="!urgeRecords(current).length" class="urge-item" style="color:#909399;">暂无催办记录</div>
+              <div class="urge-item" v-for="(u, i) in urgeRecords(current)" :key="'urge'+i">
+                <div class="t">{{ u.time }} · {{ u.by }}</div>
+                <div>{{ u.reason }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-hd">首次解决 · FCR</div>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">是否首次解决</div><div class="info-value">{{ firstResolvedText(current) }}</div></div>
+              <div class="info-item"><div class="info-label">未首解原因</div><div class="info-value">{{ fcrReasonText(current) }}</div></div>
+              <div class="info-item"><div class="info-label">沉淀知识库</div><div class="info-value">{{ current.kbSaved ? '是' : '否' }}</div></div>
+              <div class="info-item"><div class="info-label">反馈业务补知识</div><div class="info-value">{{ current.kbFeedback ? '是' : '否' }}</div></div>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-hd">不满意回访</div>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">回访状态</div><div class="info-value"><span v-if="callbackView(current).label === '—'">—</span><span v-else class="tag" :class="callbackView(current).cls">{{ callbackView(current).label }}</span></div></div>
+              <div class="info-item"><div class="info-label">缺口原因</div><div class="info-value">{{ current.callbackGap || '—' }}</div></div>
+              <div class="info-item span3"><div class="info-label">回访备注</div><div class="info-value">{{ current.callbackNote || '—' }}</div></div>
+              <template v-if="current.evalStatus==='已评价'">
+                <div class="info-item"><div class="info-label">评分</div><div class="info-value">{{ current.score }} 分</div></div>
+                <div class="info-item" v-if="current.staffScore"><div class="info-label">服务人员</div><div class="info-value">{{ current.staffScore }} 分</div></div>
+                <div class="info-item" v-if="current.systemScore"><div class="info-label">工单系统</div><div class="info-value">{{ current.systemScore }} 分</div></div>
+                <div class="info-item"><div class="info-label">评价时间</div><div class="info-value">{{ current.evalAt || '—' }}</div></div>
+                <div class="info-item span3"><div class="info-label">评价原文</div><div class="info-value">{{ current.evalText || mineSuggestion(current) || '—' }}</div></div>
+              </template>
+            </div>
+          </div>
+
+          <div class="block">
+            <div class="block-hd">内部回传</div>
+            <div class="info-grid">
+              <div class="info-item"><div class="info-label">内部状态</div><div class="info-value"><span class="tag" :class="returnState(current).cls">{{ returnState(current).label }}</span></div></div>
+              <div class="info-item span2"><div class="info-label">回传结果</div><div class="info-value">{{ listResultText(current) }}</div></div>
+              <div class="info-item"><div class="info-label">回传时间</div><div class="info-value">{{ syncTimeText(current) }}</div></div>
+              <div class="info-item span2" v-if="current.internalId"><div class="info-label">内部工单ID</div><div class="info-value">{{ current.internalId }} · {{ current.internalStatus || '新增' }}</div></div>
+            </div>
+            <div class="ai-preview-box">
+              <div class="ai-label">由 AI 根据处理记录生成，仅供参考</div>
+              <div>{{ aiCustomerSummary(current) }}</div>
+            </div>
+            <div style="margin-top:12px;">
+              <el-button size="small" type="primary" plain @click="dlg.track=true">预览客户进度</el-button>
             </div>
           </div>
 
@@ -1331,26 +1488,6 @@
                 <div class="tl-text">{{ log.text }}</div>
                 <div class="tl-actor">{{ log.actor }}</div>
               </div>
-            </div>
-          </div>
-
-          <div class="block">
-            <div class="block-hd">满意度评价回传</div>
-            <div class="info-grid" v-if="current.evalStatus==='已评价'">
-              <div class="info-item"><div class="info-label">评价状态</div><div class="info-value"><span class="pill pill-green">已评价</span></div></div>
-              <div class="info-item"><div class="info-label">评分</div><div class="info-value">{{ current.score }} 分</div></div>
-              <div class="info-item" v-if="current.staffScore"><div class="info-label">服务人员</div><div class="info-value">{{ current.staffScore }} 分</div></div>
-              <div class="info-item" v-if="current.systemScore"><div class="info-label">工单系统</div><div class="info-value">{{ current.systemScore }} 分</div></div>
-              <div class="info-item"><div class="info-label">评价渠道</div><div class="info-value">{{ current.channel }} · {{ current.evalMethod }}</div></div>
-              <div class="info-item"><div class="info-label">评价时间</div><div class="info-value">{{ current.evalAt }}</div></div>
-              <div class="info-item"><div class="info-label">关联客服</div><div class="info-value">{{ current.handler }}</div></div>
-              <div class="info-item"><div class="info-label">评价标签</div><div class="info-value">{{ (current.evalTags||[]).join('、') || '—' }}</div></div>
-              <div class="info-item span3"><div class="info-label">评价原文</div><div class="info-value">{{ current.evalText || '—' }}</div></div>
-            </div>
-            <div v-else class="info-grid">
-              <div class="info-item"><div class="info-label">评价状态</div><div class="info-value"><span class="pill" :class="evalPill(current.evalStatus)">{{ current.evalStatus }}</span></div></div>
-              <div class="info-item span2"><div class="info-label">触发规则</div><div class="info-value">{{ current.evalTrigger }} · {{ current.evalMethod }}</div></div>
-              <div class="info-item span3"><div class="info-label">说明</div><div class="info-value">工单按渠道规则完结后原路推送；结果自动回写并关联客服与工单编号。</div></div>
             </div>
           </div>
         </div>
@@ -1387,8 +1524,8 @@
       </div>
     </div>
     <div class="ai-brief">
-      <div><b>客户问题：</b>{{ aiBrief(mineCurrent).problem }}</div>
-      <div><b>处理结果：</b>{{ aiBrief(mineCurrent).done }}</div>
+      <div><b>工单ID：</b>{{ mineCurrent.cfId || mineCurrent.id }}</div>
+      <div><b>处理结果：</b>{{ customerResultText(mineCurrent) }}</div>
       <div><b>预计完成时间：</b>{{ aiBrief(mineCurrent).eta }}</div>
     </div>
     <div class="info-grid mine-detail">
@@ -1404,7 +1541,6 @@
         </div>
         <div class="info-value" v-else>待评价</div>
       </div>
-      <div class="info-item span3"><div class="info-label">问题详情</div><div class="info-value detail-rich" v-if="mineCurrent.detailHtml" v-html="mineCurrent.detailHtml"></div><div class="info-value" v-else>{{ mineCurrent.detail || mineCurrent.title }}</div></div>
       <div class="info-item span3" v-if="mineCurrent.files && mineCurrent.files.length">
         <div class="info-label">附件</div>
         <div class="info-value">
@@ -1760,8 +1896,8 @@
       </div>
     </div>
     <div class="ai-brief">
-      <div><b>客户问题：</b>{{ aiBrief(current).problem }}</div>
-      <div><b>处理结果：</b>{{ aiBrief(current).done }}</div>
+      <div><b>工单ID：</b>{{ current.cfId || current.id }}</div>
+      <div><b>处理结果：</b>{{ customerResultText(current) }}</div>
       <div><b>预计完成时间：</b>{{ aiBrief(current).eta }}</div>
     </div>
     <span slot="footer">
@@ -1793,17 +1929,9 @@
     <div class="ok-mark"><i class="el-icon-check"></i></div>
     <h2 class="ok-title">提交成功</h2>
     <p class="ok-sub">我们已收到您的反馈，将尽快处理</p>
-    <div class="ok-no">{{ submitSuccessTicket && submitSuccessTicket.id }}</div>
-    <p class="ok-no-tip">反馈单号 · 请妥善保存</p>
-    <div class="ok-tip">{{ submitSuccessTicket && submitSuccessTicket.account ? '已按账号记录本次反馈，无需填写线索 ID 或客户 ID。' : '本次未填写账号。无需填写线索 ID 或客户 ID。' }}</div>
-    <div class="ok-status">
-      <span>当前状态</span>
-      <span class="ok-pill"><i></i>已受理</span>
-    </div>
-    <p class="ok-note">预计 2 小时内响应。处理进度可在「我的工单」查看。</p>
+    <div class="ok-no">{{ submitSuccessTicket && (submitSuccessTicket.cfId || submitSuccessTicket.id) }}</div>
     <button type="button" class="ok-primary" @click="viewSubmitProgress">查看处理进度</button>
     <div class="ok-row">
-      <button type="button" class="ok-ghost" @click="backSubmitHome">返回首页</button>
       <button type="button" class="ok-ghost" @click="submitAnother">再提交一条</button>
     </div>
   </el-dialog>
@@ -2004,11 +2132,11 @@ TICKETS.forEach(t => {
   if (!t.customerUser) t.customerUser = t.submitter;
   const profile = {
     'TK-20260924-00018': { leadId: '203821', customerStatus: '正式客户', customerOwner: '王磊', reportType: '客户提交', submitterName: '林煦航', stage: '待处理（2小时）', deadline: '2026-10-18 18:00:00', department: '江苏区域', contact: '13812340018', product: '舆情通', categoryL1: '产品故障', category2: '', accountValid: '是', risk: 'P0-紧急（重大舆情/系统宕机）', firstResponseAt: '', firstResolved: 'N', result: '' },
-    'TK-20260924-00012': { leadId: '240208', customerStatus: '初次接触', customerOwner: '周宁', reportType: '销售提交', submitterName: '于晨晨', stage: '处理中（72小时）', deadline: '2026-10-14 08:00:00', department: '山东区域', contact: '18706129303', product: '校对通', categoryL1: '数据问题', category2: '采集', accountValid: '否', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-24 09:12:00', firstResolved: 'N', result: '补采进行中', staffScore: 3, systemScore: 4, surveySuggestion: '', score: 3.5, evalStatus: '已评价' },
-    'TK-20260923-00102': { leadId: '251016', customerStatus: '上门拜访', customerOwner: '陈静', reportType: '客服提交', submitterName: '赵娜', stage: '已完结', deadline: '2026-09-26 16:21:10', department: '上海大客户部', contact: 'wx_zhao', product: '模力通', categoryL1: '产品/功能咨询', category2: '', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 10:05:00', firstResolved: 'Y', result: '已为子账号开通报表权限', staffScore: 5, systemScore: 4, surveySuggestion: '', score: 4.5, evalStatus: '已评价', closedAt: '2026-09-24 11:02:18' },
+    'TK-20260924-00012': { leadId: '240208', customerStatus: '初次接触', customerOwner: '周宁', reportType: '销售提交', submitterName: '于晨晨', stage: '处理中（72小时）', deadline: '2026-10-14 08:00:00', department: '山东区域', contact: '18706129303', product: '校对通', categoryL1: '数据问题', category2: '采集', accountValid: '否', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-24 09:12:00', firstResolved: 'N', result: '补采进行中', staffScore: 3, systemScore: 4, surveySuggestion: '', score: 3.5, evalStatus: '已评价', skillGroup: '客服一组', fcrReason: '需内部协作' },
+    'TK-20260923-00102': { leadId: '251016', customerStatus: '上门拜访', customerOwner: '陈静', reportType: '客服提交', submitterName: '赵娜', stage: '已完结', deadline: '2026-09-26 16:21:10', department: '上海大客户部', contact: 'wx_zhao', product: '模力通', categoryL1: '产品/功能咨询', category2: '', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 10:05:00', firstResolved: 'Y', result: '已为子账号开通报表权限', staffScore: 5, systemScore: 4, surveySuggestion: '', score: 4.5, evalStatus: '已评价', closedAt: '2026-09-24 11:02:18', skillGroup: '客服一组', kbSaved: true },
     'TK-20260922-00077': { leadId: '', customerStatus: '开通试用', customerOwner: '', reportType: '客户提交', submitterName: '林煦航', stage: '退回/驳回', deadline: '2026-09-25 20:21:02', department: '江苏区域', contact: '', product: '舆情通', categoryL1: '账号问题', category2: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-22 20:40:00', firstResolved: 'N', result: '描述不清，已退回提交人', staffScore: 5, systemScore: 5, surveySuggestion: '希望补充开通步骤', score: 5, evalStatus: '已评价' },
     'TK-20260923-00055': { leadId: '210933', customerStatus: '产品培训', customerOwner: '李倩', reportType: '销售提交', submitterName: '周宁', stage: '待确认完结', deadline: '2026-10-16 20:00:00', department: '北京区域', contact: '群内@产品运营', product: '舆情通', categoryL1: '联系商务', category2: '', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 11:20:00', firstResolved: 'N', result: '已评估纳入下迭代', evalStatus: '已推送' },
-    'TK-20260921-00031': { leadId: '222712', customerStatus: '正式客户', customerOwner: '张帅', reportType: '客服提交', submitterName: '客服主管', stage: '超时完结', deadline: '2026-09-24 14:12:20', department: '江苏区域', contact: 'zhangshuai@midu.com', product: '校对通', categoryL1: '投诉', category2: '', accountValid: '是', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-21 14:30:00', firstResolved: 'N', result: '发票已审核通过', staffScore: 2, systemScore: 4, surveySuggestion: '', score: 3, evalStatus: '已评价', closedAt: '2026-09-22 16:00:00' },
+    'TK-20260921-00031': { leadId: '222712', customerStatus: '正式客户', customerOwner: '张帅', reportType: '客服提交', submitterName: '客服主管', stage: '超时完结', deadline: '2026-09-24 14:12:20', department: '江苏区域', contact: 'zhangshuai@midu.com', product: '校对通', categoryL1: '投诉', category2: '', accountValid: '是', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-21 14:30:00', firstResolved: 'N', result: '发票已审核通过', staffScore: 2, systemScore: 4, surveySuggestion: '', score: 3, evalStatus: '已评价', closedAt: '2026-09-22 16:00:00', skillGroup: '财务支持', fcrReason: '需二次联系', kbSaved: true, callbackStatus: 'done', callbackGap: '方案无效', callbackNote: '客户对开票时效不满，已说明流程并赠送信誉补偿说明' },
     'TK-20260924-00003': { leadId: '271504', customerStatus: '协议商谈', customerOwner: '孙启', reportType: '客户提交', submitterName: '孙启', stage: '挂起', deadline: '2026-10-17 12:00:00', department: '浙江区域', contact: '企微-技术对接人', product: '模力通', categoryL1: '其他', category2: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-24 11:10:00', firstResolved: 'N', result: '等研发反馈' }
   }[t.id];
   if (profile) {
@@ -2027,8 +2155,9 @@ const CUSTOMER_BOOK = {
   '227012': { name: '南京某某网络', status: '正式客户', account: 'jdt_227012' },
   '715004': { name: '合作伙伴-星云', status: '协议商谈', account: 'mlt_715004' }
 };
-TICKETS.forEach(function (t) {
+TICKETS.forEach(function (t, i) {
   if (!t.account && CUSTOMER_BOOK[t.customerId]) t.account = CUSTOMER_BOOK[t.customerId].account;
+  if (!t.cfId) t.cfId = 'CF' + String(i + 1).padStart(5, '0');
 });
 
 new Vue({
@@ -2041,7 +2170,7 @@ new Vue({
       submitSuccessVisible: false,
       submitSuccessTicket: null,
       internalForm: {
-        externalId: '', customerSubmitAt: '', customerName: '', tenantId: '', originalText: '',
+        externalId: '', customerSubmitAt: '', customerName: '', customerId: '', account: '', originalText: '',
         attachments: [], productLine: '', ticketKind: '', title: '', problemType: '', priority: '', note: ''
       },
       page: 'flow',
@@ -2049,7 +2178,7 @@ new Vue({
       currentUser: { name: '客服主管', account: '演示账号' },
       detailVisible: false,
       current: {},
-      query: { channel: '', stage: '', categoryL1: '', customerStatus: '', firstResolved: '', satLevel: '', leadId: '' },
+      query: { channel: '', stage: '', categoryL1: '', department: '', leadId: '', customerId: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' },
       reissueFrom: null,
       reissue: { product: '', categoryL1: '', category2: '', detail: '' },
       moreFiltersOpen: false,
@@ -2059,7 +2188,7 @@ new Vue({
       myQuery: { status: '', product: '', dates: null, keyword: '' },
       myApplied: { status: '', product: '', dates: null, keyword: '' },
       userProgressOptions: ['处理中', '待评价', '已完结', '已评价'],
-      customerSteps: ['已受理', '排查中', '研发处理中', '待您确认', '已完成'],
+      customerSteps: ['已受理', '排查中', '处理中', '待确认', '已完成'],
       mineCreateVisible: false,
       survey: { ticketId: '', staffScore: 0, systemScore: 0, suggestion: '' },
       mineCurrent: {},
@@ -2179,16 +2308,39 @@ new Vue({
       const c = this.categoryTree.find(x => x.name === this.query.category1);
       return c ? c.children : [];
     },
+    ticketDepartments() {
+      const seen = {};
+      this.tickets.forEach(t => { if (t.department) seen[t.department] = true; });
+      return Object.keys(seen);
+    },
+    ticketHandlers() {
+      const seen = {};
+      this.tickets.forEach(t => { if (t.handler) seen[t.handler] = true; });
+      return Object.keys(seen);
+    },
     filteredTickets() {
       const q = this.query;
       return this.tickets.filter(t => {
         if (q.channel && t.channel !== q.channel) return false;
         if (q.stage && (t.stage || t.status) !== q.stage) return false;
         if (q.categoryL1 && (t.categoryL1 || t.category1) !== q.categoryL1) return false;
+        if (q.department && t.department !== q.department) return false;
+        if (q.leadId && !(t.leadId || '').includes(String(q.leadId).trim())) return false;
+        if (q.customerId && !(t.customerId || '').includes(String(q.customerId).trim())) return false;
+        if (q.ticketNo) {
+          const key = String(q.ticketNo).trim().toLowerCase();
+          const hit = [t.cfId, t.id].join(' ').toLowerCase();
+          if (hit.indexOf(key) < 0) return false;
+        }
+        if (q.product && t.product !== q.product) return false;
+        if (q.risk && String(t.risk || '').indexOf(q.risk) !== 0) return false;
+        if (q.internalStatus && this.returnState(t).label !== q.internalStatus) return false;
+        if (q.handler && t.handler !== q.handler) return false;
+        if (q.overdue === '是' && this.slaOverdueText(t) !== '是 · 已逾期') return false;
+        if (q.overdue === '否' && this.slaOverdueText(t) === '是 · 已逾期') return false;
         if (q.customerStatus && t.customerStatus !== q.customerStatus) return false;
         if (q.firstResolved && this.firstResolvedText(t) !== q.firstResolved) return false;
         if (q.satLevel && this.satLevel(t) !== q.satLevel) return false;
-        if (q.leadId && !(t.leadId || '').includes(q.leadId)) return false;
         return true;
       });
     },
@@ -2215,7 +2367,7 @@ new Vue({
         if (end && day > end) return false;
         const keyword = (q.keyword || '').trim().toLowerCase();
         if (keyword) {
-          const text = [t.id, t.title, t.detail].join(' ').toLowerCase();
+          const text = [t.cfId, t.id, t.title, t.detail].join(' ').toLowerCase();
           if (text.indexOf(keyword) < 0) return false;
         }
         return true;
@@ -2361,6 +2513,53 @@ new Vue({
     isClosedTicket(t) {
       return ['已完结', '已评价', '超时完结'].indexOf(t.stage || t.status) >= 0;
     },
+    returnState(t) {
+      if (t && this.isClosedTicket(t)) return { label: '已回传', cls: 'tag-green' };
+      return { label: '未转出', cls: 'tag-default' };
+    },
+    listResultText(t) {
+      if (!t || this.returnState(t).label !== '已回传') return '—';
+      const text = String(t.result || '').trim();
+      return text || '—';
+    },
+    slaOverdueText(t) {
+      if (!t) return '—';
+      if (t.stage === '超时完结' || this.isRemainOverdue(t)) return '是 · 已逾期';
+      return '否';
+    },
+    urgeRecords(t) {
+      const extra = (t && t.urgeHistory) || [];
+      const logs = ((t && t.logs) || []).filter(item => /督办|催办|升级/.test(item.text || '')).map(item => ({
+        time: item.time, by: item.actor || '—', reason: item.text
+      }));
+      return extra.concat(logs);
+    },
+    lastUrgeTime(t) {
+      const rows = this.urgeRecords(t);
+      return rows.length ? rows[rows.length - 1].time : '—';
+    },
+    fcrReasonText(t) {
+      if (!t || this.firstResolvedText(t) !== 'N') return '—';
+      return t.fcrReason || '—';
+    },
+    callbackView(t) {
+      if (!t || this.satLevel(t) !== 'red') return { label: '—', cls: '' };
+      if (t.callbackStatus === 'done' || t.callbackNote) return { label: '已回访', cls: 'tag-green' };
+      return { label: '待回访', cls: 'tag-orange' };
+    },
+    syncTimeText(t) {
+      if (!t || this.returnState(t).label !== '已回传') return '—';
+      return t.syncTime || t.closedAt || t.statusAt || '—';
+    },
+    aiCustomerSummary(t) {
+      if (!t) return '暂无摘要';
+      if (t.aiSummary) return t.aiSummary;
+      if (this.returnState(t).label === '已回传') {
+        const result = String(t.result || '').trim();
+        return result ? '您反馈的问题已处理完成。' + result + '。' : '工单已处理完成。';
+      }
+      return '工单处理中，完成后会把结果同步给您。';
+    },
     isFirstResolved(t) {
       if (!this.isClosedTicket(t) || (t.stage || t.status) === '超时完结' || t.status === '已升级' || t.escalateReason) return false;
       const text = (t.logs || []).map(item => item.text).join('');
@@ -2483,6 +2682,16 @@ new Vue({
       if (stage.indexOf('处理中') >= 0) return 1;
       return 0;
     },
+    customerResultText(t) {
+      if (!t || !t.id) return '';
+      if (this.customerStepIndex(t) < 4) return '工单处理中';
+      const product = t.product || '';
+      const category = t.categoryL1 || t.category1 || '';
+      const topic = [product, category].filter(Boolean).join('');
+      const raw = String(t.solution || t.result || '').replace(/\s+/g, ' ').trim().replace(/[。！？.!?]+$/, '');
+      if (raw) return (topic ? '您反馈的' + topic + '已处理完成，' : '') + raw + '。';
+      return topic ? '您反馈的' + topic + '已处理完成。' : '工单已处理完成。';
+    },
     aiBrief(t) {
       const empty = { problem: '', done: '', next: '', eta: '' };
       if (!t || !t.id) return empty;
@@ -2516,7 +2725,7 @@ new Vue({
     },
     doQuery() { this.listPage = 1; this.$message.success('已按条件筛选（原型本地过滤）'); },
     resetQuery() {
-      this.query = { channel: '', stage: '', categoryL1: '', customerStatus: '', firstResolved: '', satLevel: '', leadId: '' };
+      this.query = { channel: '', stage: '', categoryL1: '', department: '', leadId: '', customerId: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' };
       this.listPage = 1;
     },
     nowText() {
@@ -2893,9 +3102,14 @@ new Vue({
     },
     setIntakeRole(role) {
       this.intake.reportType = role;
-      this.intake.leadId = role === '客服提交' ? this.intake.leadId : '';
-      if (role === '客户提交') this.intake.channel = '蜜度官网';
-      else if (this.intake.channel === '蜜度官网') this.intake.channel = '';
+      if (role === '客户提交') {
+        this.intake.channel = '蜜度官网';
+        this.intake.customerId = '';
+        this.intake.leadId = '';
+      } else {
+        this.intake.orgName = '';
+        if (this.intake.channel === '蜜度官网') this.intake.channel = '';
+      }
     },
     lookupCustomer() {
       const id = String(this.intake.customerId || '').replace(/\D/g, '').slice(0, 6);
@@ -2919,19 +3133,41 @@ new Vue({
       if (!isCustomer) fields.push({ label: '反馈渠道', value: form.channel });
       if (this.contactRequired) fields.push({ label: '联系方式', value: form.contact });
       if (!this.requireFields(fields)) return;
+      const customerId = String(form.customerId || '').trim();
+      const leadId = String(form.leadId || '').trim();
+      const orgName = String(form.orgName || '').trim();
+      if (isCustomer) {
+        if (!orgName) {
+          this.$message.warning('请填写单位全称');
+          return;
+        }
+      } else {
+        if (!customerId && !leadId) {
+          this.$message.warning('请填写客户 ID 或线索 ID');
+          return;
+        }
+        if (customerId && !/^\d{6}$/.test(customerId)) {
+          this.$message.warning('客户 ID 为 6 位数字');
+          return;
+        }
+        if (leadId && !/^2\d{5}$/.test(leadId)) {
+          this.$message.warning('线索 ID 为 2 开头的 6 位数字');
+          return;
+        }
+      }
       if (!(form.detail || '').trim() && !this.detailHasImage) {
         this.$message.warning('请填写问题详情');
         return;
       }
-      const customerId = '';
-      const leadId = '';
-      const customerName = '';
+      const found = !isCustomer && customerId ? CUSTOMER_BOOK[customerId] : null;
+      const customerName = isCustomer ? orgName : (found ? found.name : '');
       const channel = isCustomer ? '蜜度官网' : form.channel;
       const plain = (form.detail || '').replace(/\s+/g, ' ').trim();
       const time = this.nowText();
-      const seq = String(this.tickets.length + 1).padStart(5, '0');
+      const cfId = this.nextCfId();
       const ticket = {
-        id: 'TK-20261014-' + seq,
+        id: cfId,
+        cfId: cfId,
         extId: '',
         channel: channel,
         ops: '智齿',
@@ -2943,8 +3179,8 @@ new Vue({
         detailHtml: form.detailHtml || '',
         product: form.product,
         customer: customerName,
-        customerId: customerId,
-        leadId: leadId,
+        customerId: isCustomer ? '' : customerId,
+        leadId: isCustomer ? '' : leadId,
         customerStatus: isCustomer ? '' : form.customerStatus,
         account: form.account || '',
         accountValid: '',
@@ -2986,7 +3222,7 @@ new Vue({
         files: (form.files || []).slice(),
         logs: [{
           time: time,
-          text: form.reportType + '已在智齿界面提报，同步到 BOSS。账号：' + (form.account || '未填写') + '。原路回复：' + this.replyPath(channel)
+          text: form.reportType + '已在智齿界面提报，同步到 BOSS。' + (isCustomer ? '单位全称：' + orgName : '客户 ID：' + (customerId || '未填写') + '，线索 ID：' + (leadId || '未填写')) + '。账号：' + (form.account || '未填写') + '。原路回复：' + this.replyPath(channel)
             + ((form.files && form.files.length) ? ' 附件 ' + form.files.length + ' 个。' : ''),
           actor: '系统',
           level: ''
@@ -3360,10 +3596,12 @@ new Vue({
       const customerName = (t.customer && t.customer !== '—') ? t.customer : ((book && book.name) || '');
       const productLine = this.productOptions.indexOf(t.product) >= 0 ? t.product : '';
       const payload = {
-        externalId: t.id,
+        externalId: t.cfId || t.id,
+        sourceId: t.id,
         customerSubmitAt: t.reportedAt || t.createdAt || t.occurredAt || '',
         customerName: customerName,
-        tenantId: t.account || '',
+        customerId: t.customerId || '',
+        account: t.account || '',
         originalText: String(t.detail || t.title || '').trim(),
         attachments: (t.files || []).filter(file => file && file.url).map(file => ({ name: file.name || file.url, url: file.url })),
         productLine: productLine
@@ -3380,38 +3618,60 @@ new Vue({
         return;
       }
       const data = JSON.parse(raw);
+      let draft = {};
+      try { draft = JSON.parse(localStorage.getItem('boss-transfer-draft-' + id) || '{}'); } catch (error) { draft = {}; }
       this.internalForm = {
         externalId: data.externalId || '',
+        sourceId: data.sourceId || id || '',
         customerSubmitAt: data.customerSubmitAt || '',
         customerName: data.customerName || '',
-        tenantId: data.tenantId || '',
+        customerId: draft.customerId || data.customerId || '',
+        account: draft.account != null ? draft.account : (data.account || ''),
         originalText: data.originalText || '',
         attachments: data.attachments || [],
-        productLine: data.productLine || '',
-        ticketKind: '',
-        title: '',
-        problemType: '',
-        priority: '',
-        note: ''
+        productLine: draft.productLine || data.productLine || '',
+        ticketKind: draft.ticketKind || '',
+        title: draft.title || '',
+        problemType: draft.problemType || '',
+        priority: draft.priority || '',
+        note: draft.note || ''
       };
     },
-    onInternalProblemType(value) {
-      if (value === '功能优化建议') this.internalForm.ticketKind = '需求';
-      else if (value === '产品Bug' || value === '配置操作问题' || value === '计费投诉') this.internalForm.ticketKind = '问题';
-      else if (value === '业务咨询') this.internalForm.ticketKind = '';
+    nextCfId() {
+      let max = 0;
+      this.tickets.forEach(t => {
+        const matched = String(t.cfId || '').match(/^CF(\d+)$/);
+        if (matched) max = Math.max(max, Number(matched[1]));
+      });
+      return 'CF' + String(max + 1).padStart(5, '0');
+    },
+    saveInternal() {
+      const id = new URLSearchParams(location.search).get('transfer');
+      const form = this.internalForm;
+      localStorage.setItem('boss-transfer-draft-' + id, JSON.stringify({
+        customerId: form.customerId,
+        account: form.account,
+        productLine: form.productLine,
+        ticketKind: form.ticketKind,
+        title: form.title,
+        problemType: form.problemType,
+        priority: form.priority,
+        note: form.note
+      }));
+      this.$message.success('已保存');
     },
     submitInternal() {
       const form = this.internalForm;
-      if (form.problemType === '业务咨询') {
-        this.$message.warning('业务咨询在外部系统闭环，不推送内部系统');
-        return;
-      }
       if (!form.customerName) {
         this.$message.warning('客户名称缺失，无法转入内部系统');
         return;
       }
       if (!form.customerSubmitAt || !form.originalText || !form.externalId) {
         this.$message.warning('外部反馈信息不完整，无法转入');
+        return;
+      }
+      if (!/^\d{6}$/.test(String(form.customerId || '').trim())) {
+        this.$message.warning('请填写客户 ID，6 位数字');
         return;
       }
       if (!this.requireFields([
@@ -3425,17 +3685,14 @@ new Vue({
         this.$message.warning('内部工单标题请概括现象，不要粘贴客户原话全文');
         return;
       }
-      const kindMap = { '产品Bug': '问题', '配置操作问题': '问题', '计费投诉': '问题', '功能优化建议': '需求' };
-      if (kindMap[form.problemType] && kindMap[form.problemType] !== form.ticketKind) {
-        this.$message.warning(form.problemType + '应记为「' + kindMap[form.problemType] + '」');
-        return;
-      }
       const receivedAt = this.nowText();
       const result = {
         externalId: form.externalId,
+        sourceId: form.sourceId,
         customerSubmitAt: form.customerSubmitAt,
         customerName: form.customerName,
-        tenantId: form.tenantId,
+        customerId: String(form.customerId).trim(),
+        account: form.account || '',
         originalText: form.originalText,
         attachments: form.attachments,
         productLine: form.productLine,
@@ -3463,7 +3720,7 @@ new Vue({
     },
     applyInternalResult(result) {
       if (!result || !result.externalId || !result.internalId) return;
-      const ticket = this.tickets.find(item => item.id === result.externalId);
+      const ticket = this.tickets.find(item => item.id === result.sourceId || item.cfId === result.externalId || item.id === result.externalId);
       if (!ticket || ticket.internalId) return;
       ticket.internalId = result.internalId;
       ticket.internalStatus = result.status || '新增';
@@ -3488,6 +3745,7 @@ new Vue({
       const seq = String(this.tickets.length + 1).padStart(5, '0');
       const ticket = {
         id: 'TK-20261014-' + seq,
+        cfId: this.nextCfId(),
         extId: '',
         channel: src.channel || '企微客户群',
         ops: 'BOSS',
