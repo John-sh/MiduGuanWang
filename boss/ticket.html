@@ -734,10 +734,6 @@
               </el-select>
               <div class="field-tip">客服选择「问题」或「需求」。</div>
             </el-form-item>
-            <el-form-item label="内部工单标题" required>
-              <el-input v-model="internalForm.title" maxlength="80" placeholder="用一句话概括现象，不要粘贴客户原话全文"></el-input>
-              <div class="field-tip"><span class="field-phase">后续补充</span>供内部列表识别。</div>
-            </el-form-item>
             <el-form-item label="问题类型" required>
               <el-select v-model="internalForm.problemType" placeholder="请选择" style="width:100%">
                 <el-option v-for="c in level1Options" :key="'pt'+c" :label="c" :value="c"></el-option>
@@ -2260,11 +2256,11 @@ TICKETS.forEach(t => {
   if (!t.creator) t.creator = t.handler || '系统';
   if (!t.customerUser) t.customerUser = t.submitter;
   const profile = {
-    'TK-20260924-00018': { leadId: '203821', customerStatus: '正式客户', customerOwner: '王磊', reportType: '客户提交', submitterName: '林煦航', stage: '待处理', deadline: '2026-10-18 18:00:00', department: '江苏区域', contact: '13812340018', product: '舆情通', categoryL1: '产品故障', category2: '', accountValid: '是', risk: 'P0-紧急（重大舆情/系统宕机）', firstResponseAt: '', firstResolved: 'N', result: '' },
+    'TK-20260924-00018': { leadId: '203821', customerStatus: '正式客户', customerOwner: '王磊', reportType: '客户提交', submitterName: '林煦航', stage: '待处理', deadline: '2026-10-18 18:00:00', department: '江苏区域', contact: '13812340018', product: '新浪舆情通', categoryL1: '产品故障', category2: '', accountValid: '是', risk: 'P0-紧急（重大舆情/系统宕机）', firstResponseAt: '', firstResolved: 'N', result: '' },
     'TK-20260924-00012': { leadId: '240208', customerStatus: '初次接触', customerOwner: '周宁', reportType: '销售提交', submitterName: '于晨晨', stage: '处理中', deadline: '2026-10-14 08:00:00', department: '山东区域', contact: '18706129303', product: '校对通', categoryL1: '数据问题', category2: '采集', accountValid: '否', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-24 09:12:00', firstResolved: 'N', result: '补采进行中', staffScore: 3, systemScore: 4, surveySuggestion: '', score: 3.5, evalStatus: '已评价', skillGroup: '客服一组', fcrReason: '需内部协作' },
     'TK-20260923-00102': { leadId: '251016', customerStatus: '上门拜访', customerOwner: '陈静', reportType: '客服提交', submitterName: '赵娜', stage: '已完结', deadline: '2026-09-26 16:21:10', department: '上海大客户部', contact: 'wx_zhao', product: '模力通', categoryL1: '产品/功能咨询', category2: '', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 10:05:00', firstResolved: 'Y', result: '已为子账号开通报表权限', staffScore: 5, systemScore: 4, surveySuggestion: '', score: 4.5, evalStatus: '已评价', closedAt: '2026-09-24 11:02:18', skillGroup: '客服一组', kbSaved: true },
-    'TK-20260922-00077': { leadId: '', customerStatus: '开通试用', customerOwner: '', reportType: '客户提交', submitterName: '林煦航', stage: '退回/驳回', deadline: '2026-09-25 20:21:02', department: '江苏区域', contact: '', product: '舆情通', categoryL1: '账号问题', category2: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-22 20:40:00', firstResolved: 'N', result: '描述不清，已退回提交人', staffScore: 5, systemScore: 5, surveySuggestion: '希望补充开通步骤', score: 5, evalStatus: '已评价' },
-    'TK-20260923-00055': { leadId: '210933', customerStatus: '产品培训', customerOwner: '李倩', reportType: '销售提交', submitterName: '周宁', stage: '待确认完结', deadline: '2026-10-16 20:00:00', department: '北京区域', contact: '群内@产品运营', product: '舆情通', categoryL1: '联系商务', category2: '', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 11:20:00', firstResolved: 'N', result: '已评估纳入下迭代', evalStatus: '已推送' },
+    'TK-20260922-00077': { leadId: '', customerStatus: '开通试用', customerOwner: '', reportType: '客户提交', submitterName: '林煦航', stage: '退回/驳回', deadline: '2026-09-25 20:21:02', department: '江苏区域', contact: '', product: '新浪舆情通', categoryL1: '账号问题', category2: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-22 20:40:00', firstResolved: 'N', result: '描述不清，已退回提交人', staffScore: 5, systemScore: 5, surveySuggestion: '希望补充开通步骤', score: 5, evalStatus: '已评价' },
+    'TK-20260923-00055': { leadId: '210933', customerStatus: '产品培训', customerOwner: '李倩', reportType: '销售提交', submitterName: '周宁', stage: '待确认完结', deadline: '2026-10-16 20:00:00', department: '北京区域', contact: '群内@产品运营', product: '新浪舆情通', categoryL1: '联系商务', category2: '', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 11:20:00', firstResolved: 'N', result: '已评估纳入下迭代', evalStatus: '已推送' },
     'TK-20260921-00031': { leadId: '222712', customerStatus: '正式客户', customerOwner: '张帅', reportType: '客服提交', submitterName: '客服主管', stage: '超时完结', deadline: '2026-09-24 14:12:20', department: '江苏区域', contact: 'zhangshuai@midu.com', product: '校对通', categoryL1: '投诉', category2: '', accountValid: '是', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-21 14:30:00', firstResolved: 'N', result: '发票已审核通过', staffScore: 2, systemScore: 4, surveySuggestion: '', score: 3, evalStatus: '已评价', closedAt: '2026-09-22 16:00:00', skillGroup: '财务支持', fcrReason: '需二次联系', kbSaved: true, callbackStatus: 'done', callbackGap: '方案无效', callbackNote: '客户对开票时效不满，已说明流程并赠送信誉补偿说明' },
     'TK-20260924-00003': { leadId: '271504', customerStatus: '协议商谈', customerOwner: '孙启', reportType: '客户提交', submitterName: '孙启', stage: '挂起', deadline: '2026-10-17 12:00:00', department: '浙江区域', contact: '企微-技术对接人', product: '模力通', categoryL1: '其他', category2: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-24 11:10:00', firstResolved: 'N', result: '等研发反馈' }
   }[t.id];
@@ -2377,7 +2373,7 @@ new Vue({
         listFollow: '',
         listHold: '',
         listUpgrade: '',
-        trial: { customerId: '', account: '', product: '舆情通' },
+        trial: { customerId: '', account: '', product: '新浪舆情通' },
         export: { format: 'csv', fields: ['id', 'reportType', 'channel', 'customerId', 'leadId', 'customerStatus', 'salesOwner', 'category', 'stage', 'deadline', 'title'] },
         addCategory: { code: '', name: '', children: '', summary: '' }
       },
@@ -2385,7 +2381,7 @@ new Vue({
       regionOptions: ['上海大客户部','北京区域','天津区域','上海区域','重庆区域','河北区域','山西区域','辽宁区域','吉林区域','黑龙江区域','江苏区域','浙江区域','安徽区域','福建区域','江西区域','山东区域','河南区域','湖北区域','湖南区域','广东区域','海南区域','四川区域','贵州区域','云南区域','陕西区域','甘肃区域','青海区域','内蒙古区域','广西区域','西藏区域','宁夏区域','新疆区域'],
       customerStatusOptions: ['正式客户', '初次接触', '上门拜访', '开通试用', '产品培训', '提案报价', '协议商谈', '客户交接', '客户使用', '客户续费', '客户失败', '客户失败-新签', '客户失败-续签'],
       level1Options: ['产品故障', '数据问题', '产品/功能咨询', '账号问题', '联系商务', '投诉', '其他'],
-      productOptions: ['舆情通', '校对通', '模力通'],
+      productOptions: ['索骥', '校对通', '新浪舆情通', '新媒通', '云能力', '安巡通', '城感通', '模力通', '数咖', '数察通DataQ', '知知通', '文稿通', '版权通', '品誉通', '蜜度官网'],
       intake: {
         reportType: '客户提交', channel: '蜜度官网', product: '', customer: '', customerId: '', leadId: '',
         customerStatus: '', contact: '', department: '', leadOwner: '', customerOwner: '', orgName: '',
@@ -4038,7 +4034,6 @@ new Vue({
         account: form.account,
         productLine: form.productLine,
         ticketKind: form.ticketKind,
-        title: form.title,
         problemType: form.problemType,
         priority: form.priority,
         note: form.note
@@ -4062,14 +4057,9 @@ new Vue({
       if (!this.requireFields([
         { label: '产品线', value: form.productLine },
         { label: '工单类型', value: form.ticketKind },
-        { label: '内部工单标题', value: form.title },
         { label: '问题类型', value: form.problemType },
         { label: '优先级', value: form.priority }
       ])) return;
-      if (form.title.trim() === form.originalText.trim()) {
-        this.$message.warning('内部工单标题请概括现象，不要粘贴客户原话全文');
-        return;
-      }
       const receivedAt = this.nowText();
       const result = {
         externalId: form.externalId,
@@ -4086,7 +4076,7 @@ new Vue({
         receivedAt: receivedAt,
         internalId: 'IN-' + receivedAt.slice(0, 10).replace(/-/g, '') + '-' + String(Date.now()).slice(-5),
         status: '新增',
-        title: form.title.trim(),
+        title: '',
         problemType: form.problemType,
         priority: form.priority,
         note: (form.note || '').trim()
@@ -4211,7 +4201,7 @@ new Vue({
         }
       });
       this.dlg.trial = false;
-      this.forms.trial = { customerId: '', account: '', product: '舆情通' };
+      this.forms.trial = { customerId: '', account: '', product: '新浪舆情通' };
       this.$message.success('已登记开通试用');
     },
     patchTicket(fn) {
