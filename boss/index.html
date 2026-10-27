@@ -243,7 +243,8 @@
     .detail-product-bar .k { font-size: 13px; color: var(--text-muted); }
     .detail-product-bar .el-select { width: 240px; }
     .el-select-dropdown.detail-product-popper,
-    .el-picker-panel.track-date-popper { z-index: 4100 !important; }
+    .el-picker-panel.track-date-popper,
+    .el-tooltip__popper.field-help-popper { z-index: 4100 !important; }
     .detail-tag { font-size: 12px; font-weight: 500; }
     .detail-warn { position: absolute; right: 48px; top: 18px; color: #d48806; font-size: 12px; }
     .info-grid {
@@ -414,6 +415,16 @@
     .boss-table.rule-table td.rule-text,
     .boss-table.rule-table tfoot td {
       white-space: normal; line-height: 1.65;
+    }
+    .field-label { display: inline-flex; align-items: center; gap: 4px; }
+    .field-help-wrap {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; cursor: pointer; flex-shrink: 0;
+    }
+    .field-help { color: #c0c4cc; font-size: 14px; line-height: 1; }
+    .field-help-wrap:hover .field-help { color: #1677ff; }
+    .el-tooltip__popper.field-help-popper {
+      max-width: 280px; line-height: 1.65; font-size: 12px;
     }
     .boss-table.rule-table tbody tr.is-current.level-cold td { background: #f4f6f8; }
     .boss-table.rule-table tbody tr.is-current.level-warm td { background: #fff8eb; }
@@ -1578,7 +1589,22 @@
                 <tbody>
                   <tr v-for="(item, i) in custSummaryRows" :key="item.field">
                     <td class="center">{{ i + 1 }}</td>
-                    <td>{{ item.field }}</td>
+                    <td>
+                      <span class="field-label">
+                        {{ item.field }}
+                        <el-tooltip
+                          v-if="item.hint"
+                          :content="item.hint"
+                          placement="top"
+                          effect="dark"
+                          popper-class="field-help-popper"
+                        >
+                          <span class="field-help-wrap">
+                            <i class="el-icon-question field-help"></i>
+                          </span>
+                        </el-tooltip>
+                      </span>
+                    </td>
                     <td>{{ item.value }}</td>
                   </tr>
                 </tbody>
@@ -3777,13 +3803,13 @@ new Vue({
         { field: '登录次数', value: c.loginCount == null ? '-' : c.loginCount },
         { field: '最近活跃时间', value: c.lastActiveAt || '-' },
         { field: '最近关键行为', value: c.lastBehavior || '-' },
-        { field: '关键事件次数', value: c.keyEventCount == null ? '-' : c.keyEventCount },
+        { field: '关键事件次数', value: c.keyEventCount == null ? '-' : c.keyEventCount, hint: '关键事件：确认主体、下订单、申请开票、发起评估' },
         { field: '是否下单', value: stats.hasOrder ? '是' : '否' },
         { field: '订单数', value: stats.count },
         { field: '订单金额', value: stats.amount ? this.money(stats.amount) : '-' },
         { field: '开票状态', value: invoiceStatusText(c) },
         { field: '运营套餐', value: c.memberPack || '-' },
-        { field: '体验天数', value: c.trialDay ? ('第' + c.trialDay + '天') : '-' },
+        { field: '体验天数', value: c.trialDay ? ('第' + c.trialDay + '天') : '-', hint: '从注册蜜度官网账号开始计算' },
         { field: 'App操作次数', value: packHasPoints(c.memberPack) ? (c.opCountApp || 0) : '-' }
       ];
     },
