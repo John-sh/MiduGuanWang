@@ -355,6 +355,22 @@
     .fcr-line .k { color: #909399; }
     .track-sub { margin: 18px 0 8px; font-size: 13px; font-weight: 600; color: #1f2329; }
     .bot-fold { margin-top: 12px; }
+    .bot-guide {
+      margin-top: 8px; border: 1px solid #d6e4ff; border-radius: 10px;
+      background: #f4f8ff; padding: 14px 16px 16px;
+    }
+    .bot-guide-top {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px;
+    }
+    .bot-guide-title { font-size: 14px; font-weight: 600; color: #1f2329; }
+    .bot-guide-sub { font-size: 12px; color: #8c8c8c; }
+    .bot-guide-row { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+    .bot-guide-k { font-size: 13px; font-weight: 600; color: #1f2329; margin-bottom: 6px; }
+    .bot-guide-sec { margin-top: 14px; font-size: 13px; line-height: 1.7; color: #1f2329; }
+    .bot-script {
+      margin-top: 6px; background: #fff; border: 1px solid #e6eef8; border-radius: 8px;
+      padding: 10px 12px; color: #434343; white-space: pre-wrap;
+    }
     .ai-summary-fold { margin-top: 12px; }
     .feedback-block .info-item.span3 { align-items: flex-start; }
     .feedback-block .info-item.span3 .info-label { padding-top: 6px; }
@@ -2095,9 +2111,29 @@
             <p class="field-tip" v-if="botRemind(current)" style="margin-top:10px;">{{ botRemind(current) }}</p>
             <div class="bot-fold">
               <el-button size="mini" type="text" @click="revealBot">{{ showBotAdvice ? '收起 bot 指导意见' : '查看 bot 指导意见' }}</el-button>
-              <div class="ai-preview-box" v-if="showBotAdvice" style="margin-top:8px;">
-                <div class="ai-label">当前阶段建议</div>
-                <div>{{ botAdvice(current) }}</div>
+              <div class="bot-guide" v-if="showBotAdvice">
+                <div class="bot-guide-top">
+                  <span class="bot-guide-title">客服优先阅读</span>
+                  <span class="bot-guide-sub">按当前工单生成，客户原话不改写</span>
+                </div>
+                <div class="bot-guide-row">
+                  <div>
+                    <div class="bot-guide-k">问题分类</div>
+                    <span class="tag tag-blue">{{ botGuide(current).category }}</span>
+                  </div>
+                  <div>
+                    <div class="bot-guide-k">风险等级</div>
+                    <span class="tag" :class="botGuide(current).risk.cls">{{ botGuide(current).risk.label }}</span>
+                  </div>
+                </div>
+                <div class="bot-guide-sec">
+                  <div class="bot-guide-k">解决方案</div>
+                  <div>{{ botGuide(current).solution }}</div>
+                </div>
+                <div class="bot-guide-sec">
+                  <div class="bot-guide-k">回复客户的澄清话术</div>
+                  <div class="bot-script">{{ botGuide(current).script }}</div>
+                </div>
               </div>
             </div>
             <div class="track-sub">跟踪明细</div>
@@ -3366,22 +3402,41 @@ new Vue({
     missedFirstResponse(t) {
       return !!(t && this.feedbackStage(t) === '待处理' && !this.firstHandleAt(t) && this.csFirstOvertime(t));
     },
-    botAdvice(t) {
-      if (!t) return '—';
-      const category = t.categoryL1 || t.category1 || '未分类';
-      const sub = t.category2 ? ' / ' + t.category2 : '';
+    botGuide(t) {
+      const empty = { category: '—', risk: { cls: 'tag-default', label: '—' }, solution: '—', script: '—' };
+      if (!t) return empty;
+      const major = t.categoryL1 || t.category1 || '';
       const product = t.product || '该产品';
-      const tips = {
-        '数据类': '核对时间范围、筛选条件和信源。数据采集类先看数据管家任务是否失败，需要补采时写明任务名。',
-        '产品类': '按' + product + '现有能力判断。能当场恢复就完结，需要研发排查时转工单。',
+      const solutions = {
+        '数据类': '核对时间范围、筛选条件和信源。数据采集类先看数据管家任务是否失败，需要补采时写明任务名。能当场恢复就完结，查不到原因时转工单。',
+        '产品类': '按' + product + '现有能力判断。能当场恢复就完结，需要研发排查时转工单，并写清复现步骤。',
         '联系商务': '交给客户负责人，在问题日志里跟进试用、催联系或对接人。',
-        '账号问题': '核对账号状态和权限。对外话术里不要保留手机号。',
-        '产品需求反馈': '记录期望结果，转销售后由客户负责人在问题日志里跟进。',
-        '法务/市场、宣传': '先确认是否涉及对外口径，需要时转给对应同事，不要直接答复客户。',
+        '账号问题': '核对账号状态和权限。对外话术里不要保留手机号。权限可当场开通就完结，账号归属不清时转销售。',
+        '产品需求反馈': '记录客户期望的结果。转销售后由客户负责人在问题日志里跟进，是否纳入需求由内部工单给出。',
+        '法务/市场、宣传': '先确认是否涉及对外口径。需要时转给对应同事，不要直接对客户做承诺。',
         '客户临时需求': '先补全问题描述和期望结果，再决定直接答复、转工单或转销售。',
-        '投诉类': '先记录客户原话并安抚。评分偏低时安排差评二次跟进。'
+        '投诉类': '先记录客户原话并安抚。评分偏低时安排差评二次跟进，处理结果回写到工单。'
       };
-      return '问题分类「' + category + sub + '」。' + (tips[category] || tips['客户临时需求']) + ' 首次处理请在 2 小时内完成：完结、挂起、转工单或转销售。';
+      const asks = {
+        '数据类': '问题出现的时间范围、当时的筛选条件，以及是否只影响部分账号。',
+        '产品类': '使用的浏览器和账号、问题是否今天开始、相关页面的报错截图。',
+        '联系商务': '希望对接的事项，以及方便联系的时间。',
+        '账号问题': '受影响的账号、无法完成的操作，以及页面上的提示。请不要在回复里发送完整手机号。',
+        '产品需求反馈': '希望增加的具体结果，以及现在的绕过方式。',
+        '法务/市场、宣传': '涉及的页面或材料，以及希望我们确认的口径。',
+        '客户临时需求': '期望完成的结果，以及希望得到回复的时间。',
+        '投诉类': '具体经过，以及希望我们处理的结果。'
+      };
+      const risk = Object.assign({}, this.riskView(t.risk || t.priority || ''));
+      if (!t.risk && !t.priority) risk.label = '未填写';
+      const detail = String(t.detail || '').replace(/1\d{10}/g, '').replace(/\s+/g, ' ').trim();
+      const brief = detail ? (detail.length > 40 ? detail.slice(0, 40).replace(/[。．.，,、\s]+$/, '') + '…' : detail.replace(/[。．.]+$/, '')) : '您反馈的问题';
+      return {
+        category: this.categoryText(t),
+        risk: risk,
+        solution: solutions[major] || solutions['客户临时需求'],
+        script: '您好，已收到您关于「' + product + '」的反馈：' + brief + '。为尽快处理，请补充：' + (asks[major] || asks['客户临时需求'])
+      };
     },
     sortedLogs(logs) {
       return (logs || []).slice().sort((a, b) => String(a.time || '').localeCompare(String(b.time || '')));
