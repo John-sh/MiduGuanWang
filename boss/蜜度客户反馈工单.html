@@ -633,8 +633,8 @@
     }
 
     .nav-toggle, .nav-mask { display: none; }
-    .portal-card.is-cs, .portal-card.is-guest { background: transparent; box-shadow: none; padding: 0 0 24px; min-height: 0; }
-    .portal-card.is-guest .portal-head h2, .portal-card.is-cs .role-switch { margin-top: 0; }
+    .portal-card.is-cs, .portal-card.is-sales, .portal-card.is-guest { background: transparent; box-shadow: none; padding: 0 0 24px; min-height: 0; }
+    .portal-card.is-guest .portal-head h2, .portal-card.is-cs .role-switch, .portal-card.is-sales .role-switch { margin-top: 0; }
     .cs-sheet { color: #1f2937; }
     .cs-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; }
     .cs-top h2 { margin: 0; font-size: 18px; font-weight: 600; }
@@ -653,6 +653,7 @@
     .cs-field > label, .guest-field > label { color: #1f2937; font-size: 13px; }
     .cs-field > label i, .guest-field > label i { color: #ff4d4f; font-style: normal; margin-right: 2px; }
     .cs-field > label i.field-note, .guest-field > label i.field-note { color: #909399; margin-right: 0; }
+    .cs-field > label .cs-hint { color: #6b7280; font-weight: 400; margin-left: 4px; }
     .cs-readonly { min-height: 32px; line-height: 32px; padding: 0 10px; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; color: #6b7280; }
     .cs-readonly.hit { color: #1f2937; background: #f9fafb; }
     .cs-side .cs-card-bd { font-size: 13px; color: #6b7280; }
@@ -929,7 +930,7 @@
               <el-input :value="closeForm.product || '—'" disabled></el-input>
             </el-form-item>
             <el-form-item>
-              <template slot="label">客户类型<el-tooltip content="由客服填写，区分直客和强国。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
+              <template slot="label">客户类型<el-tooltip content="由客服填写，可选直销、强国、代理、内部、其他。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
               <el-input :value="closeForm.customerType || '—'" disabled></el-input>
             </el-form-item>
           </div>
@@ -1162,13 +1163,7 @@
             <button type="button" :class="{active: page==='mine'}" @click="page='mine'">我的工单</button>
           </nav>
 
-          <div v-if="page==='form'" class="portal-card" :class="{ 'is-cs': intake.reportType==='客服提交', 'is-guest': intake.reportType==='客户提交' }">
-            <div class="portal-head" v-if="intake.reportType==='销售提交'">
-              <div>
-                <h2>客户反馈</h2>
-                <p>销售代填。客户反馈信息和系统客户信息分开填写。系统客户信息先填客户单位全称，自动匹配客户 ID。</p>
-              </div>
-            </div>
+          <div v-if="page==='form'" class="portal-card" :class="{ 'is-cs': intake.reportType==='客服提交', 'is-sales': intake.reportType==='销售提交', 'is-guest': intake.reportType==='客户提交' }">
             <div class="role-switch">
               <button type="button" :class="{active: intake.reportType==='客户提交'}" @click="setIntakeRole('客户提交')">客户</button>
               <button type="button" :class="{active: intake.reportType==='销售提交'}" @click="setIntakeRole('销售提交')">销售</button>
@@ -1180,60 +1175,119 @@
                   <h2>新建客服工单</h2>
                   <div class="cs-no">工单号：<strong>保存后生成</strong></div>
                 </div>
-                <div class="cs-banner">客服代填。先填单位全称匹配客户，再判定问题产品线和客户类型。提交后进入客户反馈工单。</div>
+                <div class="cs-banner">客服代填。按 A 到 E 填写。客户 ID 自己填写。再判定问题产品线和客户类型。提交后进入客户反馈工单。</div>
                 <div class="cs-layout">
                   <div class="cs-main">
                     <section class="cs-card">
-                      <div class="cs-card-hd">客户反馈信息 <span class="cs-badge">问题与判定</span></div>
+                      <div class="cs-card-hd">A. 受理信息 <span class="cs-badge">渠道与接单</span></div>
                       <div class="cs-card-bd cs-grid-2">
                         <div class="cs-field">
-                          <label><i>*</i>反馈渠道</label>
-                          <el-select v-model="intake.channel" placeholder="请选择反馈渠道" style="width:100%">
+                          <label><i>*</i>渠道</label>
+                          <el-select v-model="intake.channel" placeholder="请选择" style="width:100%">
                             <el-option v-for="c in channelNames" :key="'cs-ch'+c" :label="c" :value="c"></el-option>
                           </el-select>
                         </div>
+                        <div class="cs-field" v-if="csGroupChannel">
+                          <label><i>*</i>群名称</label>
+                          <el-input v-model="intake.groupName" placeholder="请填写企业微信群名称"></el-input>
+                        </div>
+                        <div class="cs-field full">
+                          <label>消息摘要</label>
+                          <el-input type="textarea" :rows="3" v-model="intake.messageSummary" maxlength="500" placeholder="可粘贴关键群消息要点"></el-input>
+                        </div>
+                      </div>
+                    </section>
+                    <section class="cs-card">
+                      <div class="cs-card-hd">B. 客户信息</div>
+                      <div class="cs-card-bd cs-grid-3">
                         <div class="cs-field">
-                          <label>提交人</label>
-                          <div class="cs-readonly">{{ currentUser.account }}</div>
+                          <label><i>*</i>客户名称</label>
+                          <el-autocomplete
+                            v-model="intake.orgName"
+                            :fetch-suggestions="suggestOrg"
+                            placeholder="签约客户或单位名"
+                            style="width:100%"
+                            @input="matchCustomerByOrg"
+                            @select="pickOrgMatch"
+                          >
+                            <template slot-scope="{ item }">
+                              <span>{{ item.value }}</span>
+                            </template>
+                          </el-autocomplete>
                         </div>
                         <div class="cs-field">
-                          <label><i>*</i>产品线<el-tooltip content="客户反馈的问题产品线，由客服判定，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                          <el-select v-model="intake.product" placeholder="请选择问题产品线" style="width:100%" filterable>
-                            <el-option v-for="p in productOptions" :key="'cs-'+p" :label="p" :value="p"></el-option>
-                          </el-select>
+                          <label>客户 ID</label>
+                          <el-input v-model="intake.customerId" maxlength="6" placeholder="请填写 6 位客户 ID"></el-input>
                         </div>
                         <div class="cs-field">
-                          <label><i>*</i>客户类型<el-tooltip content="由客服填写，区分直客和强国。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                          <el-select v-model="intake.customerType" placeholder="请选择客户类型" style="width:100%">
+                          <label>线索 ID <span class="cs-hint">选填</span></label>
+                          <el-input v-model="intake.leadId" maxlength="6" placeholder="2 开头的 6 位数字"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label>联系人 <span class="cs-hint">选填</span></label>
+                          <el-input v-model="intake.contactName" placeholder="选填"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label>联系电话</label>
+                          <el-input v-model="intake.phone" placeholder="手机或固话"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label><i v-if="emailRequired">*</i>邮箱</label>
+                          <el-input v-model="intake.email" placeholder="请填写客户邮箱"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label>客户账号</label>
+                          <el-input v-model="intake.account" placeholder="匹配客户后可自动带出"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label><i>*</i>客户类型<el-tooltip content="由客服填写，可选直销、强国、代理、内部、其他。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
+                          <el-select v-model="intake.customerType" placeholder="请选择" style="width:100%">
                             <el-option v-for="c in customerTypeOptions" :key="'cs-ct'+c" :label="c" :value="c"></el-option>
                           </el-select>
                         </div>
                         <div class="cs-field">
+                          <label><i>*</i>产品线<el-tooltip content="客户反馈的问题产品线，由客服填写，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
+                          <el-select v-model="intake.product" placeholder="请选择问题产品线" style="width:100%" filterable>
+                            <el-option v-for="p in productOptions" :key="'cs-'+p" :label="p" :value="p"></el-option>
+                          </el-select>
+                        </div>
+                      </div>
+                    </section>
+                    <section class="cs-card">
+                      <div class="cs-card-hd">C. 问题分类</div>
+                      <div class="cs-card-bd cs-grid-2">
+                        <div class="cs-field">
                           <label><i>*</i>问题大类</label>
-                          <el-select v-model="intake.categoryL1" placeholder="请选择问题大类" style="width:100%" @change="pickCategory">
+                          <el-select v-model="intake.categoryL1" placeholder="请选择" style="width:100%" @change="pickCategory">
                             <el-option v-for="c in level1Options" :key="'cs-in'+c" :label="c" :value="c"></el-option>
                           </el-select>
                         </div>
                         <div class="cs-field">
                           <label><i v-if="categoryChildren(intake.categoryL1).length">*</i>问题子类</label>
-                          <el-select v-model="intake.category2" placeholder="请选择问题子类" style="width:100%" :disabled="!categoryChildren(intake.categoryL1).length" @change="pickSubCategory">
+                          <el-select v-model="intake.category2" placeholder="请先选择大类" style="width:100%" :disabled="!categoryChildren(intake.categoryL1).length" @change="pickSubCategory">
                             <el-option v-for="c in categoryChildren(intake.categoryL1)" :key="'cs-ins'+c" :label="c" :value="c"></el-option>
+                          </el-select>
+                        </div>
+                        <div class="cs-field">
+                          <label><i>*</i>紧急度</label>
+                          <el-select v-model="intake.urgency" placeholder="请选择" style="width:100%">
+                            <el-option v-for="u in urgencyOptions" :key="'urg-'+u" :label="u" :value="u"></el-option>
                           </el-select>
                         </div>
                         <p class="portal-note cs-field full" v-if="intake.categorySource==='ai' && intake.categoryL1">AI 已按问题描述初分为「{{ intake.categoryL1 }}」，可以直接改。</p>
                       </div>
                     </section>
                     <section class="cs-card">
-                      <div class="cs-card-hd">问题详情</div>
+                      <div class="cs-card-hd">D. 问题详情</div>
                       <div class="cs-card-bd">
                         <div class="cs-field">
-                          <label><i>*</i>问题详情</label>
+                          <label><i>*</i>问题描述</label>
                           <div
                             ref="detailEditor"
                             class="rich-editor portal-editor"
                             :class="{ empty: !intake.detail && !detailHasImage }"
                             contenteditable="true"
-                            data-placeholder="请描述问题，可直接粘贴文字和图片"
+                            data-placeholder="把问题讲清楚即可，可直接粘贴文字和图片"
                             @paste="onDetailPaste"
                             @input="syncDetail"
                           ></div>
@@ -1257,59 +1311,11 @@
                       </div>
                     </section>
                     <section class="cs-card">
-                      <div class="cs-card-hd">系统客户信息 <span class="cs-badge">按客户 ID 带出</span></div>
-                      <div class="cs-card-bd cs-grid-3">
-                        <div class="cs-field full">
-                          <label><i>*</i>单位全称</label>
-                          <el-autocomplete
-                            v-model="intake.orgName"
-                            :fetch-suggestions="suggestOrg"
-                            placeholder="请输入单位全称"
-                            style="width:100%"
-                            @input="matchCustomerByOrg"
-                            @select="pickOrgMatch"
-                          >
-                            <template slot-scope="{ item }">
-                              <span>{{ item.value }}</span>
-                              <span class="org-suggest-id">{{ item.id }}</span>
-                            </template>
-                          </el-autocomplete>
-                        </div>
+                      <div class="cs-card-hd">E. 处理与流转</div>
+                      <div class="cs-card-bd">
                         <div class="cs-field">
-                          <label>客户 ID</label>
-                          <div class="cs-readonly" :class="{ hit: intake.customerId }">{{ intake.customerId || (intake.orgName ? '未匹配到客户' : '填写单位全称后自动匹配') }}</div>
-                        </div>
-                        <div class="cs-field">
-                          <label>线索 ID</label>
-                          <el-input v-model="intake.leadId" maxlength="6" placeholder="选填，2 开头的 6 位数字"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>客户账号</label>
-                          <el-input v-model="intake.account" placeholder="选填，匹配客户后可自动带出"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>客户进度</label>
-                          <div class="cs-readonly">{{ intake.customerStatus || '—' }}</div>
-                        </div>
-                        <div class="cs-field">
-                          <label>客户类型</label>
-                          <div class="cs-readonly">{{ systemCustomerType({ customerId: intake.customerId }) || '—' }}</div>
-                        </div>
-                        <div class="cs-field">
-                          <label>产品项目<el-tooltip content="系统按客户 ID 自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                          <div class="cs-readonly">{{ accountProduct({ customerId: intake.customerId }) || '—' }}</div>
-                        </div>
-                        <div class="cs-field">
-                          <label>联系人</label>
-                          <el-input v-model="intake.contactName" placeholder="选填"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>联系电话</label>
-                          <el-input v-model="intake.phone" placeholder="选填"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label><i v-if="emailRequired">*</i>邮箱</label>
-                          <el-input v-model="intake.email" placeholder="请填写客户邮箱"></el-input>
+                          <label>内部备注</label>
+                          <el-input type="textarea" :rows="3" v-model="intake.internalNote" maxlength="1000" placeholder="班次交接、权限说明等，不对客户展示"></el-input>
                         </div>
                       </div>
                     </section>
@@ -1319,23 +1325,14 @@
                       <div class="cs-card-hd">填写说明</div>
                       <div class="cs-card-bd">
                         <details class="cs-help" open>
-                          <summary>客服需要填写</summary>
+                          <summary>需要填写</summary>
                           <ul>
-                            <li>反馈渠道、问题大类、问题详情</li>
-                            <li>有子类时，问题子类必填</li>
-                            <li>产品线：问题所属产品，由客服判定，可以改</li>
-                            <li>客户类型：直客或强国，由客服填写</li>
-                            <li>单位全称。邮箱渠道时，邮箱必填</li>
-                          </ul>
-                        </details>
-                        <details class="cs-help" style="margin-top:12px" open>
-                          <summary>系统自动带出</summary>
-                          <ul>
-                            <li>提交人回显当前登录账号，谁填谁处理</li>
-                            <li>客户 ID、客户进度、客户账号</li>
-                            <li>系统客户类型：直销、代理等</li>
-                            <li>产品项目：账号对应的产品项目</li>
-                            <li>工单号在提交后生成</li>
+                            <li>A. 渠道。企微群时，群名称必填。消息摘要选填</li>
+                            <li>B. 客户名称。客户 ID 自己填写。联系人选填</li>
+                            <li>B. 客户类型：直销、强国、代理、内部、其他</li>
+                            <li>B. 产品线由客服填写，可以修改</li>
+                            <li>C. 问题大类。有子类时，问题子类必填。紧急度：P0 紧急、P1 高、P2 中、P3 低</li>
+                            <li>D. 问题描述。邮箱渠道时，邮箱必填</li>
                           </ul>
                         </details>
                       </div>
@@ -1349,109 +1346,178 @@
               </div>
             </template>
             <template v-else-if="intake.reportType==='销售提交'">
-              <div class="portal-block">
-                <div class="portal-block-hd">客户反馈信息</div>
-                <div class="portal-field">
-                  <label><i>*</i>反馈渠道</label>
-                  <el-select v-model="intake.channel" placeholder="请选择客户反馈给您的渠道" style="width:100%">
-                    <el-option v-for="c in channelNames" :key="'sa-ch'+c" :label="c" :value="c"></el-option>
-                  </el-select>
+              <div class="cs-sheet">
+                <div class="cs-top">
+                  <h2>新建销售工单</h2>
+                  <div class="cs-no">工单号：<strong>保存后生成</strong></div>
                 </div>
-                <div class="portal-field">
-                  <label>提交人</label>
-                  <div class="portal-readonly">{{ currentUser.account }}</div>
-                </div>
-                <div class="portal-field">
-                  <label><i>*</i>产品线<el-tooltip content="客户反馈的问题产品线，由客服判定，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                  <div class="product-pills">
-                    <button type="button" v-for="p in productOptions" :key="'sa-'+p" :class="{active: intake.product===p}" @click="intake.product=p">{{ p }}</button>
+                <div class="cs-banner">销售代填。按 A 到 E 填写。客户 ID 自己填写。再填写产品线和客户类型。提交后进入客户反馈工单。</div>
+                <div class="cs-layout">
+                  <div class="cs-main">
+                    <section class="cs-card">
+                      <div class="cs-card-hd">A. 受理信息 <span class="cs-badge">渠道与接单</span></div>
+                      <div class="cs-card-bd cs-grid-2">
+                        <div class="cs-field">
+                          <label><i>*</i>渠道</label>
+                          <el-select v-model="intake.channel" placeholder="请选择" style="width:100%">
+                            <el-option v-for="c in channelNames" :key="'sa-ch'+c" :label="c" :value="c"></el-option>
+                          </el-select>
+                        </div>
+                        <div class="cs-field" v-if="csGroupChannel">
+                          <label><i>*</i>群名称</label>
+                          <el-input v-model="intake.groupName" placeholder="请填写企业微信群名称"></el-input>
+                        </div>
+                        <div class="cs-field full">
+                          <label>消息摘要</label>
+                          <el-input type="textarea" :rows="3" v-model="intake.messageSummary" maxlength="500" placeholder="可粘贴关键群消息要点"></el-input>
+                        </div>
+                      </div>
+                    </section>
+                    <section class="cs-card">
+                      <div class="cs-card-hd">B. 客户信息</div>
+                      <div class="cs-card-bd cs-grid-3">
+                        <div class="cs-field">
+                          <label><i>*</i>客户名称</label>
+                          <el-autocomplete
+                            v-model="intake.orgName"
+                            :fetch-suggestions="suggestOrg"
+                            placeholder="签约客户或单位名"
+                            style="width:100%"
+                            @input="matchCustomerByOrg"
+                            @select="pickOrgMatch"
+                          >
+                            <template slot-scope="{ item }">
+                              <span>{{ item.value }}</span>
+                            </template>
+                          </el-autocomplete>
+                        </div>
+                        <div class="cs-field">
+                          <label>客户 ID</label>
+                          <el-input v-model="intake.customerId" maxlength="6" placeholder="请填写 6 位客户 ID"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label>线索 ID <span class="cs-hint">选填</span></label>
+                          <el-input v-model="intake.leadId" maxlength="6" placeholder="2 开头的 6 位数字"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label>联系人 <span class="cs-hint">选填</span></label>
+                          <el-input v-model="intake.contactName" placeholder="选填"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label>联系电话</label>
+                          <el-input v-model="intake.phone" placeholder="手机或固话"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label><i v-if="emailRequired">*</i>邮箱</label>
+                          <el-input v-model="intake.email" placeholder="请填写客户邮箱"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label>客户账号</label>
+                          <el-input v-model="intake.account" placeholder="匹配客户后可自动带出"></el-input>
+                        </div>
+                        <div class="cs-field">
+                          <label><i>*</i>客户类型<el-tooltip content="由销售填写，可选直销、强国、代理、内部、其他。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
+                          <el-select v-model="intake.customerType" placeholder="请选择" style="width:100%">
+                            <el-option v-for="c in customerTypeOptions" :key="'sa-ct'+c" :label="c" :value="c"></el-option>
+                          </el-select>
+                        </div>
+                        <div class="cs-field">
+                          <label><i>*</i>产品线<el-tooltip content="客户反馈的问题产品线，由销售填写，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
+                          <el-select v-model="intake.product" placeholder="请选择问题产品线" style="width:100%" filterable>
+                            <el-option v-for="p in productOptions" :key="'sa-'+p" :label="p" :value="p"></el-option>
+                          </el-select>
+                        </div>
+                      </div>
+                    </section>
+                    <section class="cs-card">
+                      <div class="cs-card-hd">C. 问题分类</div>
+                      <div class="cs-card-bd cs-grid-2">
+                        <div class="cs-field">
+                          <label><i>*</i>问题大类</label>
+                          <el-select v-model="intake.categoryL1" placeholder="请选择" style="width:100%" @change="pickCategory">
+                            <el-option v-for="c in level1Options" :key="'sa-in'+c" :label="c" :value="c"></el-option>
+                          </el-select>
+                        </div>
+                        <div class="cs-field">
+                          <label><i v-if="categoryChildren(intake.categoryL1).length">*</i>问题子类</label>
+                          <el-select v-model="intake.category2" placeholder="请先选择大类" style="width:100%" :disabled="!categoryChildren(intake.categoryL1).length" @change="pickSubCategory">
+                            <el-option v-for="c in categoryChildren(intake.categoryL1)" :key="'sa-ins'+c" :label="c" :value="c"></el-option>
+                          </el-select>
+                        </div>
+                        <div class="cs-field">
+                          <label><i>*</i>紧急度</label>
+                          <el-select v-model="intake.urgency" placeholder="请选择" style="width:100%">
+                            <el-option v-for="u in urgencyOptions" :key="'urg-'+u" :label="u" :value="u"></el-option>
+                          </el-select>
+                        </div>
+                        <p class="portal-note cs-field full" v-if="intake.categorySource==='ai' && intake.categoryL1">AI 已按问题描述初分为「{{ intake.categoryL1 }}」，可以直接改。</p>
+                      </div>
+                    </section>
+                    <section class="cs-card">
+                      <div class="cs-card-hd">D. 问题详情</div>
+                      <div class="cs-card-bd">
+                        <div class="cs-field">
+                          <label><i>*</i>问题描述</label>
+                          <div
+                            ref="detailEditor"
+                            class="rich-editor portal-editor"
+                            :class="{ empty: !intake.detail && !detailHasImage }"
+                            contenteditable="true"
+                            data-placeholder="把问题讲清楚即可，可直接粘贴文字和图片"
+                            @paste="onDetailPaste"
+                            @input="syncDetail"
+                          ></div>
+                        </div>
+                        <div class="cs-field" style="margin-top:12px;">
+                          <label>附件</label>
+                          <div class="guest-upload">
+                            <el-button size="small" @click="pickAttachment">上传附件</el-button>
+                            <span class="attach-hint">可选，可上传多个文件，单个不超过 10MB</span>
+                            <input ref="attachInput" class="attach-input" type="file" multiple @change="onIntakeFiles">
+                            <ul class="attach-list" v-if="intake.files.length">
+                              <li class="attach-item" v-for="(f, i) in intake.files" :key="f.id">
+                                <img v-if="isImageFile(f)" :src="f.url" alt="">
+                                <span>{{ f.name }}</span>
+                                <span class="attach-size">{{ f.sizeText }}</span>
+                                <button type="button" class="attach-remove" @click="removeIntakeFile(i)">删除</button>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+                    <section class="cs-card">
+                      <div class="cs-card-hd">E. 处理与流转</div>
+                      <div class="cs-card-bd">
+                        <div class="cs-field">
+                          <label>内部备注</label>
+                          <el-input type="textarea" :rows="3" v-model="intake.internalNote" maxlength="1000" placeholder="交接说明等，不对客户展示"></el-input>
+                        </div>
+                      </div>
+                    </section>
                   </div>
+                  <aside class="cs-side">
+                    <section class="cs-card">
+                      <div class="cs-card-hd">填写说明</div>
+                      <div class="cs-card-bd">
+                        <details class="cs-help" open>
+                          <summary>需要填写</summary>
+                          <ul>
+                            <li>A. 渠道。企微群时，群名称必填。消息摘要选填</li>
+                            <li>B. 客户名称。客户 ID 自己填写。联系人选填</li>
+                            <li>B. 客户类型：直销、强国、代理、内部、其他</li>
+                            <li>B. 产品线由销售填写，可以修改</li>
+                            <li>C. 问题大类。有子类时，问题子类必填。紧急度：P0 紧急、P1 高、P2 中、P3 低</li>
+                            <li>D. 问题描述。邮箱渠道时，邮箱必填</li>
+                          </ul>
+                        </details>
+                      </div>
+                    </section>
+                  </aside>
                 </div>
-                <div class="portal-field">
-                  <label><i>*</i>客户类型<el-tooltip content="由客服填写，区分直客和强国。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                  <el-select v-model="intake.customerType" placeholder="请选择客户类型" style="width:100%">
-                    <el-option v-for="c in customerTypeOptions" :key="'sa-ct'+c" :label="c" :value="c"></el-option>
-                  </el-select>
-                </div>
-                <div class="portal-field">
-                  <label><i>*</i>问题详情</label>
-                  <div
-                    ref="detailEditor"
-                    class="rich-editor portal-editor"
-                    :class="{ empty: !intake.detail && !detailHasImage }"
-                    contenteditable="true"
-                    data-placeholder="请描述问题，可直接粘贴文字和图片"
-                    @paste="onDetailPaste"
-                    @input="syncDetail"
-                  ></div>
-                </div>
-                <div class="portal-field">
-                  <label>附件</label>
-                  <div class="upload-box">
-                    <el-button size="small" @click="pickAttachment">上传附件</el-button>
-                    <span class="attach-hint">可选，可上传多个文件，单个不超过 10MB</span>
-                    <input ref="attachInput" class="attach-input" type="file" multiple @change="onIntakeFiles">
-                    <ul class="attach-list" v-if="intake.files.length">
-                      <li class="attach-item" v-for="(f, i) in intake.files" :key="f.id">
-                        <img v-if="isImageFile(f)" :src="f.url" alt="">
-                        <span>{{ f.name }}</span>
-                        <span class="attach-size">{{ f.sizeText }}</span>
-                        <button type="button" class="attach-remove" @click="removeIntakeFile(i)">删除</button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="portal-block">
-                <div class="portal-block-hd">系统客户信息</div>
-                <div class="portal-field">
-                  <label><i>*</i>客户单位全称</label>
-                  <p class="portal-note">填写客户单位全称，系统自动匹配客户 ID，并带出客户进度、账号和产品项目。</p>
-                  <el-autocomplete
-                    v-model="intake.orgName"
-                    :fetch-suggestions="suggestOrg"
-                    placeholder="请输入客户单位全称"
-                    style="width:100%"
-                    @input="matchCustomerByOrg"
-                    @select="pickOrgMatch"
-                  >
-                    <template slot-scope="{ item }">
-                      <span>{{ item.value }}</span>
-                      <span class="org-suggest-id">{{ item.id }}</span>
-                    </template>
-                  </el-autocomplete>
-                </div>
-                <div class="portal-field">
-                  <label>客户 ID</label>
-                  <div class="portal-readonly" :class="intake.customerId ? 'org-hit' : (intake.orgName ? 'org-miss' : '')">{{ intake.customerId || (intake.orgName ? '未匹配到客户' : '填写客户单位全称后自动匹配') }}</div>
-                </div>
-                <div class="portal-field">
-                  <label>客户进度</label>
-                  <div class="portal-readonly">{{ intake.customerStatus || '—' }}</div>
-                </div>
-                <div class="portal-field">
-                  <label>客户类型</label>
-                  <div class="portal-readonly">{{ systemCustomerType({ customerId: intake.customerId }) || '—' }}</div>
-                </div>
-                <div class="portal-field">
-                  <label>产品项目<el-tooltip content="系统按客户 ID 自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                  <div class="portal-readonly">{{ accountProduct({ customerId: intake.customerId }) || '—' }}</div>
-                </div>
-                <div class="portal-field">
-                  <label>联系人</label>
-                  <el-input v-model="intake.contactName" placeholder="选填"></el-input>
-                </div>
-                <div class="portal-field">
-                  <label>联系电话</label>
-                  <el-input v-model="intake.phone" placeholder="选填"></el-input>
-                </div>
-                <div class="portal-field">
-                  <label><i v-if="emailRequired">*</i>邮箱</label>
-                  <el-input v-model="intake.email" placeholder="请填写客户邮箱"></el-input>
-                </div>
-                <div class="portal-field">
-                  <label>客户账号</label>
-                  <el-input v-model="intake.account" placeholder="选填，填写单位全称后可自动带出"></el-input>
+                <div class="cs-footer">
+                  <button type="button" class="portal-ghost" @click="resetIntake">清空</button>
+                  <button type="button" class="portal-submit" @click="submitIntake">提交工单</button>
                 </div>
               </div>
             </template>
@@ -1527,7 +1593,7 @@
                 </div>
               </section>
             </template>
-            <div class="portal-actions" v-if="intake.reportType!=='客服提交'">
+            <div class="portal-actions" v-if="intake.reportType==='客户提交'">
               <button type="button" class="portal-ghost" @click="resetIntake">清空</button>
               <button type="button" class="portal-submit" @click="submitIntake">提交</button>
             </div>
@@ -1943,7 +2009,7 @@
                   <el-option v-for="p in productOptions" :key="'dp'+p" :label="p" :value="p"></el-option>
                 </el-select>
               </div></div>
-              <div class="info-item"><div class="info-label">客户类型<el-tooltip content="由客服填写，区分直客和强国。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></div><div class="info-value">
+              <div class="info-item"><div class="info-label">客户类型<el-tooltip content="由客服填写，可选直销、强国、代理、内部、其他。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></div><div class="info-value">
                 <el-select v-model="detailEdit.customerType" size="mini" placeholder="请选择" style="width:180px">
                   <el-option v-for="c in customerTypeOptions" :key="'dt'+c" :label="c" :value="c"></el-option>
                 </el-select>
@@ -2827,7 +2893,8 @@ TICKETS.forEach(function (t, i) {
   if (!t.phone && /^1\d{10}$/.test(contact)) t.phone = contact;
   if (!t.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) t.email = contact;
   if (!t.firstHandler && t.handler) t.firstHandler = t.handler;
-  if (t.customerType !== '直客' && t.customerType !== '强国') t.customerType = '直客';
+  if (t.customerType === '直客') t.customerType = '直销';
+  if (['直销', '强国', '代理', '内部', '其他'].indexOf(t.customerType) < 0) t.customerType = '直销';
   if ((t.internalResult === '驳回' || t.internalResult === '拒绝') && t.customerOwner && !t.problemLog) {
     t.poolAt = t.poolAt || t.transferredAt || t.createdAt;
     t.problemLog = {
@@ -2974,12 +3041,13 @@ new Vue({
       customerStatusOptions: ['正式客户', '初次接触', '上门拜访', '开通试用', '产品培训', '提案报价', '协议商谈', '客户交接', '客户使用', '客户续费', '客户失败', '客户失败-新签', '客户失败-续签'],
       level1Options: CATEGORY_GROUPS.map(item => item.name),
       productOptions: ['索骥', '校对通', '新浪舆情通', '新媒通', '云能力', '安巡通', '城感通', '模力通', '数咖', '数察通DataQ', '知知通', '文稿通', '版权通', '品誉通', '蜜度官网'],
-      customerTypeOptions: ['直客', '强国'],
+      customerTypeOptions: ['直销', '强国', '代理', '内部', '其他'],
+      urgencyOptions: ['P0 紧急', 'P1 高', 'P2 中', 'P3 低'],
       intake: {
         reportType: '客户提交', channel: '蜜度官网', product: '', customer: '', customerId: '', leadId: '',
         customerStatus: '', contact: '', contactName: '', phone: '', email: '', department: '', leadOwner: '', customerOwner: '', orgName: '',
-        customerType: '', account: '', quickGroup: false,
-        categoryL1: '', category2: '', categorySource: '', detail: '', detailHtml: '', files: []
+        customerType: '', account: '', quickGroup: false, groupName: '', messageSummary: '', internalNote: '',
+        categoryL1: '', category2: '', categorySource: '', urgency: '', detail: '', detailHtml: '', files: []
       },
       stageOptions: ['待处理', '处理中', '待确认完结', '已完结', '超时完结'],
       evalStatusOptions: ['已评价', '未评价'],
@@ -3140,6 +3208,9 @@ new Vue({
     },
     emailRequired() {
       return this.intake.channel === '邮箱';
+    },
+    csGroupChannel() {
+      return /群/.test(this.intake.channel || '');
     },
     detailHasImage() {
       return /<img\b/i.test(this.intake.detailHtml || '');
@@ -4124,8 +4195,8 @@ new Vue({
       this.intake = {
         reportType: role, channel: role === '客户提交' ? '蜜度官网' : '', product: '', customer: '', customerId: '', leadId: '',
         customerStatus: '', contact: '', contactName: '', phone: '', email: '', department: '', leadOwner: '', customerOwner: '', orgName: '',
-        customerType: '', account: '', quickGroup: false,
-        categoryL1: '', category2: '', categorySource: '', detail: '', detailHtml: '', files: []
+        customerType: '', account: '', quickGroup: false, groupName: '', messageSummary: '', internalNote: '',
+        categoryL1: '', category2: '', categorySource: '', urgency: '', detail: '', detailHtml: '', files: []
       };
       this.$nextTick(() => {
         if (this.$refs.detailEditor) this.$refs.detailEditor.innerHTML = '';
@@ -4367,7 +4438,6 @@ new Vue({
         this.intake.customerId = '';
         this.intake.leadId = '';
       } else if (role === '销售提交') {
-        this.intake.leadId = '';
         if (this.intake.channel === '蜜度官网') this.intake.channel = '';
         this.matchCustomerByOrg();
       } else if (this.intake.channel === '蜜度官网') {
@@ -4417,14 +4487,12 @@ new Vue({
     applyMatchedCustomer(id) {
       const found = CUSTOMER_BOOK[id];
       if (!found) return;
-      this.intake.customerId = id;
       this.intake.customer = found.name;
       this.intake.orgName = found.name;
       this.intake.customerStatus = found.status || '';
       this.intake.account = found.account || '';
     },
     clearMatchedCustomer() {
-      this.intake.customerId = '';
       this.intake.customer = '';
       this.intake.customerStatus = '';
       this.intake.account = '';
@@ -4441,9 +4509,10 @@ new Vue({
       const fields = [
         { label: isCustomer ? '产品项目' : '产品线', value: form.product }
       ];
-      if (isCs) {
+      if (isCs || isSales) {
         fields.push({ label: '问题大类', value: form.categoryL1 });
         if (this.categoryChildren(form.categoryL1).length) fields.push({ label: '问题子类', value: form.category2 });
+        fields.push({ label: '紧急度', value: form.urgency });
       }
       if (!isCustomer) fields.push({ label: '反馈渠道', value: form.channel });
       if (isCs || isSales) fields.push({ label: '客户类型', value: form.customerType });
@@ -4451,19 +4520,23 @@ new Vue({
       if (this.emailRequired) fields.push({ label: '邮箱', value: form.email });
       if (!this.requireFields(fields)) return;
       const customerId = String(form.customerId || '').trim();
-      const leadId = isSales ? '' : String(form.leadId || '').trim();
+      const leadId = isCustomer ? '' : String(form.leadId || '').trim();
       const orgName = String(form.orgName || '').trim();
       if (isCustomer || isCs || isSales) {
         if (!orgName) {
-          this.$message.warning(isSales ? '请填写客户单位全称' : '请填写单位全称');
+          this.$message.warning(isCustomer ? '请填写单位全称' : '请填写客户名称');
           return;
         }
+      }
+      if ((isCs || isSales) && this.csGroupChannel && !String(form.groupName || '').trim()) {
+        this.$message.warning('请填写群名称');
+        return;
       }
       if (!isCustomer && customerId && !/^\d{6}$/.test(customerId)) {
         this.$message.warning('客户 ID 为 6 位数字');
         return;
       }
-      if (!isCustomer && !isSales && leadId && !/^2\d{5}$/.test(leadId)) {
+      if (!isCustomer && leadId && !/^2\d{5}$/.test(leadId)) {
         this.$message.warning('线索 ID 为 2 开头的 6 位数字');
         return;
       }
@@ -4471,16 +4544,9 @@ new Vue({
         this.$message.warning('请填写问题详情');
         return;
       }
-      const found = !isCustomer && customerId ? CUSTOMER_BOOK[customerId] : null;
-      const customerName = found ? found.name : orgName;
+      const customerName = orgName;
       const channel = isCustomer ? '蜜度官网' : form.channel;
       const plain = (form.detail || '').replace(/\s+/g, ' ').trim();
-      if (isSales) {
-        const ai = this.classifyByAi(plain);
-        form.categoryL1 = ai.l1;
-        form.category2 = ai.l2;
-        form.categorySource = ai.l1 ? 'ai' : '';
-      }
       const time = this.nowText();
       const cfId = this.nextCfId();
       const ticket = {
@@ -4498,13 +4564,16 @@ new Vue({
         product: form.product,
         customer: customerName,
         customerId: isCustomer ? '' : customerId,
-        leadId: (isCustomer || isSales) ? '' : leadId,
+        leadId: isCustomer ? '' : leadId,
         customerStatus: isCustomer ? '' : form.customerStatus,
         account: form.account || '',
         accountValid: '',
         contactName: form.contactName || '',
         phone: form.phone || '',
         email: form.email || '',
+        groupName: (isCs || isSales) ? String(form.groupName || '').trim() : '',
+        messageSummary: (isCs || isSales) ? String(form.messageSummary || '').trim() : '',
+        internalNote: (isCs || isSales) ? String(form.internalNote || '').trim() : '',
         contact: form.phone || form.email || '',
         leadOwner: '',
         customerOwner: form.customerOwner,
@@ -4520,7 +4589,7 @@ new Vue({
         submittedBy: this.currentUser.name,
         firstResponseAt: '',
         firstResolved: 'N',
-        risk: '',
+        risk: (isCs || isSales) ? (form.urgency || '') : '',
         result: '',
         surveySuggestion: '',
         staffScore: null,
@@ -4534,7 +4603,7 @@ new Vue({
         category1: form.categoryL1,
         category2: form.category2 || '',
         categorySource: form.categorySource || 'manual',
-        priority: 'P2 中',
+        priority: (isCs || isSales) ? (form.urgency || '') : 'P2 中',
         status: '新增',
         slaResp: 'pending',
         slaReply: 'pending',
@@ -4547,8 +4616,7 @@ new Vue({
         files: (form.files || []).slice(),
         logs: [{
           time: time,
-          text: form.reportType + '已在智齿界面提报，同步到 BOSS。' + (isCustomer ? '单位全称：' + orgName : (isSales ? '客户单位全称：' : '单位全称：') + orgName + '，客户 ID：' + (customerId || '未匹配') + (isCs && leadId ? '，线索 ID：' + leadId : '')) + '。账号：' + (form.account || '未填写') + ((isCs || isSales) ? '。客户类型：' + form.customerType : '') + '。原路回复：' + this.replyPath(channel)
-            + (isSales && form.categoryL1 ? '。AI 判定问题大类「' + form.categoryL1 + '」' + (form.category2 ? '，问题子类「' + form.category2 + '」' : '') : '')
+          text: form.reportType + '已在智齿界面提报，同步到 BOSS。' + (isCustomer ? '单位全称：' + orgName : '客户名称：' + orgName + '，客户 ID：' + (customerId || '未填写') + (leadId ? '，线索 ID：' + leadId : '')) + '。账号：' + (form.account || '未填写') + ((isCs || isSales) ? '。客户类型：' + form.customerType : '') + '。原路回复：' + this.replyPath(channel)
             + ((form.files && form.files.length) ? ' 附件 ' + form.files.length + ' 个。' : ''),
           actor: '系统',
           level: ''
