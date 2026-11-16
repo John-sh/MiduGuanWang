@@ -134,16 +134,69 @@
     .attach-item a { color: var(--primary); cursor: pointer; }
     .attach-size { color: var(--text-muted); font-size: 12px; }
     .attach-remove { margin-left: auto; color: #f5222d; cursor: pointer; background: none; border: 0; padding: 0; font-size: 12px; }
-    .survey-card { max-width: 640px; }
-    .survey-q { margin: 22px 0; }
-    .survey-q-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
-    .score-row { display: flex; gap: 10px; }
-    .score-btn {
-      width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--line); background: #fff;
-      cursor: pointer; font-size: 16px; font-weight: 600; color: var(--text);
+    .csat-panel { background: transparent; box-shadow: none; padding: 8px 8px 28px; }
+    .csat { max-width: 1080px; margin: 0 auto; }
+    .csat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; color: #8c8c8c; font-size: 13px; }
+    .csat-top button { border: 0; background: transparent; color: #1677ff; cursor: pointer; font-size: 13px; padding: 0; }
+    .csat-hero {
+      background: #1677ff; color: #fff; border-radius: 14px; padding: 22px 28px; margin-bottom: 16px;
     }
-    .score-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-    .score-caption { display: flex; justify-content: space-between; width: 260px; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+    .csat-hero-k { font-size: 13px; opacity: .9; }
+    .csat-hero h2 { margin: 6px 0 8px; font-size: 26px; font-weight: 700; letter-spacing: .2px; }
+    .csat-hero p { margin: 0; font-size: 13px; line-height: 1.6; opacity: .92; }
+    .csat-grid { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: stretch; }
+    .csat-card { background: #fff; border: 1px solid #eef1f6; border-radius: 14px; padding: 20px 22px 22px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
+    .csat-card h3 { margin: 0 0 14px; font-size: 16px; font-weight: 700; }
+    .csat-card.is-brief { height: 0; min-height: 100%; overflow: hidden; }
+    .csat-kv { display: grid; grid-template-columns: 76px 1fr; gap: 12px 10px; font-size: 13px; flex: none; }
+    .csat-kv .k, .csat-close .k { color: #8c8c8c; }
+    .csat-kv .v { color: #1f2937; line-height: 1.6; border-bottom: 1px solid #f2f4f7; padding-bottom: 10px; word-break: break-all; }
+    .csat-close { flex: 1; min-height: 0; display: flex; flex-direction: column; margin-top: 14px; }
+    .csat-close-text {
+      flex: 1; min-height: 0; margin-top: 8px; padding: 14px 16px; overflow: auto;
+      background: #f7f9fc; border-radius: 10px; color: #1f2937; font-size: 14px;
+      line-height: 1.75; white-space: pre-wrap; word-break: break-word;
+    }
+    .csat-scores { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; }
+    .csat-q-title { font-size: 14px; font-weight: 650; color: #1f2937; }
+    .csat-q-sub { margin-top: 4px; font-size: 12px; color: #8c8c8c; line-height: 1.5; }
+    .csat-stars { display: flex; gap: 8px; margin-top: 12px; }
+    .csat-star {
+      width: 36px; height: 36px; border: 0; background: transparent; cursor: pointer;
+      font-size: 28px; line-height: 1; color: #d9d9d9; padding: 0;
+    }
+    .csat-star.on { color: #faad14; }
+    .csat-label { margin: 18px 0 8px; font-size: 14px; font-weight: 650; }
+    .csat-label span { margin-left: 6px; font-size: 12px; font-weight: 400; color: #8c8c8c; }
+    .csat-hint { margin: 8px 0 0; font-size: 12px; color: #8c8c8c; line-height: 1.6; }
+    .csat-actions { display: flex; justify-content: center; margin-top: auto; padding-top: 16px; }
+    .csat-submit {
+      min-width: 160px; height: 42px; padding: 0 28px; border: 0; border-radius: 8px;
+      background: #1677ff; color: #fff; font-size: 15px; cursor: pointer;
+    }
+    .csat-submit:hover { background: #4096ff; }
+    .csat-submit.ghost { background: #fff; color: #1f2937; border: 1px solid #e5e7eb; }
+    .csat-thanks { text-align: center; padding-top: 28px; }
+    .csat-check {
+      width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 50%;
+      background: #f6ffed; color: #52c41a; display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 700;
+    }
+    .csat-thanks h3 { margin-bottom: 6px; }
+    .csat-thanks-sub { margin: 0 0 16px; color: #8c8c8c; font-size: 13px; }
+    .csat-note { margin: 0 0 16px; padding: 10px 12px; border-radius: 8px; background: #f6ffed; color: #389e0d; font-size: 13px; line-height: 1.6; text-align: left; }
+    .csat-note.is-low { background: #fff7e6; color: #d48806; }
+    .csat-result { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0; font-size: 13px; color: #1f2937; }
+    .csat-result b { color: #faad14; font-weight: 500; letter-spacing: 1px; }
+    .csat-back { width: 100%; margin-top: 8px; }
+    .csat-demo { margin-top: 10px; font-size: 13px; color: #8c8c8c; }
+    .csat-demo button { border: 0; background: transparent; color: #1677ff; cursor: pointer; font-size: 13px; padding: 0; }
+    .csat-switch {
+      margin-top: 16px; padding: 10px 12px; border: 1px dashed #f5c16c; border-radius: 8px;
+      background: #fffbe6; color: #ad6800; font-size: 12px; line-height: 1.7;
+    }
+    .csat-switch button { border: 0; background: transparent; color: #1677ff; cursor: pointer; font-size: 12px; padding: 0; }
+    .csat-foot { margin: 12px 0 0; text-align: center; color: #b0b0b0; font-size: 12px; line-height: 1.7; }
     .filter-actions { display: flex; gap: 8px; padding-top: 2px; }
     .toolbar {
       display: flex; align-items: center; justify-content: space-between;
@@ -287,7 +340,9 @@
     .field-note { margin-left: 4px; color: #909399; cursor: help; font-size: 14px; }
     .col-cfid, .col-lead, .col-custid, .col-inid { width: 120px; }
     .col-ctype { width: 90px; }
-    .col-product, .col-channel, .col-cat, .col-sub, .col-risk, .col-handler, .col-internal, .col-platform { width: 110px; }
+    .col-biz, .col-role { width: 96px; }
+    .col-product, .col-channel, .col-cat, .col-sub, .col-risk, .col-internal, .col-platform { width: 110px; }
+    .col-handler { width: 120px; }
     .col-detail, .col-summary, .col-expect { width: 180px; }
     .col-stage, .col-remain, .col-result { width: 130px; }
     .col-sat { width: 70px; } .col-action { width: 220px; }
@@ -484,14 +539,74 @@
     .mine-status.is-rated { color: #722ed1; background: #f9f0ff; }
     .portal-note { margin: -2px 0 8px; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
     .id-stack { display: flex; flex-direction: column; gap: 8px; }
-    .mine-cards { display: none; }
-    .mine-card {
-      width: 100%; text-align: left; border: 1px solid #e6ebf2; border-radius: 10px; background: #fff;
-      padding: 14px 14px 12px; cursor: pointer;
+    .portal-card.mine-home { background: transparent; box-shadow: none; padding: 4px 0 24px; min-height: 0; }
+    .mine-home { max-width: none; }
+    .mine-home .portal-head { align-items: center; margin-bottom: 16px; }
+    .mine-home .portal-head p { margin: 8px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6; }
+    .mine-continue {
+      width: auto; min-width: 128px; height: 36px; margin: 0; padding: 0 16px; flex-shrink: 0;
+      border: 0; border-radius: 8px; background: #1677ff; color: #fff; font-size: 14px; cursor: pointer;
     }
-    .mine-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .mine-card-title { margin-top: 8px; font-size: 15px; font-weight: 600; line-height: 1.5; word-break: break-all; }
-    .mine-card-meta { margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+    .mine-continue:hover { background: #4096ff; }
+    .mine-feed {
+      display: flex; flex-direction: column; gap: 0; background: #fff;
+      border: 1px solid #e6ebf2; border-radius: 12px; overflow: hidden;
+    }
+    .mine-feed-card {
+      display: flex; align-items: center; gap: 20px;
+      background: #fff; border: 0; border-bottom: 1px solid #eef2f6; border-radius: 0;
+      padding: 14px 18px; box-shadow: none;
+    }
+    .mine-feed-card:last-child { border-bottom: 0; }
+    .mine-feed-hd { display: flex; align-items: center; gap: 12px; flex: 0 1 320px; min-width: 200px; }
+    .mine-feed-hd h3 {
+      margin: 0; flex: 1; min-width: 0; font-size: 14px; font-weight: 600; line-height: 1.45; color: #1f2937;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mine-pill { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-size: 13px; line-height: 1; }
+    .mine-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .mine-pill.is-ing { color: #1677ff; }
+    .mine-pill.is-wait { color: #fa8c16; }
+    .mine-pill.is-done, .mine-pill.is-rated { color: #52c41a; }
+    .mine-feed-meta { margin: 0; flex: 0 0 auto; font-size: 12px; color: #8c8c8c; white-space: nowrap; }
+    .mine-feed-desc {
+      margin: 0; flex: 1; min-width: 0; font-size: 14px; line-height: 1.6; color: #4b5563;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .mine-feed-actions { display: flex; gap: 8px; margin: 0; flex-shrink: 0; }
+    .mine-feed { display: none; }
+    .mine-sheet {
+      display: flex; flex-direction: column; background: #fff;
+      border: 1px solid #e6ebf2; border-radius: 12px; overflow: hidden;
+    }
+    .mine-sheet-hd, .mine-sheet-row {
+      display: grid;
+      grid-template-columns: 108px 96px 132px 108px 120px minmax(160px, 1fr) 108px;
+      align-items: center; gap: 12px; padding: 12px 16px;
+    }
+    .mine-sheet-hd {
+      background: #fafafa; color: #909399; font-size: 13px; font-weight: 500;
+      border-bottom: 1px solid #eef2f6;
+    }
+    .mine-sheet-row { border-bottom: 1px solid #eef2f6; font-size: 13px; color: #1f2937; }
+    .mine-sheet-row:last-child { border-bottom: 0; }
+    .mine-sheet-row > span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mine-sheet-ops { display: flex; align-items: center; gap: 10px; }
+    .mine-sheet-link {
+      border: 0; background: transparent; color: #1677ff; cursor: pointer;
+      padding: 0; font-size: 13px; text-align: left; white-space: nowrap;
+    }
+    .mine-feed-btn {
+      height: 32px; padding: 0 14px; border-radius: 6px; border: 1px solid #1677ff;
+      background: #1677ff; color: #fff; font-size: 13px; cursor: pointer;
+    }
+    .mine-feed-btn.ghost { background: #fff; color: #1677ff; }
+    .mine-note {
+      margin-top: 16px; padding: 10px 12px; border: 1px dashed #f5c16c; border-radius: 8px;
+      background: #fffbe6; color: #ad6800; font-size: 12px; line-height: 1.6;
+    }
+    .mine-path { margin-top: 18px; text-align: center; color: #8c8c8c; font-size: 12px; line-height: 1.7; }
+    .mine-path button { border: 0; background: transparent; color: #1677ff; cursor: pointer; font-size: 13px; padding: 0; }
     @media (max-width: 1100px) {
       .customer-portal { flex-direction: column; padding-top: 8px; }
       .portal-nav { flex-direction: row; width: auto; padding-top: 0; }
@@ -511,6 +626,51 @@
     .ai-brief { background: #f7f9fc; border: 1px solid #e6eef8; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.7; color: #606266; }
     .ai-brief h4 { margin: 0 0 8px; font-size: 13px; color: #303133; }
     .ai-brief b { color: #303133; font-weight: 600; }
+    .prog-dialog { border-radius: 16px; }
+    .prog-dialog .el-dialog__body { padding: 4px 20px 18px; background: #f5f7fb; }
+    .prog-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: #8c8c8c; font-size: 13px; }
+    .prog-top button { border: 0; background: transparent; color: #1677ff; cursor: pointer; font-size: 13px; padding: 0; }
+    .prog-hero { background: #1677ff; color: #fff; border-radius: 14px; padding: 18px 22px 16px; }
+    .prog-k { font-size: 13px; opacity: .9; }
+    .prog-hero h3 { margin: 0 0 8px; font-size: 22px; font-weight: 700; line-height: 1.4; }
+    .prog-meta { font-size: 13px; opacity: .95; }
+    .prog-pill {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+      padding: 3px 10px; border-radius: 12px; background: rgba(255,255,255,.18); font-size: 12px;
+    }
+    .prog-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #95f5b4; }
+    .prog-steps {
+      margin-top: 12px; background: #fff; border: 1px solid #e8eef5; border-radius: 12px;
+      padding: 16px 8px 10px;
+    }
+    .prog-steps .track-steps { margin: 0; }
+    .prog-stack { display: flex; flex-direction: column; margin-top: 12px; gap: 12px; }
+    .prog-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: stretch; }
+    .prog-cards > :only-child { grid-column: 1 / -1; }
+    .prog-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .prog-action-btns { display: flex; align-items: center; gap: 12px; }
+    .prog-card { background: #fff; border: 1px solid #e8eef5; border-radius: 12px; padding: 14px 16px; }
+    .prog-card.is-invite { background: #f3fbf6; border-color: #d9f2e3; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .prog-card.is-result { background: #f6fbf7; border-color: #d9f2e3; }
+    .prog-hd { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; }
+    .prog-hd span { font-size: 12px; font-weight: 500; color: #1677ff; background: #e8f3ff; border-radius: 10px; padding: 1px 8px; }
+    .prog-note { margin: 8px 0 0; color: #8c8c8c; font-size: 12px; line-height: 1.6; }
+    .prog-line { margin: 8px 0 0; font-size: 14px; line-height: 1.7; color: #1f2937; }
+    .prog-time { margin-top: 10px; color: #8c8c8c; font-size: 12px; }
+    .prog-invite-t { font-size: 14px; font-weight: 700; color: #1f2937; }
+    .prog-go {
+      flex-shrink: 0; height: 36px; padding: 0 16px; border: 0; border-radius: 8px;
+      background: #1677ff; color: #fff; cursor: pointer; font-size: 14px;
+    }
+    .prog-result-text { margin-top: 8px; color: #389e0d; font-size: 16px; font-weight: 700; line-height: 1.5; }
+    .prog-linebtn, .prog-solid {
+      height: 36px; padding: 0 18px; border-radius: 8px; font-size: 14px; cursor: pointer; white-space: nowrap;
+    }
+    .prog-linebtn { border: 1px solid #91caff; background: #fff; color: #1677ff; }
+    .prog-linebtn.is-status { cursor: default; }
+    .prog-solid { border: 0; background: #1677ff; color: #fff; }
+    .prog-hours { text-align: right; color: #8c8c8c; font-size: 12px; }
+    .prog-foot { margin: 14px 0 0; text-align: center; color: #b0b0b0; font-size: 12px; line-height: 1.7; }
     .mine-drawer .el-drawer__body { display: flex; flex-direction: column; height: calc(100% - 56px); padding: 0 20px 16px; box-sizing: border-box; }
     .mine-drawer-form { flex: 1; overflow: auto; padding-right: 4px; }
     .mine-drawer .role-switch { max-width: none; }
@@ -678,14 +838,43 @@
     .cs-help ul { padding-left: 18px; margin: 10px 0 0; }
     .cs-help li { margin: 6px 0; }
     .cs-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 4px 0 8px; }
+    .cs-match { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .cs-match p { margin: 0; color: #6b7280; font-size: 12px; line-height: 1.6; }
     .guest-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin: 4px 0 16px; }
     .guest-hero h2 { margin: 0; font-size: 22px; font-weight: 600; }
     .guest-hero p { margin: 6px 0 0; color: #6b7280; font-size: 13px; line-height: 1.6; }
     .guest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
     .guest-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-    .guest-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; }
-    .guest-products button { height: 40px; border-radius: 8px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; color: #1f2937; }
-    .guest-products button.active { color: #1677ff; border-color: #1677ff; background: #e6f4ff; }
+    .product-picker-trigger {
+      display: flex; align-items: center; width: 100%; height: 40px; padding: 0 30px 0 15px;
+      border: 1px solid #dcdfe6; border-radius: 4px; background: #fff; cursor: pointer;
+      font: inherit; font-size: 14px; color: #c0c4cc; text-align: left; position: relative;
+    }
+    .product-picker-trigger.filled { color: #303133; }
+    .product-picker-trigger:hover, .product-picker-trigger.open { border-color: #1677ff; }
+    .product-picker-trigger > i {
+      position: absolute; right: 10px; top: 13px; color: #c0c4cc; font-size: 14px;
+      transition: transform .2s;
+    }
+    .product-picker-trigger.open > i { transform: rotate(180deg); }
+    .product-picker-pop.el-popover {
+      padding: 4px 0; border-radius: 8px; max-width: calc(100vw - 24px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
+    }
+    .product-picker-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 16px; border-bottom: 1px dashed #e5e7eb;
+    }
+    .product-picker-row:last-child { border-bottom: none; }
+    .product-picker-label { flex: 0 0 72px; color: #8c8c8c; font-size: 13px; line-height: 32px; }
+    .product-picker-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+    .product-picker-opts button {
+      height: 32px; padding: 0 14px; border: 1px solid #d9d9d9; border-radius: 6px;
+      background: #fff; color: #303133; font: inherit; font-size: 14px; cursor: pointer;
+    }
+    .product-picker-opts button:hover, .product-picker-opts button.on {
+      border-color: #1677ff; color: #1677ff; background: #f0f7ff;
+    }
     .guest-upload { border: 1px dashed #e5e7eb; border-radius: 8px; padding: 16px; background: #fafafa; }
     .mine-home .mine-filter { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 14px 2px; margin-bottom: 16px; }
     .mine-home .mine-table-wrap { border: 1px solid #e5e7eb; border-radius: 8px; overflow: auto; }
@@ -743,6 +932,20 @@
       .role-switch button { height: 44px; }
       .type-card { width: 100%; }
       .attach-hint { display: block; margin: 8px 0 0; }
+      .mine-home { max-width: none; }
+      .mine-home .portal-head { align-items: flex-start; }
+      .mine-continue { width: 100%; height: 44px; font-size: 15px; }
+      .mine-sheet { display: none; }
+      .mine-feed { display: flex; gap: 12px; background: transparent; border: 0; border-radius: 0; overflow: visible; }
+      .mine-feed-card {
+        display: block; border: 1px solid #e6ebf2; border-radius: 12px;
+        padding: 16px 16px 14px; box-shadow: 0 1px 2px rgba(15, 35, 70, .04);
+      }
+      .mine-feed-hd { display: flex; align-items: flex-start; min-width: 0; }
+      .mine-feed-hd h3 { white-space: normal; overflow: visible; text-overflow: clip; font-size: 16px; }
+      .mine-feed-meta { margin-top: 8px; white-space: normal; }
+      .mine-feed-desc { margin: 8px 0 0; white-space: normal; overflow: visible; text-overflow: clip; }
+      .mine-feed-actions { margin-top: 12px; }
       .mine-filter.el-form--inline .el-form-item { display: block; margin-right: 0; width: 100%; }
       .mine-filter .el-form-item__label { float: none; display: block; width: auto !important; text-align: left; line-height: 22px; padding: 0 0 4px; }
       .mine-filter .el-form-item__content { margin-left: 0 !important; width: 100%; }
@@ -776,8 +979,24 @@
       .survey-card .el-form-item__content { margin-left: 0 !important; }
       .el-message-box { width: calc(100vw - 32px) !important; }
       .el-input__inner, .el-textarea__inner { font-size: 16px; }
-      .score-row { flex-wrap: wrap; }
-      .score-caption { width: 100%; }
+      .prog-stack { display: flex; flex-direction: column; align-items: stretch; }
+      .prog-cards { display: flex; flex-direction: column; }
+      .prog-invite { order: 1; }
+      .prog-result { order: 2; }
+      .prog-actions { align-items: stretch; }
+      .prog-action-btns { flex-direction: column; align-items: stretch; }
+      .prog-linebtn, .prog-solid { width: 100%; height: 44px; font-size: 15px; }
+      .prog-hours { text-align: center; }
+      .prog-hero h3 { font-size: 18px; }
+      .prog-card.is-invite { flex-direction: column; align-items: flex-start; }
+      .csat { max-width: 480px; }
+      .csat-hero { padding: 18px 16px; }
+      .csat-hero h2 { font-size: 22px; }
+      .csat-grid, .csat-scores { grid-template-columns: 1fr; }
+      .csat-card.is-brief { height: auto; min-height: 0; overflow: visible; }
+      .csat-close-text { max-height: 220px; }
+      .csat-actions { display: block; }
+      .csat-submit, .csat-back { width: 100%; }
       .submit-success-dialog .el-dialog__body { padding: 24px 16px 16px; }
       .ok-row { flex-direction: column; }
     }
@@ -794,7 +1013,7 @@
         <h2>已转工单</h2>
         <div class="sys-grid">
           <div class="k">问题来源</div><div>客户反馈</div>
-          <div class="k">外部反馈工单 ID</div><div>{{ transferDone.externalId }}</div>
+          <div class="k">客户反馈ID</div><div>{{ transferDone.externalId }}</div>
           <div class="k">工单类型</div><div>{{ transferDone.ticketKind }}</div>
           <div class="k">问题类型</div><div>{{ transferDone.problemType }}</div>
           <div class="k">优先级</div><div>{{ transferDone.priority }}</div>
@@ -810,7 +1029,7 @@
             <el-form-item label="问题来源" required>
               <el-input value="客户反馈" disabled></el-input>
             </el-form-item>
-            <el-form-item label="外部反馈工单 ID" required>
+            <el-form-item label="客户反馈ID" required>
               <el-input :value="internalForm.externalId" disabled></el-input>
               <div class="field-tip">从 CF00001 起编号。单独存储，不写入描述正文。</div>
             </el-form-item>
@@ -830,25 +1049,25 @@
               <div class="field-tip">只保存链接。不用描述里的图片占位代替附件。</div>
             </el-form-item>
             <el-form-item required>
-              <template slot="label">产品线<el-tooltip content="客户反馈的问题产品线，由客服判定，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
-              <el-select v-model="internalForm.productLine" placeholder="请选择问题产品线" style="width:100%">
+              <template slot="label">产品项目<el-tooltip content="客户反馈的产品项目，由客服填写，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
+              <el-select v-model="internalForm.productLine" placeholder="请选择" style="width:100%">
                 <el-option v-for="p in productOptions" :key="'pl'+p" :label="p" :value="p"></el-option>
               </el-select>
             </el-form-item>
           </div>
           <div class="block">
             <div class="block-hd">系统客户信息</div>
-            <el-form-item label="客户名称" required>
+            <el-form-item label="单位全称" required>
               <el-input :value="internalForm.customerName || '外部系统未提供'" disabled></el-input>
             </el-form-item>
-            <el-form-item label="客户 ID" required>
-              <el-input v-model="internalForm.customerId" maxlength="6" placeholder="请输入 6 位客户 ID"></el-input>
+            <el-form-item label="客户ID" required>
+              <el-input v-model="internalForm.customerId" maxlength="6" placeholder="请输入 6 位客户ID"></el-input>
             </el-form-item>
             <el-form-item label="客户账号">
               <el-input v-model="internalForm.account" placeholder="选填"></el-input>
             </el-form-item>
             <el-form-item>
-              <template slot="label">产品项目<el-tooltip content="系统按客户 ID 自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
+              <template slot="label">产品项目<el-tooltip content="系统按客户ID自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
               <el-input :value="accountProduct({ customerId: internalForm.customerId }) || '—'" disabled></el-input>
             </el-form-item>
             <el-form-item label="客户类型">
@@ -900,7 +1119,7 @@
       <div v-else-if="closeDone" class="transfer-done">
         <h2>已完结</h2>
         <div class="sys-grid">
-          <div class="k">客户反馈 ID</div><div>{{ closeDone.externalId }}</div>
+          <div class="k">客户反馈ID</div><div>{{ closeDone.externalId }}</div>
           <div class="k">回复渠道</div><div>{{ closeDone.channel }}</div>
           <div class="k">回复联系方式</div><div>{{ closeDone.replyTo || '—' }}</div>
         </div>
@@ -912,7 +1131,7 @@
         <el-form label-width="168px" size="small">
           <div class="block">
             <div class="block-hd">客户反馈信息</div>
-            <el-form-item label="客户反馈 ID">
+            <el-form-item label="客户反馈ID">
               <el-input :value="closeForm.externalId || '—'" disabled></el-input>
             </el-form-item>
             <el-form-item label="反馈渠道">
@@ -940,7 +1159,7 @@
               <div class="readonly-box">{{ closeForm.detail || '—' }}</div>
             </el-form-item>
             <el-form-item>
-              <template slot="label">产品线<el-tooltip content="客户反馈的问题产品线，由客服判定，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
+              <template slot="label">产品项目<el-tooltip content="客户反馈的产品项目，由客服填写，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
               <el-input :value="closeForm.product || '—'" disabled></el-input>
             </el-form-item>
             <el-form-item>
@@ -950,13 +1169,13 @@
           </div>
           <div class="block">
             <div class="block-hd">系统客户信息</div>
-            <el-form-item label="客户名称">
+            <el-form-item label="单位全称">
               <el-input :value="closeForm.customerName || '—'" disabled></el-input>
             </el-form-item>
-            <el-form-item label="客户 ID">
+            <el-form-item label="客户ID">
               <el-input :value="closeForm.customerId || '—'" disabled></el-input>
             </el-form-item>
-            <el-form-item label="线索 ID">
+            <el-form-item label="线索ID">
               <el-input :value="closeForm.leadId || '—'" disabled></el-input>
             </el-form-item>
             <el-form-item label="客户账号">
@@ -966,7 +1185,7 @@
               <el-input :value="closeForm.department || '—'" disabled></el-input>
             </el-form-item>
             <el-form-item>
-              <template slot="label">产品项目<el-tooltip content="系统按客户 ID 自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
+              <template slot="label">产品项目<el-tooltip content="系统按客户ID自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></template>
               <el-input :value="accountProduct({ customerId: closeForm.customerId }) || '—'" disabled></el-input>
             </el-form-item>
             <el-form-item label="客户类型">
@@ -1021,7 +1240,7 @@
         </div>
       </div>
       <div class="topbar-right">
-        <span>当前用户：客服主管 · 演示账号</span>
+        <span>当前用户：{{ actingName }} · {{ staffRole }}</span>
         <span>需求文档：docs/统一客户反馈工单系统-需求与流程.md</span>
       </div>
     </div>
@@ -1035,11 +1254,17 @@
             <i class="el-icon-share"></i> 闭环流程
           </div>
           <div class="menu-group">工单中心</div>
-          <div class="menu-item" :class="{active: page==='form'}" @click="page='form'">
-            <i class="el-icon-edit-outline"></i> 客户反馈
+          <div class="menu-item" :class="{active: page==='guest'}" @click="openIntake('guest')">
+            <i class="el-icon-edit-outline"></i> 客户填写反馈
+          </div>
+          <div class="menu-item" :class="{active: page==='sales'}" @click="openIntake('sales')">
+            <i class="el-icon-s-custom"></i> 销售填写反馈
+          </div>
+          <div class="menu-item" :class="{active: page==='cs'}" @click="openIntake('cs')">
+            <i class="el-icon-service"></i> 客服填写反馈
           </div>
           <div class="menu-item" :class="{active: page==='mine'}" @click="page='mine'">
-            <i class="el-icon-user"></i> 我的工单
+            <i class="el-icon-user"></i> 我的反馈
             <span class="menu-badge">{{ myTickets.length }}</span>
           </div>
           <div class="menu-item" :class="{active: page==='survey'}" @click="openSurvey">
@@ -1055,7 +1280,7 @@
         </div>
       </aside>
 
-      <main class="main" :class="{'portal-main': page==='form' || page==='mine'}">
+      <main class="main" :class="{'portal-main': isFillPage || page==='mine'}">
         <!-- 闭环流程 -->
         <div v-if="page==='flow'">
           <div class="panel">
@@ -1171,319 +1396,212 @@
           </div>
         </div>
 
-        <div v-if="page==='form' || page==='mine'" class="customer-portal">
-          <nav class="portal-nav">
-            <button type="button" :class="{active: page==='form'}" @click="page='form'">客户反馈</button>
-            <button type="button" :class="{active: page==='mine'}" @click="page='mine'">我的工单</button>
+        <div v-if="isFillPage || page==='mine'" class="customer-portal">
+          <nav class="portal-nav" v-if="page==='guest' || page==='mine'">
+            <button type="button" :class="{active: page==='guest'}" @click="openIntake('guest')">客户填写反馈</button>
+            <button type="button" :class="{active: page==='mine'}" @click="page='mine'">我的反馈</button>
           </nav>
 
-          <div v-if="page==='form'" class="portal-card" :class="{ 'is-cs': intake.reportType==='客服提交', 'is-sales': intake.reportType==='销售提交', 'is-guest': intake.reportType==='客户提交' }">
-            <div class="role-switch">
-              <button type="button" :class="{active: intake.reportType==='客户提交'}" @click="setIntakeRole('客户提交')">客户</button>
-              <button type="button" :class="{active: intake.reportType==='销售提交'}" @click="setIntakeRole('销售提交')">销售</button>
-              <button type="button" :class="{active: intake.reportType==='客服提交'}" @click="setIntakeRole('客服提交')">客服</button>
-            </div>
-            <template v-if="intake.reportType==='客服提交'">
+          <div v-if="isFillPage" class="portal-card" :class="{ 'is-cs': page==='cs', 'is-sales': page==='sales', 'is-guest': page==='guest' }">
+            <template v-if="page==='cs'">
               <div class="cs-sheet">
                 <div class="cs-top">
-                  <h2>新建客服工单</h2>
-                  <div class="cs-no">工单号：<strong>保存后生成</strong></div>
+                  <h2>客服填写反馈</h2>
+                  <div class="cs-no">客户反馈ID：<strong>提交后生成</strong></div>
                 </div>
-                <div class="cs-banner">客服代填。按 A 到 E 填写。客户 ID 自己填写。再判定问题产品线和客户类型。提交后进入客户反馈工单。</div>
-                <div class="cs-layout">
-                  <div class="cs-main">
-                    <section class="cs-card">
-                      <div class="cs-card-hd">A. 受理信息 <span class="cs-badge">渠道与接单</span></div>
-                      <div class="cs-card-bd cs-grid-2">
-                        <div class="cs-field">
-                          <label><i>*</i>渠道</label>
-                          <el-select v-model="intake.channel" placeholder="请选择" style="width:100%">
-                            <el-option v-for="c in channelNames" :key="'cs-ch'+c" :label="c" :value="c"></el-option>
-                          </el-select>
-                        </div>
-                        <div class="cs-field" v-if="csGroupChannel">
-                          <label><i>*</i>群名称</label>
-                          <el-input v-model="intake.groupName" placeholder="请填写企业微信群名称"></el-input>
-                        </div>
-                        <div class="cs-field full">
-                          <label>消息摘要</label>
-                          <el-input type="textarea" :rows="3" v-model="intake.messageSummary" maxlength="500" placeholder="可粘贴关键群消息要点"></el-input>
-                        </div>
-                      </div>
-                    </section>
-                    <section class="cs-card">
-                      <div class="cs-card-hd">B. 客户信息</div>
-                      <div class="cs-card-bd cs-grid-3">
-                        <div class="cs-field">
-                          <label><i>*</i>客户名称</label>
-                          <el-autocomplete
-                            v-model="intake.orgName"
-                            :fetch-suggestions="suggestOrg"
-                            placeholder="签约客户或单位名"
-                            style="width:100%"
-                            @input="matchCustomerByOrg"
-                            @select="pickOrgMatch"
-                          >
-                            <template slot-scope="{ item }">
-                              <span>{{ item.value }}</span>
-                            </template>
-                          </el-autocomplete>
-                        </div>
-                        <div class="cs-field">
-                          <label>客户 ID</label>
-                          <el-input v-model="intake.customerId" maxlength="6" placeholder="请填写 6 位客户 ID"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>线索 ID <span class="cs-hint">选填</span></label>
-                          <el-input v-model="intake.leadId" maxlength="6" placeholder="2 开头的 6 位数字"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>联系人 <span class="cs-hint">选填</span></label>
-                          <el-input v-model="intake.contactName" placeholder="选填"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>联系电话</label>
-                          <el-input v-model="intake.phone" placeholder="手机或固话"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label><i v-if="emailRequired">*</i>邮箱</label>
-                          <el-input v-model="intake.email" placeholder="请填写客户邮箱"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>客户账号</label>
-                          <el-input v-model="intake.account" placeholder="匹配客户后可自动带出"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label><i>*</i>客户类型<el-tooltip content="由客服填写，可选直销、强国、代理、内部、其他。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                          <el-select v-model="intake.customerType" placeholder="请选择" style="width:100%">
-                            <el-option v-for="c in customerTypeOptions" :key="'cs-ct'+c" :label="c" :value="c"></el-option>
-                          </el-select>
-                        </div>
-                        <div class="cs-field">
-                          <label><i>*</i>产品线<el-tooltip content="客户反馈的问题产品线，由客服填写，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                          <el-select v-model="intake.product" placeholder="请选择问题产品线" style="width:100%" filterable>
-                            <el-option v-for="p in productOptions" :key="'cs-'+p" :label="p" :value="p"></el-option>
-                          </el-select>
-                        </div>
-                      </div>
-                    </section>
-                    <section class="cs-card">
-                      <div class="cs-card-hd">C. 问题分类</div>
-                      <div class="cs-card-bd cs-grid-2">
-                        <div class="cs-field">
-                          <label><i>*</i>问题大类</label>
-                          <el-select v-model="intake.categoryL1" placeholder="请选择" style="width:100%" @change="pickCategory">
-                            <el-option v-for="c in level1Options" :key="'cs-in'+c" :label="c" :value="c"></el-option>
-                          </el-select>
-                        </div>
-                        <div class="cs-field">
-                          <label><i v-if="categoryChildren(intake.categoryL1).length">*</i>问题子类</label>
-                          <el-select v-model="intake.category2" placeholder="请先选择大类" style="width:100%" :disabled="!categoryChildren(intake.categoryL1).length" @change="pickSubCategory">
-                            <el-option v-for="c in categoryChildren(intake.categoryL1)" :key="'cs-ins'+c" :label="c" :value="c"></el-option>
-                          </el-select>
-                        </div>
-                        <div class="cs-field">
-                          <label><i>*</i>紧急度</label>
-                          <el-select v-model="intake.urgency" placeholder="请选择" style="width:100%">
-                            <el-option v-for="u in urgencyOptions" :key="'urg-'+u" :label="u" :value="u"></el-option>
-                          </el-select>
-                        </div>
-                        <p class="portal-note cs-field full" v-if="intake.categorySource==='ai' && intake.categoryL1">AI 已按问题描述初分为「{{ intake.categoryL1 }}」，可以直接改。</p>
-                      </div>
-                    </section>
-                    <section class="cs-card">
-                      <div class="cs-card-hd">D. 问题详情</div>
-                      <div class="cs-card-bd">
-                        <div class="cs-field">
-                          <label><i>*</i>问题描述</label>
-                          <div
-                            ref="detailEditor"
-                            class="rich-editor portal-editor"
-                            :class="{ empty: !intake.detail && !detailHasImage }"
-                            contenteditable="true"
-                            data-placeholder="把问题讲清楚即可，可直接粘贴文字和图片"
-                            @paste="onDetailPaste"
-                            @input="syncDetail"
-                          ></div>
-                        </div>
-                        <div class="cs-field" style="margin-top:12px;">
-                          <label>附件</label>
-                          <div class="guest-upload">
-                            <el-button size="small" @click="pickAttachment">上传附件</el-button>
-                            <span class="attach-hint">可选，可上传多个文件，单个不超过 10MB</span>
-                            <input ref="attachInput" class="attach-input" type="file" multiple @change="onIntakeFiles">
-                            <ul class="attach-list" v-if="intake.files.length">
-                              <li class="attach-item" v-for="(f, i) in intake.files" :key="f.id">
-                                <img v-if="isImageFile(f)" :src="f.url" alt="">
-                                <span>{{ f.name }}</span>
-                                <span class="attach-size">{{ f.sizeText }}</span>
-                                <button type="button" class="attach-remove" @click="removeIntakeFile(i)">删除</button>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </section>
-                    <section class="cs-card">
-                      <div class="cs-card-hd">E. 处理与流转</div>
-                      <div class="cs-card-bd">
-                        <div class="cs-field">
-                          <label>内部备注</label>
-                          <el-input type="textarea" :rows="3" v-model="intake.internalNote" maxlength="1000" placeholder="班次交接、权限说明等，不对客户展示"></el-input>
-                        </div>
-                      </div>
-                    </section>
+                <div class="cs-banner">联系电话和账号选填，提交后按这两项匹配客户。选择企微客户群后填写企微群名称，必填。</div>
+                <section class="cs-card">
+                  <div class="cs-card-hd">A. 反馈人信息</div>
+                  <div class="cs-card-bd cs-grid-3">
+                    <div class="cs-field">
+                      <label><i>*</i>业务类型</label>
+                      <el-select v-model="intake.businessType" placeholder="请选择" style="width:100%">
+                        <el-option v-for="b in businessTypeOptions" :key="'cs-bt'+b" :label="b" :value="b"></el-option>
+                      </el-select>
+                    </div>
+                    <div class="cs-field">
+                      <label><i>*</i>反馈渠道</label>
+                      <el-select v-model="intake.channel" placeholder="请选择，如电话" style="width:100%">
+                        <el-option v-for="c in channelNames" :key="'cs-ch'+c" :label="c" :value="c"></el-option>
+                      </el-select>
+                    </div>
+                    <div class="cs-field" v-if="intake.channel==='企微客户群'">
+                      <label><i>*</i>企微群名称</label>
+                      <el-input v-model="intake.groupName" placeholder="请填写企业微信群名称"></el-input>
+                    </div>
+                    <div class="cs-field">
+                      <label><i>*</i>产品项目</label>
+                      <product-picker v-model="intake.product"></product-picker>
+                    </div>
+                    <div class="cs-field">
+                      <label>联系电话</label>
+                      <el-input v-model="intake.reporterPhone" placeholder="选填，可用于匹配客户"></el-input>
+                    </div>
+                    <div class="cs-field">
+                      <label>单位全称</label>
+                      <el-input v-model="intake.orgName" placeholder="选填"></el-input>
+                    </div>
+                    <div class="cs-field">
+                      <label>账号</label>
+                      <el-input v-model="intake.account" placeholder="选填，可用于匹配客户"></el-input>
+                    </div>
+                    <div class="cs-field">
+                      <label>邮箱</label>
+                      <el-input v-model="intake.reporterEmail" placeholder="选填"></el-input>
+                    </div>
+                    <div class="cs-field">
+                      <label>联系人</label>
+                      <el-input v-model="intake.reporterName" placeholder="选填"></el-input>
+                    </div>
                   </div>
-                  <aside class="cs-side">
-                    <section class="cs-card">
-                      <div class="cs-card-hd">填写说明</div>
-                      <div class="cs-card-bd">
-                        <details class="cs-help" open>
-                          <summary>需要填写</summary>
-                          <ul>
-                            <li>A. 渠道。企微群时，群名称必填。消息摘要选填</li>
-                            <li>B. 客户名称。客户 ID 自己填写。联系人选填</li>
-                            <li>B. 客户类型：直销、强国、代理、内部、其他</li>
-                            <li>B. 产品线由客服填写，可以修改</li>
-                            <li>C. 问题大类。有子类时，问题子类必填。紧急度：P0 紧急、P1 高、P2 中、P3 低</li>
-                            <li>D. 问题描述。邮箱渠道时，邮箱必填</li>
-                          </ul>
-                        </details>
+                </section>
+                <section class="cs-card">
+                  <div class="cs-card-hd">B. 问题分类</div>
+                  <div class="cs-card-bd cs-grid-2">
+                    <div class="cs-field">
+                      <label><i>*</i>问题大类</label>
+                      <el-select v-model="intake.categoryL1" placeholder="请选择" style="width:100%" @change="pickCategory">
+                        <el-option v-for="c in level1Options" :key="'cs-in'+c" :label="c" :value="c"></el-option>
+                      </el-select>
+                    </div>
+                    <div class="cs-field">
+                      <label><i v-if="categoryChildren(intake.categoryL1).length">*</i>问题子类</label>
+                      <el-select v-model="intake.category2" placeholder="请先选择大类" style="width:100%" :disabled="!categoryChildren(intake.categoryL1).length" @change="pickSubCategory">
+                        <el-option v-for="c in categoryChildren(intake.categoryL1)" :key="'cs-ins'+c" :label="c" :value="c"></el-option>
+                      </el-select>
+                    </div>
+                    <div class="cs-field">
+                      <label><i>*</i>紧急度</label>
+                      <el-select v-model="intake.urgency" placeholder="请选择" style="width:100%">
+                        <el-option v-for="u in urgencyOptions" :key="'urg-'+u" :label="u" :value="u"></el-option>
+                      </el-select>
+                    </div>
+                    <div class="cs-field full">
+                      <label><i>*</i>问题详情</label>
+                      <div
+                        ref="detailEditor"
+                        class="rich-editor portal-editor"
+                        :class="{ empty: !intake.detail && !detailHasImage }"
+                        contenteditable="true"
+                        data-placeholder="把问题讲清楚即可，可直接粘贴文字和图片"
+                        @paste="onDetailPaste"
+                        @input="syncDetail"
+                      ></div>
+                    </div>
+                    <div class="cs-field full">
+                      <label>附件</label>
+                      <div class="guest-upload">
+                        <el-button size="small" @click="pickAttachment">上传附件</el-button>
+                        <span class="attach-hint">可选，可上传多个文件，单个不超过 10MB</span>
+                        <input ref="attachInput" class="attach-input" type="file" multiple @change="onIntakeFiles">
+                        <ul class="attach-list" v-if="intake.files.length">
+                          <li class="attach-item" v-for="(f, i) in intake.files" :key="f.id">
+                            <img v-if="isImageFile(f)" :src="f.url" alt="">
+                            <span>{{ f.name }}</span>
+                            <span class="attach-size">{{ f.sizeText }}</span>
+                            <button type="button" class="attach-remove" @click="removeIntakeFile(i)">删除</button>
+                          </li>
+                        </ul>
                       </div>
-                    </section>
-                  </aside>
-                </div>
+                    </div>
+                    <p class="portal-note cs-field full" v-if="intake.categorySource==='ai' && intake.categoryL1">AI 已按问题详情初分为「{{ intake.categoryL1 }}」，可以直接改。</p>
+                  </div>
+                </section>
+                <section class="cs-card">
+                  <div class="cs-card-hd">C. 内部备注</div>
+                  <div class="cs-card-bd">
+                    <div class="cs-field">
+                      <el-input type="textarea" :rows="3" v-model="intake.internalNote" maxlength="1000" placeholder="班次交接、权限说明等，不对客户展示"></el-input>
+                    </div>
+                  </div>
+                </section>
                 <div class="cs-footer">
-                  <button type="button" class="portal-ghost" @click="resetIntake">清空</button>
-                  <button type="button" class="portal-submit" @click="submitIntake">提交工单</button>
+                  <button type="button" class="portal-ghost" @click="cancelCsIntake">取消</button>
+                  <button type="button" class="portal-ghost" @click="saveCsIntake">保存</button>
+                  <button type="button" class="portal-submit" @click="submitIntake">提交</button>
                 </div>
               </div>
             </template>
-            <template v-else-if="intake.reportType==='销售提交'">
+            <template v-else-if="page==='sales'">
               <div class="cs-sheet">
                 <div class="cs-top">
-                  <h2>新建销售工单</h2>
-                  <div class="cs-no">工单号：<strong>保存后生成</strong></div>
+                  <h2>销售填写反馈</h2>
+                  <div class="cs-no">客户反馈ID：<strong>保存后生成</strong></div>
                 </div>
-                <div class="cs-banner">销售代填。按 A 到 E 填写。客户 ID 自己填写。再填写产品线和客户类型。提交后进入客户反馈工单。</div>
+                <div class="cs-banner">销售代填。客户ID、客户名称、账号、客户联系方式、反馈渠道、产品项目和问题描述必填。提交后进入客户反馈工单。</div>
                 <div class="cs-layout">
                   <div class="cs-main">
                     <section class="cs-card">
-                      <div class="cs-card-hd">A. 受理信息 <span class="cs-badge">渠道与接单</span></div>
+                      <div class="cs-card-hd">A. 受理信息</div>
                       <div class="cs-card-bd cs-grid-2">
                         <div class="cs-field">
-                          <label><i>*</i>渠道</label>
+                          <label><i>*</i>提交人（销售）</label>
+                          <div class="cs-readonly">{{ currentUser.name }} · {{ currentUser.account }}</div>
+                          <p class="portal-note">取当前登录销售账号，提交类型记为「销售提交」</p>
+                        </div>
+                        <div class="cs-field">
+                          <label><i>*</i>客户联系方式</label>
+                          <el-input v-model="intake.salesContact" placeholder="13812341234"></el-input>
+                          <p class="portal-note">填写向你反馈问题的客户联系人</p>
+                        </div>
+                        <div class="cs-field">
+                          <label><i>*</i>反馈渠道</label>
                           <el-select v-model="intake.channel" placeholder="请选择" style="width:100%">
-                            <el-option v-for="c in channelNames" :key="'sa-ch'+c" :label="c" :value="c"></el-option>
+                            <el-option v-for="c in salesChannelNames" :key="'sa-ch'+c" :label="c" :value="c"></el-option>
                           </el-select>
+                          <p class="portal-note">客户是通过哪个渠道向你反馈的</p>
                         </div>
-                        <div class="cs-field" v-if="csGroupChannel">
-                          <label><i>*</i>群名称</label>
+                        <div class="cs-field" v-if="intake.channel==='企微客户群'">
+                          <label><i>*</i>企微群名称</label>
                           <el-input v-model="intake.groupName" placeholder="请填写企业微信群名称"></el-input>
-                        </div>
-                        <div class="cs-field full">
-                          <label>消息摘要</label>
-                          <el-input type="textarea" :rows="3" v-model="intake.messageSummary" maxlength="500" placeholder="可粘贴关键群消息要点"></el-input>
                         </div>
                       </div>
                     </section>
                     <section class="cs-card">
                       <div class="cs-card-hd">B. 客户信息</div>
-                      <div class="cs-card-bd cs-grid-3">
+                      <div class="cs-card-bd cs-grid-2">
+                        <div class="cs-field">
+                          <label><i>*</i>客户ID</label>
+                          <el-input v-model="intake.customerId" maxlength="6" placeholder="请填写 6 位客户ID"></el-input>
+                          <p class="portal-note">销售侧必填；通常只填客户ID</p>
+                        </div>
+                        <div class="cs-field">
+                          <label>线索ID <span class="cs-hint">选填</span></label>
+                          <el-input v-model="intake.leadId" maxlength="6" placeholder="2 开头的 6 位数字"></el-input>
+                          <p class="portal-note">与客户ID可同时有</p>
+                        </div>
                         <div class="cs-field">
                           <label><i>*</i>客户名称</label>
-                          <el-autocomplete
-                            v-model="intake.orgName"
-                            :fetch-suggestions="suggestOrg"
-                            placeholder="签约客户或单位名"
-                            style="width:100%"
-                            @input="matchCustomerByOrg"
-                            @select="pickOrgMatch"
-                          >
-                            <template slot-scope="{ item }">
-                              <span>{{ item.value }}</span>
-                            </template>
-                          </el-autocomplete>
+                          <el-input v-model="intake.orgName" placeholder="请填写客户名称"></el-input>
                         </div>
                         <div class="cs-field">
-                          <label>客户 ID</label>
-                          <el-input v-model="intake.customerId" maxlength="6" placeholder="请填写 6 位客户 ID"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>线索 ID <span class="cs-hint">选填</span></label>
-                          <el-input v-model="intake.leadId" maxlength="6" placeholder="2 开头的 6 位数字"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>联系人 <span class="cs-hint">选填</span></label>
-                          <el-input v-model="intake.contactName" placeholder="选填"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>联系电话</label>
-                          <el-input v-model="intake.phone" placeholder="手机或固话"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label><i v-if="emailRequired">*</i>邮箱</label>
-                          <el-input v-model="intake.email" placeholder="请填写客户邮箱"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label>客户账号</label>
-                          <el-input v-model="intake.account" placeholder="匹配客户后可自动带出"></el-input>
-                        </div>
-                        <div class="cs-field">
-                          <label><i>*</i>客户类型<el-tooltip content="由销售填写，可选直销、强国、代理、内部、其他。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                          <el-select v-model="intake.customerType" placeholder="请选择" style="width:100%">
-                            <el-option v-for="c in customerTypeOptions" :key="'sa-ct'+c" :label="c" :value="c"></el-option>
-                          </el-select>
-                        </div>
-                        <div class="cs-field">
-                          <label><i>*</i>产品线<el-tooltip content="客户反馈的问题产品线，由销售填写，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></label>
-                          <el-select v-model="intake.product" placeholder="请选择问题产品线" style="width:100%" filterable>
-                            <el-option v-for="p in productOptions" :key="'sa-'+p" :label="p" :value="p"></el-option>
-                          </el-select>
+                          <label><i>*</i>账号</label>
+                          <el-input v-model="intake.account" placeholder="请填写账号，如 yqt_310226"></el-input>
                         </div>
                       </div>
                     </section>
                     <section class="cs-card">
                       <div class="cs-card-hd">C. 问题分类</div>
-                      <div class="cs-card-bd cs-grid-2">
-                        <div class="cs-field">
-                          <label><i>*</i>问题大类</label>
-                          <el-select v-model="intake.categoryL1" placeholder="请选择" style="width:100%" @change="pickCategory">
-                            <el-option v-for="c in level1Options" :key="'sa-in'+c" :label="c" :value="c"></el-option>
-                          </el-select>
-                        </div>
-                        <div class="cs-field">
-                          <label><i v-if="categoryChildren(intake.categoryL1).length">*</i>问题子类</label>
-                          <el-select v-model="intake.category2" placeholder="请先选择大类" style="width:100%" :disabled="!categoryChildren(intake.categoryL1).length" @change="pickSubCategory">
-                            <el-option v-for="c in categoryChildren(intake.categoryL1)" :key="'sa-ins'+c" :label="c" :value="c"></el-option>
-                          </el-select>
-                        </div>
-                        <div class="cs-field">
-                          <label><i>*</i>紧急度</label>
-                          <el-select v-model="intake.urgency" placeholder="请选择" style="width:100%">
-                            <el-option v-for="u in urgencyOptions" :key="'urg-'+u" :label="u" :value="u"></el-option>
-                          </el-select>
-                        </div>
-                        <p class="portal-note cs-field full" v-if="intake.categorySource==='ai' && intake.categoryL1">AI 已按问题描述初分为「{{ intake.categoryL1 }}」，可以直接改。</p>
-                      </div>
-                    </section>
-                    <section class="cs-card">
-                      <div class="cs-card-hd">D. 问题详情</div>
                       <div class="cs-card-bd">
                         <div class="cs-field">
-                          <label><i>*</i>问题描述</label>
+                          <label><i>*</i>产品项目</label>
+                          <product-picker v-model="intake.product"></product-picker>
+                        </div>
+                        <div class="cs-field" style="margin-top:12px;">
+                          <label><i>*</i>问题描述（客户原话）</label>
                           <div
                             ref="detailEditor"
                             class="rich-editor portal-editor"
                             :class="{ empty: !intake.detail && !detailHasImage }"
                             contenteditable="true"
-                            data-placeholder="把问题讲清楚即可，可直接粘贴文字和图片"
+                            data-placeholder="请按客户原话登记，不要改写"
                             @paste="onDetailPaste"
                             @input="syncDetail"
                           ></div>
+                          <p class="portal-note">请按客户原话登记，不要改写；客服后台将只读展示</p>
                         </div>
                         <div class="cs-field" style="margin-top:12px;">
-                          <label>附件</label>
+                          <label>附件 <span class="cs-hint">选填</span></label>
                           <div class="guest-upload">
                             <el-button size="small" @click="pickAttachment">上传附件</el-button>
                             <span class="attach-hint">可选，可上传多个文件，单个不超过 10MB</span>
@@ -1498,14 +1616,9 @@
                             </ul>
                           </div>
                         </div>
-                      </div>
-                    </section>
-                    <section class="cs-card">
-                      <div class="cs-card-hd">E. 处理与流转</div>
-                      <div class="cs-card-bd">
-                        <div class="cs-field">
-                          <label>内部备注</label>
-                          <el-input type="textarea" :rows="3" v-model="intake.internalNote" maxlength="1000" placeholder="交接说明等，不对客户展示"></el-input>
+                        <div class="cs-field" style="margin-top:12px;">
+                          <label>销售补充说明 <span class="cs-hint">选填</span></label>
+                          <el-input type="textarea" :rows="3" v-model="intake.salesNote" maxlength="1000" placeholder="选填。补充说明不会覆盖客户原话"></el-input>
                         </div>
                       </div>
                     </section>
@@ -1517,12 +1630,9 @@
                         <details class="cs-help" open>
                           <summary>需要填写</summary>
                           <ul>
-                            <li>A. 渠道。企微群时，群名称必填。消息摘要选填</li>
-                            <li>B. 客户名称。客户 ID 自己填写。联系人选填</li>
-                            <li>B. 客户类型：直销、强国、代理、内部、其他</li>
-                            <li>B. 产品线由销售填写，可以修改</li>
-                            <li>C. 问题大类。有子类时，问题子类必填。紧急度：P0 紧急、P1 高、P2 中、P3 低</li>
-                            <li>D. 问题描述。邮箱渠道时，邮箱必填</li>
+                            <li>A. 提交人取当前登录账号。客户联系方式、反馈渠道必填。选企微客户群时，企微群名称必填</li>
+                            <li>B. 客户ID、客户名称、账号必填。线索ID选填</li>
+                            <li>C. 产品项目、问题描述必填。附件和销售补充说明选填，补充说明不覆盖客户原话</li>
                           </ul>
                         </details>
                       </div>
@@ -1539,7 +1649,7 @@
               <div class="guest-hero">
                 <div>
                   <h2>客户反馈</h2>
-                  <p>选择产品，写清具体问题，再留下单位和联系方式。账号可以不填。</p>
+                  <p>选择产品项目，写清具体问题，再填写联系人姓名。单位全称和客户账号可以不填。</p>
                 </div>
               </div>
               <section class="guest-card">
@@ -1547,12 +1657,10 @@
                 <div class="guest-card-bd">
                   <div class="guest-field">
                     <label><i>*</i>产品项目</label>
-                    <div class="guest-products">
-                      <button type="button" v-for="p in productOptions" :key="p" :class="{active: intake.product===p}" @click="intake.product=p">{{ p }}</button>
-                    </div>
+                    <product-picker v-model="intake.product"></product-picker>
                   </div>
                   <div class="guest-field" style="margin-top:16px;">
-                    <label><i>*</i>问题描述</label>
+                    <label><i>*</i>问题详情</label>
                     <div
                       ref="detailEditor"
                       class="rich-editor portal-editor"
@@ -1584,21 +1692,17 @@
               <section class="guest-card">
                 <div class="guest-card-hd">联系方式</div>
                 <div class="guest-card-bd guest-grid">
-                  <div class="guest-field full">
-                    <label><i>*</i>单位全称</label>
-                    <el-input v-model="intake.orgName" placeholder="请输入单位全称"></el-input>
+                  <div class="guest-field">
+                    <label><i>*</i>联系人姓名</label>
+                    <el-input v-model="intake.contactName" placeholder="请填写联系人姓名"></el-input>
                   </div>
                   <div class="guest-field">
-                    <label>账号</label>
+                    <label>单位全称</label>
+                    <el-input v-model="intake.orgName" placeholder="选填"></el-input>
+                  </div>
+                  <div class="guest-field">
+                    <label>客户账号</label>
                     <el-input v-model="intake.account" placeholder="选填，便于定位客户"></el-input>
-                  </div>
-                  <div class="guest-field">
-                    <label>联系人</label>
-                    <el-input v-model="intake.contactName" placeholder="选填"></el-input>
-                  </div>
-                  <div class="guest-field">
-                    <label>联系电话</label>
-                    <el-input v-model="intake.phone" placeholder="选填"></el-input>
                   </div>
                   <div class="guest-field">
                     <label><i v-if="emailRequired">*</i>邮箱</label>
@@ -1607,7 +1711,7 @@
                 </div>
               </section>
             </template>
-            <div class="portal-actions" v-if="intake.reportType==='客户提交'">
+            <div class="portal-actions" v-if="page==='guest'">
               <button type="button" class="portal-ghost" @click="resetIntake">清空</button>
               <button type="button" class="portal-submit" @click="submitIntake">提交</button>
             </div>
@@ -1616,115 +1720,127 @@
           <div v-else class="portal-card mine-home">
             <div class="portal-head">
               <div>
-                <h2>我的工单</h2>
-                <p>查看、跟进您提交的反馈处理进度。</p>
+                <h2>我的反馈</h2>
               </div>
-              <button type="button" class="portal-submit" @click="openMineCreate">创建工单</button>
+              <button type="button" class="mine-continue" @click="openMineCreate">问题反馈</button>
             </div>
-            <el-form :inline="true" size="small" class="mine-filter">
-              <el-form-item label="工单状态">
-                <el-select v-model="myQuery.status" clearable placeholder="全部" style="width:140px">
-                  <el-option v-for="s in userProgressOptions" :key="s" :label="s" :value="s"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="产品/服务">
-                <el-select v-model="myQuery.product" clearable placeholder="全部" style="width:140px">
-                  <el-option v-for="p in productOptions" :key="p" :label="p" :value="p"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="创建时间">
-                <el-date-picker v-model="myQuery.dates" type="daterange" value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" style="width:260px"></el-date-picker>
-              </el-form-item>
-              <el-form-item label="工单搜索">
-                <el-input v-model="myQuery.keyword" clearable placeholder="客户反馈ID / 标题" style="width:180px" @keyup.enter.native="doMyQuery"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="doMyQuery">查询</el-button>
-                <el-button @click="resetMyQuery">重置</el-button>
-              </el-form-item>
-            </el-form>
-            <div class="table-scroll mine-table-wrap">
-              <table class="mine-table">
-                <thead>
-                  <tr>
-                    <th>客户反馈ID</th>
-                    <th>产品/服务</th>
-                    <th>问题类型</th>
-                    <th>工单标题</th>
-                    <th>工单状态</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-if="!pagedMyTickets.length">
-                    <td colspan="5"><div class="mine-empty">暂无工单</div></td>
-                  </tr>
-                  <tr v-for="t in pagedMyTickets" :key="t.id" @click="openMine(t)">
-                    <td><span class="mine-id">{{ t.cfId || t.id }}</span></td>
-                    <td>{{ t.product || '—' }}</td>
-                    <td>{{ categoryText(t) }}</td>
-                    <td><div class="mine-title" :title="t.title || t.detail">{{ t.title || t.detail }}</div></td>
-                    <td><span class="mine-status" :class="mineStatusClass(t)">{{ userProgress(t) }}</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="mine-cards">
-              <div v-if="!pagedMyTickets.length" class="mine-empty">暂无工单</div>
-              <button type="button" class="mine-card" v-for="t in pagedMyTickets" :key="t.id" @click="openMine(t)">
-                <div class="mine-card-top">
-                  <span class="mine-id">{{ t.cfId || t.id }}</span>
-                  <span class="mine-status" :class="mineStatusClass(t)">{{ userProgress(t) }}</span>
+            <div class="mine-sheet">
+              <div class="mine-sheet-hd">
+                <span>反馈ID</span>
+                <span>业务类型</span>
+                <span>问题子类</span>
+                <span>反馈阶段</span>
+                <span>产品项目</span>
+                <span>问题详情</span>
+                <span>操作</span>
+              </div>
+              <div v-if="!myTickets.length" class="mine-empty">暂无反馈</div>
+              <div class="mine-sheet-row" v-for="t in myTickets" :key="'pc'+t.id">
+                <span :title="t.cfId || t.id">{{ t.cfId || t.id }}</span>
+                <span>{{ t.businessType || '—' }}</span>
+                <span :title="t.category2 || ''">{{ t.category2 || '—' }}</span>
+                <span>{{ feedbackStage(t) }}</span>
+                <span :title="accountProduct(t) || t.product || ''">{{ accountProduct(t) || t.product || '—' }}</span>
+                <span :title="t.detail || ''">{{ t.detail || '—' }}</span>
+                <div class="mine-sheet-ops">
+                  <button type="button" class="mine-sheet-link" @click="openMine(t)">详情</button>
+                  <button type="button" class="mine-sheet-link" v-if="!mineHasEval(t)" @click="openSatLink(t)">去评价</button>
                 </div>
-                <div class="mine-card-title">{{ t.title || t.detail || '—' }}</div>
-                <div class="mine-card-meta">{{ t.product || '—' }} · {{ categoryText(t) }}</div>
-              </button>
+              </div>
             </div>
-            <div class="toolbar" v-if="myFilteredTickets.length > pageSize">
-              <span style="font-size:12px;color:#909399;">共 {{ myFilteredTickets.length }} 条</span>
-              <el-pagination
-                background
-                layout="prev, pager, next"
-                :total="myFilteredTickets.length"
-                :page-size="pageSize"
-                :current-page.sync="myPage"
-                small
-              />
+            <div class="mine-feed">
+              <div v-if="!myTickets.length" class="mine-empty">暂无反馈</div>
+              <article class="mine-feed-card" v-for="t in myTickets" :key="t.id">
+                <div class="mine-feed-hd">
+                  <h3>{{ t.title || t.detail || '反馈' }}</h3>
+                  <span class="mine-pill" :class="mineStatusClass(t)">{{ mineListStatus(t) }}</span>
+                </div>
+                <div class="mine-feed-meta">{{ t.cfId || t.id }} · {{ mineProductShort(t) }} · {{ mineWhen(t) }}</div>
+                <p class="mine-feed-desc">{{ t.detail || '—' }}</p>
+                <div class="mine-feed-actions">
+                  <button type="button" class="mine-feed-btn" @click="openMine(t)">查看进度</button>
+                  <button type="button" class="mine-feed-btn ghost" v-if="!mineHasEval(t)" @click="openSatLink(t)">去评价</button>
+                </div>
+              </article>
             </div>
+            <div class="mine-note">原型演示：列表为当前账号提交的反馈。查看进度打开详情，去评价进入满意度。</div>
           </div>
         </div>
 
-        <div v-if="page==='survey'" class="panel">
-          <div class="page-title"><h2>满意度调查</h2></div>
-          <p class="page-desc">工单完结后发给客户。前两项是 1 到 5 分，第三项填写建议与意见。有建议，或任一项低于 3 星，列表标红；有一项是 3 星标黄；两项都在 4 星及以上且没有建议，标绿。</p>
-          <div class="survey-card" v-if="surveyTicket">
-            <el-form label-width="72px" size="small">
-              <el-form-item label="工单">
-                <el-select v-model="survey.ticketId" style="width:100%" @change="resetSurveyScores">
-                  <el-option v-for="t in pendingSurveyTickets" :key="t.id" :label="t.id + ' · ' + (t.detail || t.title)" :value="t.id"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <div class="survey-q">
-              <div class="survey-q-title">您对我们的服务人员的满意度</div>
-              <div class="score-row">
-                <button type="button" class="score-btn" v-for="n in 5" :key="'staff'+n" :class="{active: survey.staffScore===n}" @click="survey.staffScore=n">{{ n }}</button>
-              </div>
-              <div class="score-caption"><span>1 非常不满意</span><span>5 非常满意</span></div>
+        <div v-if="page==='survey'" class="panel csat-panel">
+          <div class="csat">
+            <div class="csat-top">
+              <span>服务评价</span>
+              <button type="button" @click="page='mine'">进度页</button>
             </div>
-            <div class="survey-q">
-              <div class="survey-q-title">您对我们的工单系统的满意度</div>
-              <div class="score-row">
-                <button type="button" class="score-btn" v-for="n in 5" :key="'sys'+n" :class="{active: survey.systemScore===n}" @click="survey.systemScore=n">{{ n }}</button>
-              </div>
-              <div class="score-caption"><span>1 非常不满意</span><span>5 非常满意</span></div>
+            <div class="csat-hero">
+              <div class="csat-hero-k">工单已完结</div>
+              <h2>请为本次服务打分</h2>
+              <p>您的评价帮助我们持续改进。两个维度各选 1–5 星，文字反馈选填。</p>
             </div>
-            <div class="survey-q">
-              <div class="survey-q-title">您的建议与意见</div>
-              <el-input type="textarea" :rows="3" v-model="survey.suggestion" placeholder="请输入您的建议与意见"></el-input>
+            <div class="csat-grid">
+              <section class="csat-card is-brief">
+                <h3>工单简要</h3>
+                <template v-if="csatTicket">
+                  <div class="csat-kv">
+                    <div class="k">反馈ID</div>
+                    <div class="v">{{ csatTicket.cfId || csatTicket.id }}</div>
+                    <div class="k">产品项目</div>
+                    <div class="v">{{ mineProductShort(csatTicket) }}</div>
+                  </div>
+                  <div class="csat-close">
+                    <div class="k">完结说明</div>
+                    <div class="csat-close-text">{{ csatTicket.result || csatTicket.solution || '—' }}</div>
+                  </div>
+                </template>
+                <div v-else class="csat-hint">当前没有可评价的工单。</div>
+              </section>
+              <section class="csat-card" v-if="surveyMode==='form'">
+                <h3>满意度评价</h3>
+                <div class="csat-scores">
+                  <div>
+                    <div class="csat-q-title">评分1 · 处理结果满意度</div>
+                    <div class="csat-q-sub">问题是否解决、结论是否清晰可用</div>
+                    <div class="csat-stars">
+                      <button type="button" class="csat-star" v-for="n in 5" :key="'res'+n" :class="{on: survey.systemScore>=n}" @click="survey.systemScore=n">★</button>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="csat-q-title">评分2 · 服务态度与响应速度</div>
+                    <div class="csat-q-sub">沟通体验、响应及时性</div>
+                    <div class="csat-stars">
+                      <button type="button" class="csat-star" v-for="n in 5" :key="'srv'+n" :class="{on: survey.staffScore>=n}" @click="survey.staffScore=n">★</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="csat-label">文字反馈 <span>选填</span></div>
+                <el-input type="textarea" :rows="4" v-model="survey.suggestion" placeholder="还有想补充的吗？例如仍未解决的点、表扬或建议..."></el-input>
+                <p class="csat-hint">选填。若您填写了文字，或任一评分低于 3 星，我们会安排专人回访（不满意 100% 回访）。</p>
+                <div class="csat-actions">
+                  <button type="button" class="csat-submit" @click="submitSurvey">提交评价</button>
+                </div>
+              </section>
+              <section class="csat-card csat-thanks" v-else>
+                <div class="csat-check">✓</div>
+                <h3>感谢您的评价</h3>
+                <p class="csat-thanks-sub">我们已收到，祝您使用顺利</p>
+                <div class="csat-note" :class="{'is-low': surveyMode==='low'}">{{ csatThanksNote }}</div>
+                <div class="csat-result"><span>评分1 · 处理结果满意度</span><b>{{ '★★★★★'.slice(0, csatShownScores.result) }} {{ csatShownScores.result }} 星</b></div>
+                <div class="csat-result"><span>评分2 · 服务态度与响应速度</span><b>{{ '★★★★★'.slice(0, csatShownScores.service) }} {{ csatShownScores.service }} 星</b></div>
+                <button type="button" class="csat-submit ghost csat-back" @click="page='mine'">返回进度页</button>
+                <div class="csat-demo">演示：<button type="button" @click="setCsatMode('form')">切回待评价</button></div>
+              </section>
             </div>
-            <el-button type="primary" size="small" @click="submitSurvey">提交</el-button>
+            <div class="csat-switch">
+              原型切换：
+              <button type="button" @click="setCsatMode('form')">待评价</button>
+              ·
+              <button type="button" @click="setCsatMode('thanks')">已提交感谢态</button>
+              ·
+              <button type="button" @click="setCsatMode('low')">低分回访提示</button>
+            </div>
+            <p class="csat-foot">对客不展示内部色标规则与转单细节。<br>客服侧按「评分1 / 评分2」双星级汇总色标。</p>
           </div>
-          <p v-else class="page-desc">当前没有待评价的工单。</p>
         </div>
 
         <div v-if="page==='list'" class="panel">
@@ -1762,6 +1878,12 @@
                 </el-select>
               </div>
               <div class="filter-item">
+                <label>业务类型</label>
+                <el-select v-model="query.businessType" clearable placeholder="全部" size="small" style="width:130px">
+                  <el-option v-for="b in businessTypeOptions" :key="'bt'+b" :label="b" :value="b"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
                 <label>线索ID</label>
                 <el-input v-model="query.leadId" clearable placeholder="请输入线索ID" size="small" style="width:160px" />
               </div>
@@ -1781,6 +1903,7 @@
                 <label>内部状态</label>
                 <el-select v-model="query.internalStatus" clearable placeholder="全部" size="small" style="width:140px">
                   <el-option label="未转出" value="未转出"></el-option>
+                  <el-option label="已转销售" value="已转销售"></el-option>
                   <el-option label="内部处理中" value="内部处理中"></el-option>
                   <el-option label="工单转回" value="工单转回"></el-option>
                   <el-option label="内部工单完结" value="内部工单完结"></el-option>
@@ -1820,8 +1943,8 @@
                 </el-select>
               </div>
               <div class="filter-item">
-                <label>当前处理人</label>
-                <el-select v-model="query.handler" filterable clearable placeholder="搜索处理人" size="small" style="width:160px">
+                <label>反馈负责人</label>
+                <el-select v-model="query.handler" filterable clearable placeholder="搜索反馈负责人" size="small" style="width:160px">
                   <el-option v-for="p in ticketHandlers" :key="'fh'+p" :label="p" :value="p"></el-option>
                 </el-select>
               </div>
@@ -1865,6 +1988,12 @@
               <el-button size="small" @click="openExport">导出</el-button>
               <el-button size="small" @click="dlg.trial = true">开通试用</el-button>
               <span style="margin-left:10px;font-size:13px;color:#909399;">共 {{ filteredTickets.length }} 条 · 演示数据</span>
+              <span style="margin-left:16px;font-size:13px;color:#606266;">角色</span>
+              <el-select v-model="staffRole" size="small" style="width:120px;margin-left:6px;" @change="onStaffRole">
+                <el-option label="客服主管" value="客服主管"></el-option>
+                <el-option label="普通客服" value="普通客服"></el-option>
+              </el-select>
+              <span v-if="staffRole==='普通客服'" style="margin-left:8px;font-size:13px;color:#909399;">只显示反馈负责人 {{ actingName }} 的工单</span>
             </div>
             <el-pagination
               background
@@ -1881,15 +2010,17 @@
               <thead>
                 <tr>
                   <th class="col-cfid">客户反馈ID</th>
-                  <th class="col-custid">客户id</th>
+                  <th class="col-custid">客户ID</th>
                   <th class="col-ctype">客户类型</th>
+                  <th class="col-biz">业务类型</th>
                   <th class="col-product">产品项目</th>
                   <th class="col-channel">反馈渠道</th>
                   <th class="col-cat">问题大类</th>
                   <th class="col-risk">风险等级</th>
                   <th class="col-stage">反馈阶段</th>
                   <th class="col-remain">剩余时间</th>
-                  <th class="col-handler">当前处理人</th>
+                  <th class="col-role">反馈角色</th>
+                  <th class="col-handler">反馈负责人</th>
                   <th class="col-internal">内部状态</th>
                   <th class="col-result">处理结果</th>
                   <th class="col-sat">满意度</th>
@@ -1901,8 +2032,9 @@
                   <td class="id-cell" :title="'客户反馈ID：' + (t.cfId || t.id)">
                     <button type="button" class="id-link" @click.stop="openDetail(t)">{{ t.cfId || t.id }}</button>
                   </td>
-                  <td class="id-cell" :title="'客户id：' + (t.customerId || '—')">{{ t.customerId || '—' }}</td>
+                  <td class="id-cell" :title="'客户ID：' + (t.customerId || '—')">{{ t.customerId || '—' }}</td>
                   <td>{{ t.customerType || '—' }}</td>
+                  <td>{{ t.businessType || '—' }}</td>
                   <td>{{ accountProduct(t) || '—' }}</td>
                   <td><span class="tag" :class="channelTagClass(t.channel)">{{ t.channel }}</span></td>
                   <td>{{ t.categoryL1 || t.category1 || '—' }}</td>
@@ -1913,6 +2045,7 @@
                     <span v-else-if="isRemainOverdue(t)" class="overdue">{{ closeRemainText(t) }}</span>
                     <span v-else>{{ closeRemainText(t) }}</span>
                   </td>
+                  <td>{{ feedbackRole(t) }}</td>
                   <td>{{ firstHandlerName(t) }}</td>
                   <td><span class="tag" :class="returnState(t).cls">{{ returnState(t).label }}</span></td>
                   <td class="wrap-cell"><div class="detail-cell" :title="listResultText(t)">{{ listResultText(t) }}</div></td>
@@ -2000,7 +2133,8 @@
           <div class="block feedback-block">
             <div class="block-hd">客户反馈信息</div>
             <div class="info-grid">
-              <div class="info-item"><div class="info-label">工单号</div><div class="info-value">{{ current.cfId || current.id }}</div></div>
+              <div class="info-item"><div class="info-label">客户反馈ID</div><div class="info-value">{{ current.cfId || current.id }}</div></div>
+              <div class="info-item"><div class="info-label">反馈负责人</div><div class="info-value">{{ firstHandlerName(current) }}</div></div>
               <div class="info-item"><div class="info-label">反馈渠道</div><div class="info-value"><span class="tag" :class="channelTagClass(current.channel)">{{ current.channel || '—' }}</span></div></div>
               <div class="info-item"><div class="info-label">企微群名称</div><div class="info-value">{{ current.groupName || '—' }}</div></div>
               <div class="info-item"><div class="info-label">联系人</div><div class="info-value">{{ current.contactName || '—' }}</div></div>
@@ -2018,7 +2152,7 @@
                   <el-option v-for="c in categoryChildren(detailEdit.categoryL1)" :key="'ds'+c" :label="c" :value="c"></el-option>
                 </el-select>
               </div></div>
-              <div class="info-item"><div class="info-label">产品线<el-tooltip content="客户反馈的问题产品线，由客服判定，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></div><div class="info-value">
+              <div class="info-item"><div class="info-label">产品项目<el-tooltip content="客户反馈的产品项目，由客服填写，支持修改。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></div><div class="info-value">
                 <el-select v-model="detailEdit.product" size="mini" placeholder="请选择" style="width:180px">
                   <el-option v-for="p in productOptions" :key="'dp'+p" :label="p" :value="p"></el-option>
                 </el-select>
@@ -2059,12 +2193,13 @@
           <div class="block">
             <div class="block-hd">系统客户信息</div>
             <div class="info-grid">
-              <div class="info-item"><div class="info-label">客户id</div><div class="info-value">{{ current.customerId || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">线索id</div><div class="info-value">{{ current.leadId || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">客户名称</div><div class="info-value">{{ current.customer || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">业务类型</div><div class="info-value">{{ current.businessType || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">客户ID</div><div class="info-value">{{ current.customerId || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">线索ID</div><div class="info-value">{{ current.leadId || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">单位全称</div><div class="info-value">{{ current.customer || '—' }}</div></div>
               <div class="info-item"><div class="info-label">客户账号</div><div class="info-value">{{ current.account || '—' }}</div></div>
               <div class="info-item"><div class="info-label">部门</div><div class="info-value">{{ current.department || '—' }}</div></div>
-              <div class="info-item"><div class="info-label">产品项目<el-tooltip content="系统按客户 ID 自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></div><div class="info-value">{{ accountProduct(current) || '—' }}</div></div>
+              <div class="info-item"><div class="info-label">产品项目<el-tooltip content="系统按客户ID自动获取该客户账号对应的产品项目。" placement="top"><i class="el-icon-info field-note"></i></el-tooltip></div><div class="info-value">{{ accountProduct(current) || '—' }}</div></div>
               <div class="info-item"><div class="info-label">客户类型</div><div class="info-value">{{ systemCustomerType(current) || '—' }}</div></div>
               <div class="info-item"><div class="info-label">客户负责人</div><div class="info-value">{{ current.customerOwner || '—' }}</div></div>
               <div class="info-item"><div class="info-label">客户进度</div><div class="info-value">{{ current.customerStatus || '—' }}</div></div>
@@ -2092,7 +2227,7 @@
                 <div class="v"><span class="tag" :class="returnState(current).cls">{{ returnState(current).label }}</span></div>
               </div>
               <div class="status-metric"><div class="k">内部工单ID</div><div class="v">{{ current.internalId || '—' }}</div></div>
-              <div class="status-metric"><div class="k">责任人</div><div class="v">{{ firstHandlerName(current) }}</div></div>
+              <div class="status-metric"><div class="k">反馈负责人</div><div class="v">{{ firstHandlerName(current) }}</div></div>
               <div class="status-metric"><div class="k">催办次数</div><div class="v">{{ urgeRecords(current).length }}</div></div>
               <div class="status-metric"><div class="k">是否逾期</div><div class="v" :class="{ overdue: isRemainOverdue(current) }">{{ isRemainOverdue(current) ? '是' : '否' }}</div></div>
               <div class="status-metric">
@@ -2166,49 +2301,53 @@
     </div>
   </div>
 
-  <el-dialog title="工单详情" :visible.sync="dlg.mine" width="760px" append-to-body>
-    <div v-if="mineCurrent.id">
-    <div class="track-steps">
-      <div v-for="(name, i) in customerSteps" :key="name" class="track-step" :class="{ done: i < customerStepIndex(mineCurrent), current: i === customerStepIndex(mineCurrent) }">
-        <div class="track-dot">{{ i + 1 }}</div>
-        <div>{{ name }}</div>
+  <el-dialog title="反馈详情" custom-class="prog-dialog" :visible.sync="dlg.mine" width="960px" append-to-body>
+    <div class="prog" v-if="mineCurrent.id">
+      <div class="prog-hero">
+        <h3>{{ mineCurrent.title || mineCurrent.detail || '反馈' }}</h3>
+        <div class="prog-meta">反馈ID {{ mineCurrent.cfId || mineCurrent.id }} · 产品项目 {{ mineProductShort(mineCurrent) }}</div>
+        <span class="prog-pill">{{ mineHeroStatus(mineCurrent) }}</span>
       </div>
-    </div>
-    <div class="ai-brief">
-      <div><b>工单ID：</b>{{ mineCurrent.cfId || mineCurrent.id }}</div>
-      <div><b>处理结果：</b>{{ customerResultText(mineCurrent) }}</div>
-      <div><b>预计完成时间：</b>{{ aiBrief(mineCurrent).eta }}</div>
-      <div v-if="isClosedTicket(mineCurrent)"><b>满意度链接：</b><a class="sat-link" href="javascript:;" @click.prevent="openSatLink(mineCurrent)">满意度评价链接</a></div>
-    </div>
-    <div class="info-grid mine-detail">
-      <div class="info-item"><div class="info-label">提报时间</div><div class="info-value">{{ mineCurrent.reportedAt || mineCurrent.createdAt || '—' }}</div></div>
-      <div class="info-item"><div class="info-label">产品项目</div><div class="info-value">{{ mineCurrent.product || '—' }}</div></div>
-      <div class="info-item"><div class="info-label">问题分类</div><div class="info-value">{{ categoryText(mineCurrent) }}</div></div>
-      <div class="info-item"><div class="info-label">处理状态</div><div class="info-value">{{ userProgress(mineCurrent) === '处理中' ? '处理中' : userProgress(mineCurrent) }}</div></div>
-      <div class="info-item span3" v-if="userProgress(mineCurrent) !== '处理中'">
-        <div class="info-label">满意度评价</div>
-        <div class="info-value" v-if="mineHasEval(mineCurrent)">
-          <div>服务人员 {{ mineCurrent.staffScore }} 星，工单系统 {{ mineCurrent.systemScore }} 星</div>
-          <div v-if="mineSuggestion(mineCurrent)">建议与意见：{{ mineSuggestion(mineCurrent) }}</div>
-        </div>
-        <div class="info-value" v-else>待评价</div>
-      </div>
-      <div class="info-item span3" v-if="mineCurrent.files && mineCurrent.files.length">
-        <div class="info-label">附件</div>
-        <div class="info-value">
-          <div class="attach-item" v-for="f in mineCurrent.files" :key="f.id">
-            <img v-if="isImageFile(f)" :src="f.url" alt="">
-            <a :href="f.url" :download="f.name">{{ f.name }}</a>
-            <span class="attach-size">{{ f.sizeText }}</span>
+      <div class="prog-steps">
+        <div class="track-steps">
+          <div v-for="(name, i) in customerSteps" :key="'mine'+name" class="track-step" :class="{ done: i < customerStepIndex(mineCurrent), current: i === customerStepIndex(mineCurrent) }">
+            <div class="track-dot">{{ i + 1 }}</div>
+            <div>{{ name }}</div>
           </div>
         </div>
       </div>
+      <div class="prog-stack">
+        <div class="prog-cards">
+        <section class="prog-card is-result prog-result">
+          <div class="prog-hd">最新结果</div>
+          <div class="prog-result-text">{{ mineLatestResult(mineCurrent) }}</div>
+          <div class="prog-time">更新时间 {{ mineBriefTime(mineCurrent) }}</div>
+        </section>
+        <section class="prog-card is-invite prog-invite" v-if="mineCanRate(mineCurrent)">
+          <div>
+            <div class="prog-invite-t">服务已完结，邀请您评价</div>
+            <p class="prog-note">两个维度各 1–5 星 · 文字选填 · 约 30 秒</p>
+          </div>
+          <button type="button" class="prog-go" @click="goSurvey(mineCurrent)">去评价</button>
+        </section>
+        <section class="prog-card is-invite prog-invite" v-else-if="mineHasEval(mineCurrent)">
+          <div>
+            <div class="prog-invite-t">已收到您的评价</div>
+            <p class="prog-note">感谢反馈。如还有问题，可以继续联系客服。</p>
+          </div>
+        </section>
+        </div>
+        <div class="prog-actions">
+          <div class="prog-action-btns">
+            <button type="button" class="prog-linebtn" v-if="mineCanRate(mineCurrent)" @click="goSurvey(mineCurrent)">{{ mineListStatus(mineCurrent) }} · 去填写满意度</button>
+            <button type="button" class="prog-linebtn is-status" v-else>{{ mineHeroStatus(mineCurrent) }}</button>
+            <button type="button" class="prog-solid" @click="contactFromProgress">还有问题？联系客服</button>
+          </div>
+          <div class="prog-hours">工作时间 9:00–18:00 · 通常数分钟内响应</div>
+        </div>
+      </div>
+      <p class="prog-foot">本页仅展示对客可见进度，不含转单/内部部门。</p>
     </div>
-    </div>
-    <span slot="footer">
-      <el-button v-if="mineCurrent.evalStatus==='已推送'" type="primary" size="small" @click="goSurvey(mineCurrent)">去评价</el-button>
-      <el-button size="small" @click="dlg.mine=false">关闭</el-button>
-    </span>
   </el-dialog>
 
   <el-dialog title="企微转办" :visible.sync="dlg.transfer" width="560px" append-to-body>
@@ -2389,7 +2528,7 @@
       <el-form-item label="FAQ 标题" required>
         <el-input v-model="forms.faq.title" placeholder="用一句话描述问题"></el-input>
       </el-form-item>
-      <el-form-item label="问题描述" required>
+      <el-form-item label="问题详情" required>
         <el-input type="textarea" :rows="3" v-model="forms.faq.question"></el-input>
       </el-form-item>
       <el-form-item label="标准答案" required>
@@ -2497,7 +2636,7 @@
   </el-dialog>
 
   <el-dialog title="转销售" :visible.sync="dlg.forward" width="840px" append-to-body>
-    <p class="dlg-tip">写入客户管理 · 详情 · 问题日志，由销售在问题日志里处理。灰底字段已从工单自动带入。转销售后反馈阶段为处理中。责任人仍是第一个处理的客服。若同时已转工单，状态以内部工单为准。剩余时间从转销售起按 72 小时计算。</p>
+    <p class="dlg-tip">写入客户管理 · 详情 · 问题日志，由销售在问题日志里处理。灰底字段已从工单自动带入。转销售后反馈阶段为处理中。反馈负责人仍是第一个处理的客服。若同时已转工单，状态以内部工单为准。剩余时间从转销售起按 72 小时计算。</p>
     <el-form label-width="120px" size="small">
       <div class="block">
         <div class="block-hd">客户反馈信息</div>
@@ -2625,7 +2764,7 @@
   </el-dialog>
 
   <el-dialog title="跟踪进度" :visible.sync="dlg.track" width="760px" append-to-body>
-    <p class="field-tip" style="margin-top:0;">以下内容展示在客户的「我的工单」里。</p>
+    <p class="field-tip" style="margin-top:0;">以下内容展示在客户的「我的反馈」里。</p>
     <div class="track-steps">
       <div v-for="(name, i) in customerSteps" :key="'s'+name" class="track-step" :class="{ done: i < customerStepIndex(current), current: i === customerStepIndex(current) }">
         <div class="track-dot">{{ i + 1 }}</div>
@@ -2648,7 +2787,7 @@
       <el-form-item label="客户ID" required>
         <el-input v-model="forms.trial.customerId" maxlength="6" placeholder="6位数字"></el-input>
       </el-form-item>
-      <el-form-item label="账号" required>
+      <el-form-item label="客户账号" required>
         <el-input v-model="forms.trial.account" placeholder="试用账号"></el-input>
       </el-form-item>
       <el-form-item label="产品项目" required>
@@ -2870,6 +3009,33 @@ const TICKETS = [
       { name: '24小时回复', state: '进行中', pill: 'pill-gray', deadline: '2026-09-25 10:01:30', actual: '', note: '' },
       { name: '72小时完结', state: '进行中', pill: 'pill-gray', deadline: '2026-09-27 10:01:30', actual: '', note: '' }
     ]
+  },
+  {
+    id: 'TK-20260925-00008', cfId: 'CF00009', extId: 'WEB-1-3308', channel: '蜜度官网', ops: 'BOSS',
+    occurredAt: '2026-09-25 09:16:20', createdAt: '2026-09-25 09:16:40', statusAt: '2026-09-25 15:20:00',
+    reportedAt: '2026-09-25 09:16:40', closedAt: '2026-09-25 15:20:00',
+    title: '关键词预警没有推送到企微', detail: '客户反馈已配置的关键词预警连续两天没有推送到企微，日报里也看不到命中记录。',
+    product: '索骥', customer: '成都某某日报', customerId: '330118', submitter: '何清', handler: '赵娜', firstHandler: '赵娜',
+    category1: '产品类', category2: '数据与统计', categoryL1: '产品类', priority: 'P2 中',
+    status: '已完结', stage: '已完结', creator: '赵娜', customerUser: '何清', submittedBy: '客服主管',
+    reportType: '客户提交', submitterName: '何清', customerStatus: '正式客户', customerOwner: '王磊', customerType: '直销',
+    department: '江苏区域', contact: '13600003301', phone: '13600003301', email: 'heqing@example.com', contactName: '何清',
+    leadId: '233018', businessType: '售后工单', accountValid: '是', risk: 'P2-中（配置问题）',
+    firstResponseAt: '2026-09-25 09:40:00', firstResolved: 'Y', deadline: '2026-09-28 09:16:40',
+    result: '已重新绑定企微接收人，并补发 9 月 24 日命中的 6 条预警',
+    solution: '已重新绑定企微接收人，并补发 9 月 24 日命中的 6 条预警。',
+    slaResp: 'ok', slaReply: 'ok', slaClose: 'ok', slaLabel: '全部达标', slaLabelColor: '#52c41a',
+    evalStatus: '未触发', score: null, evalMethod: '邮件/短信评价链接', evalTrigger: '工单完结后', evalPushedAt: '',
+    logs: [
+      { time: '2026-09-25 09:16:40', text: '官网反馈提交，生成统一工单', actor: '系统', level: '' },
+      { time: '2026-09-25 09:40:00', text: '赵娜首次响应，核对预警接收人', actor: '赵娜', level: 'ok' },
+      { time: '2026-09-25 15:20:00', text: '已重新绑定接收人并补发预警，工单完结。客户尚未评价', actor: '赵娜', level: 'ok' }
+    ],
+    slaDetail: [
+      { name: '2小时响应', state: '已达标', pill: 'pill-green', deadline: '2026-09-25 11:16:40', actual: '2026-09-25 09:40:00', note: '' },
+      { name: '24小时回复', state: '已达标', pill: 'pill-green', deadline: '2026-09-26 09:16:40', actual: '2026-09-25 15:20:00', note: '' },
+      { name: '72小时完结', state: '已达标', pill: 'pill-green', deadline: '2026-09-28 09:16:40', actual: '2026-09-25 15:20:00', note: '' }
+    ]
   }
 ];
 
@@ -2880,11 +3046,11 @@ TICKETS.forEach(t => {
   if (!t.creator) t.creator = t.handler || '系统';
   if (!t.customerUser) t.customerUser = t.submitter;
   const profile = {
-    'TK-20260924-00018': { leadId: '203821', customerStatus: '正式客户', customerOwner: '王磊', reportType: '客户提交', submitterName: '林煦航', stage: '待处理', deadline: '2026-10-18 18:00:00', department: '江苏区域', contact: '13812340018', product: '新浪舆情通', categoryL1: '产品类', category2: '数据与统计', contactName: '林煦航', wechat: '', channelDetail: '', groupName: '', sessionRef: '', messageSummary: '选择昨日时间范围后列表为空', expected: '恢复昨日数据', relatedUrl: 'https://yqt.midu.com/board', platform: '网站', houseTask: '', promiseTime: '', accountValid: '是', risk: 'P0-紧急（重大舆情/系统宕机）', firstResponseAt: '', firstResolved: 'N', result: '' },
+    'TK-20260924-00018': { leadId: '203821', customerStatus: '正式客户', customerOwner: '王磊', reportType: '客户提交', submitterName: '林煦航', stage: '待处理', deadline: '2026-10-18 18:00:00', department: '江苏区域', contact: '13812340018', product: '舆情通', categoryL1: '产品类', category2: '数据与统计', contactName: '林煦航', wechat: '', channelDetail: '', groupName: '', sessionRef: '', messageSummary: '选择昨日时间范围后列表为空', expected: '恢复昨日数据', relatedUrl: 'https://yqt.midu.com/board', platform: '网站', houseTask: '', promiseTime: '', accountValid: '是', risk: 'P0-紧急（重大舆情/系统宕机）', firstResponseAt: '', firstResolved: 'N', result: '' },
     'TK-20260924-00012': { leadId: '240208', customerStatus: '初次接触', customerOwner: '周宁', reportType: '销售提交', submitterName: '于晨晨', stage: '处理中', deadline: '2026-10-14 08:00:00', department: '山东区域', contact: '18706129303', product: '校对通', categoryL1: '数据类', category2: '数据采集类', contactName: '于晨晨', wechat: '', channelDetail: '智齿会话', groupName: '', sessionRef: 'CALL-20260924-331', messageSummary: '昨夜采集失败 3 次，今日日报缺数据', expected: '紧急补采并恢复日报', relatedUrl: '', platform: '微博', houseTask: '日报补采', promiseTime: '2026-09-24 18:00:00', accountValid: '否', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-24 09:12:00', firstResolved: 'N', result: '补采进行中', staffScore: 3, systemScore: 4, surveySuggestion: '', score: 3.5, evalStatus: '已评价', skillGroup: '客服一组', fcrReason: '需内部协作', customerType: '直客', internalId: 'IN-20261024-00012', internalResult: '返回工单', transferredBy: '于晨晨', transferredAt: '2026-09-24 15:00:00' },
     'TK-20260923-00102': { leadId: '251016', customerStatus: '上门拜访', customerOwner: '陈静', reportType: '客服提交', submitterName: '赵娜', stage: '已完结', deadline: '2026-09-26 16:21:10', department: '上海大客户部', contact: 'wx_zhao', product: '模力通', categoryL1: '产品类', category2: '使用与账号', contactName: '赵娜', wechat: 'wx_zhao', channelDetail: '企微私聊', groupName: '', sessionRef: 'WW-MSG-99102', messageSummary: '新开子账号看不到项目报表', expected: '开通报表权限', relatedUrl: '', platform: '', houseTask: '', promiseTime: '2026-09-24 12:00:00', customerType: '直客', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 10:05:00', firstResolved: 'Y', result: '已为子账号开通报表权限', staffScore: 5, systemScore: 4, surveySuggestion: '', score: 4.5, evalStatus: '已评价', closedAt: '2026-09-24 11:02:18', skillGroup: '客服一组', kbSaved: true },
-    'TK-20260922-00077': { leadId: '', customerStatus: '开通试用', customerOwner: '', reportType: '客户提交', submitterName: '林煦航', stage: '处理中', deadline: '2026-09-25 20:21:02', department: '江苏区域', contact: '', product: '新浪舆情通', categoryL1: '账号问题', category2: '账号类问题', contactName: '林煦航', wechat: '', channelDetail: '官网表单', groupName: '', sessionRef: 'WEB-1-2602', messageSummary: '官网测试反馈', expected: '', relatedUrl: '', platform: '网站', houseTask: '', promiseTime: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-22 20:40:00', firstResolved: 'N', result: '描述不清，已退回提交人', staffScore: 5, systemScore: 5, surveySuggestion: '希望补充开通步骤', score: 5, evalStatus: '已评价' },
-    'TK-20260923-00055': { leadId: '210933', customerStatus: '产品培训', customerOwner: '李倩', reportType: '销售提交', submitterName: '周宁', stage: '待确认完结', deadline: '2026-10-16 20:00:00', department: '北京区域', contact: '群内@产品运营', product: '新浪舆情通', categoryL1: '联系商务', category2: '找对接人', contactName: '产品运营', wechat: '群内@产品运营', channelDetail: '客户群', groupName: '北京某某集团舆情服务群', sessionRef: 'WW-GROUP-2201', messageSummary: '希望导出增加竞品对比字段', expected: '纳入下迭代并同步排期', relatedUrl: '', platform: '', houseTask: '', promiseTime: '2026-09-24 18:00:00', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 11:20:00', firstResolved: 'N', result: '已评估纳入下迭代', evalStatus: '已推送' },
+    'TK-20260922-00077': { leadId: '', customerStatus: '开通试用', customerOwner: '', reportType: '客户提交', submitterName: '林煦航', stage: '处理中', deadline: '2026-09-25 20:21:02', department: '江苏区域', contact: '', product: '舆情通', categoryL1: '账号问题', category2: '账号类问题', contactName: '林煦航', wechat: '', channelDetail: '官网表单', groupName: '', sessionRef: 'WEB-1-2602', messageSummary: '官网测试反馈', expected: '', relatedUrl: '', platform: '网站', houseTask: '', promiseTime: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-22 20:40:00', firstResolved: 'N', result: '描述不清，已退回提交人', staffScore: 5, systemScore: 5, surveySuggestion: '希望补充开通步骤', score: 5, evalStatus: '已评价' },
+    'TK-20260923-00055': { leadId: '210933', customerStatus: '产品培训', customerOwner: '李倩', reportType: '销售提交', submitterName: '周宁', stage: '待确认完结', deadline: '2026-10-16 20:00:00', department: '北京区域', contact: '群内@产品运营', product: '舆情通', categoryL1: '联系商务', category2: '找对接人', contactName: '产品运营', wechat: '群内@产品运营', channelDetail: '客户群', groupName: '北京某某集团舆情服务群', sessionRef: 'WW-GROUP-2201', messageSummary: '希望导出增加竞品对比字段', expected: '纳入下迭代并同步排期', relatedUrl: '', platform: '', houseTask: '', promiseTime: '2026-09-24 18:00:00', accountValid: '是', risk: 'P2-中（配置问题）', firstResponseAt: '2026-09-23 11:20:00', firstResolved: 'N', result: '已评估纳入下迭代', evalStatus: '已推送' },
     'TK-20260921-00031': { leadId: '222712', customerStatus: '正式客户', customerOwner: '张帅', reportType: '客服提交', submitterName: '客服主管', stage: '超时完结', deadline: '2026-09-24 14:12:20', department: '江苏区域', contact: 'zhangshuai@midu.com', product: '校对通', categoryL1: '投诉类', category2: '投诉员工/服务', contactName: '张帅', wechat: '', channelDetail: '客服邮箱', groupName: '', sessionRef: 'MAIL-8821', messageSummary: '开票提交两日仍审核中', expected: '尽快完成开票审核', relatedUrl: '', platform: '', houseTask: '', promiseTime: '2026-09-22 12:00:00', customerType: '直客', accountValid: '是', risk: 'P1-高（数据严重遗漏/投诉）', firstResponseAt: '2026-09-21 14:30:00', firstResolved: 'N', result: '发票已审核通过', staffScore: 2, systemScore: 4, surveySuggestion: '', score: 3, evalStatus: '已评价', closedAt: '2026-09-22 16:00:00', skillGroup: '财务支持', fcrReason: '需二次联系', kbSaved: true, callbackStatus: 'done', callbackGap: '方案无效', callbackNote: '客户对开票时效不满，已说明流程并赠送信誉补偿说明' },
     'TK-20260924-00003': { leadId: '271504', customerStatus: '协议商谈', customerOwner: '孙启', reportType: '客户提交', submitterName: '孙启', stage: '挂起', deadline: '2026-10-17 12:00:00', department: '浙江区域', contact: '企微-技术对接人', product: '模力通', categoryL1: '客户临时需求', category2: '', contactName: '孙启', wechat: '企微-技术对接人', channelDetail: '', groupName: '', sessionRef: '', messageSummary: '等待研发反馈', expected: '', relatedUrl: '', platform: '', houseTask: '', promiseTime: '', accountValid: '否', risk: 'P3-低（常规咨询）', firstResponseAt: '2026-09-24 11:10:00', firstResolved: 'N', result: '等研发反馈', customerType: '强国', internalId: 'IN-20261024-10003', internalResult: '驳回', transferredBy: '客服主管', transferredAt: '2026-09-24 12:00:00' }
   }[t.id];
@@ -2897,12 +3063,13 @@ TICKETS.forEach(t => {
 });
 
 const CUSTOMER_BOOK = {
-  '180021': { name: '上海某某传媒', status: '正式客户', account: 'yqt_180021', systemType: '直销', accountProduct: '新浪舆情通' },
-  '402008': { name: '杭州某某科技', status: '初次接触', account: 'jdt_402008', systemType: '直销', accountProduct: '校对通' },
-  '511016': { name: '深圳某某互动', status: '上门拜访', account: 'mlt_511016', systemType: '直销', accountProduct: '模力通' },
-  '109033': { name: '北京某某集团', status: '产品培训', account: 'yqt_109033', systemType: '直销', accountProduct: '新浪舆情通' },
-  '227012': { name: '南京某某网络', status: '正式客户', account: 'jdt_227012', systemType: '直销', accountProduct: '校对通' },
-  '715004': { name: '合作伙伴-星云', status: '协议商谈', account: 'mlt_715004', systemType: '代理', accountProduct: '模力通' }
+  '180021': { name: '上海某某传媒', status: '正式客户', account: 'yqt_180021', systemType: '直销', accountProduct: '舆情通', contactName: '林煦航', phone: '13812340018', email: 'linxuhang@example.com', owner: '王磊', department: '江苏区域' },
+  '402008': { name: '杭州某某科技', status: '初次接触', account: 'jdt_402008', systemType: '直销', accountProduct: '校对通', contactName: '于晨晨', phone: '18706129303', email: 'yuchenchen@example.com', owner: '周宁', department: '山东区域' },
+  '511016': { name: '深圳某某互动', status: '上门拜访', account: 'mlt_511016', systemType: '直销', accountProduct: '模力通', contactName: '赵娜', phone: '', email: 'zhaona@example.com', owner: '陈静', department: '上海大客户部' },
+  '109033': { name: '北京某某集团', status: '产品培训', account: 'yqt_109033', systemType: '直销', accountProduct: '舆情通', contactName: '产品运营', phone: '', email: '', owner: '李倩', department: '北京区域' },
+  '227012': { name: '南京某某网络', status: '正式客户', account: 'jdt_227012', systemType: '直销', accountProduct: '校对通', contactName: '张帅', phone: '', email: 'zhangshuai@midu.com', owner: '张帅', department: '江苏区域' },
+  '715004': { name: '合作伙伴-星云', status: '协议商谈', account: 'mlt_715004', systemType: '代理', accountProduct: '模力通', contactName: '孙启', phone: '', email: '', owner: '孙启', department: '浙江区域' },
+  '330118': { name: '成都某某日报', status: '正式客户', account: 'sj_330118', systemType: '直销', accountProduct: '索骥', contactName: '何清', phone: '13600003301', email: 'heqing@example.com', owner: '王磊', department: '江苏区域' }
 };
 const INTERNAL_FINISH = ['完成', '无需处理', '拒绝', '加入需求池', '关闭工单', '驳回'];
 const BLOCK_REISSUE = ['拒绝', '无需处理', '驳回'];
@@ -2913,6 +3080,7 @@ TICKETS.forEach(function (t, i) {
   if (!t.phone && /^1\d{10}$/.test(contact)) t.phone = contact;
   if (!t.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) t.email = contact;
   if (!t.firstHandler && t.handler) t.firstHandler = t.handler;
+  if (!t.businessType) t.businessType = t.customerStatus === '正式客户' ? '售后工单' : '售前工单';
   if (t.customerType === '直客') t.customerType = '直销';
   if (['直销', '强国', '代理', '内部', '其他'].indexOf(t.customerType) < 0) t.customerType = '直销';
   if ((t.internalResult === '驳回' || t.internalResult === '拒绝') && t.customerOwner && !t.problemLog) {
@@ -2943,6 +3111,37 @@ TICKETS.forEach(function (t, i) {
   }
 });
 
+const PRODUCT_GROUPS = [
+  { label: '智能检索', items: ['舆情通', '索骥', '城感通', '数咖'] },
+  { label: '智能校对', items: ['校对通', '新媒通', '安巡通'] },
+  { label: '智能办公', items: ['模力通'] },
+  { label: '其他', items: ['知知通', '文稿通', '版权通', '品誉通', '数察通DataQ', '云能力', '蜜度官网'] }
+];
+Vue.component('product-picker', {
+  props: { value: { type: String, default: '' } },
+  data() { return { open: false }; },
+  computed: { groups() { return PRODUCT_GROUPS; } },
+  methods: {
+    pick(name) {
+      this.$emit('input', name);
+      if (this.$refs.pop) this.$refs.pop.showPopper = false;
+    }
+  },
+  template: '<el-popover ref="pop" placement="bottom-start" trigger="click" popper-class="product-picker-pop" :visible-arrow="false" @show="open=true" @hide="open=false">' +
+    '<div class="product-picker">' +
+      '<div class="product-picker-row" v-for="g in groups" :key="g.label">' +
+        '<div class="product-picker-label">{{ g.label }}</div>' +
+        '<div class="product-picker-opts">' +
+          '<button type="button" v-for="p in g.items" :key="p" :class="{on: value===p}" @click="pick(p)">{{ p }}</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<button slot="reference" type="button" class="product-picker-trigger" :class="{open: open, filled: !!value}">' +
+      '<span>{{ value || "请选择" }}</span><i class="el-icon-arrow-down"></i>' +
+    '</button>' +
+  '</el-popover>'
+});
+
 new Vue({
   el: '#app',
   data() {
@@ -2967,6 +3166,7 @@ new Vue({
       page: 'flow',
       navOpen: false,
       currentUser: { name: '客服主管', account: '演示账号' },
+      staffRole: '客服主管',
       clockTick: Date.now(),
       detailVisible: false,
       showBotAdvice: false,
@@ -2976,7 +3176,7 @@ new Vue({
       replyChannelOptions: ['电话', '短信', '邮箱', '企微'],
       staffSteps: ['待处理', '处理中', '待确认完结', '已完结'],
       current: {},
-      query: { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' },
+      query: { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', businessType: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' },
       reissueFrom: null,
       reissue: { product: '', categoryL1: '', category2: '', detail: '' },
       listPage: 1,
@@ -2987,7 +3187,8 @@ new Vue({
       userProgressOptions: ['处理中', '待评价', '已完结', '已评价'],
       customerSteps: ['已受理', '处理中', '待确认', '已完成'],
       mineCreateVisible: false,
-      survey: { ticketId: '', staffScore: 0, systemScore: 0, suggestion: '' },
+      survey: { ticketId: '', staffScore: 0, systemScore: 0, suggestion: '', preview: false },
+      surveyMode: 'form',
       mineCurrent: {},
       categoryTree: CATEGORY_TREE,
       channels: CHANNELS,
@@ -3005,9 +3206,10 @@ new Vue({
       superviseReasons: ['SLA即将超时', 'SLA已超时', '转办后未响应', '客户催办', '其他'],
       pauseReasons: ['等待客户补充资料', '等待第三方处理', '客户约定稍后联系', '其他'],
       exportFieldOptions: [
-        { key: 'leadId', label: '线索id' },
-        { key: 'customerId', label: '客户id' },
+        { key: 'leadId', label: '线索ID' },
+        { key: 'customerId', label: '客户ID' },
         { key: 'customerType', label: '客户类型' },
+        { key: 'businessType', label: '业务类型' },
         { key: 'reportType', label: '提报类型' },
         { key: 'channel', label: '反馈渠道' },
         { key: 'product', label: '产品项目' },
@@ -3025,7 +3227,7 @@ new Vue({
         { key: 'contactName', label: '联系人' },
         { key: 'title', label: '问题详情' },
         { key: 'submitter', label: '反馈人' },
-        { key: 'handler', label: '当前处理人' },
+        { key: 'handler', label: '反馈负责人' },
         { key: 'stage', label: '反馈阶段' },
         { key: 'deadline', label: '完结时限' },
         { key: 'score', label: '满意度' },
@@ -3052,7 +3254,7 @@ new Vue({
         listFollow: '',
         listHold: '',
         listUpgrade: '',
-        trial: { customerId: '', account: '', product: '新浪舆情通' },
+        trial: { customerId: '', account: '', product: '舆情通' },
         export: { format: 'csv', fields: ['id', 'reportType', 'channel', 'customerId', 'leadId', 'customerStatus', 'salesOwner', 'category', 'stage', 'deadline', 'title'] },
         addCategory: { code: '', name: '', children: '', summary: '' }
       },
@@ -3060,13 +3262,15 @@ new Vue({
       regionOptions: ['上海大客户部','北京区域','天津区域','上海区域','重庆区域','河北区域','山西区域','辽宁区域','吉林区域','黑龙江区域','江苏区域','浙江区域','安徽区域','福建区域','江西区域','山东区域','河南区域','湖北区域','湖南区域','广东区域','海南区域','四川区域','贵州区域','云南区域','陕西区域','甘肃区域','青海区域','内蒙古区域','广西区域','西藏区域','宁夏区域','新疆区域'],
       customerStatusOptions: ['正式客户', '初次接触', '上门拜访', '开通试用', '产品培训', '提案报价', '协议商谈', '客户交接', '客户使用', '客户续费', '客户失败', '客户失败-新签', '客户失败-续签'],
       level1Options: CATEGORY_GROUPS.map(item => item.name),
-      productOptions: ['索骥', '校对通', '新浪舆情通', '新媒通', '云能力', '安巡通', '城感通', '模力通', '数咖', '数察通DataQ', '知知通', '文稿通', '版权通', '品誉通', '蜜度官网'],
+      productOptions: ['索骥', '校对通', '舆情通', '新媒通', '云能力', '安巡通', '城感通', '模力通', '数咖', '数察通DataQ', '知知通', '文稿通', '版权通', '品誉通', '蜜度官网'],
       customerTypeOptions: ['直销', '强国', '代理', '内部', '其他'],
+      businessTypeOptions: ['售前工单', '售后工单'],
       urgencyOptions: ['P0 紧急', 'P1 高', 'P2 中', 'P3 低'],
       intake: {
-        reportType: '客户提交', channel: '蜜度官网', product: '', customer: '', customerId: '', leadId: '',
+        reportType: '客户提交', channel: '蜜度官网', businessType: '', product: '', customer: '', customerId: '', leadId: '',
         customerStatus: '', contact: '', contactName: '', phone: '', email: '', department: '', leadOwner: '', customerOwner: '', orgName: '',
-        customerType: '', account: '', quickGroup: false, groupName: '', messageSummary: '', internalNote: '',
+        customerType: '', account: '', quickGroup: false, groupName: '', messageSummary: '', internalNote: '', salesContact: '', salesNote: '',
+        reporterName: '', reporterPhone: '', reporterEmail: '', systemContactName: '', systemPhone: '', systemEmail: '', systemProduct: '',
         categoryL1: '', category2: '', categorySource: '', urgency: '', detail: '', detailHtml: '', files: []
       },
       stageOptions: ['待处理', '处理中', '待确认完结', '已完结', '超时完结'],
@@ -3119,11 +3323,19 @@ new Vue({
       this.tickets.forEach(t => { if (t.department) seen[t.department] = true; });
       return Object.keys(seen);
     },
+    actingName() {
+      return this.staffRole === '普通客服' ? '赵娜' : this.currentUser.name;
+    },
+    scopedTickets() {
+      if (this.staffRole !== '普通客服') return this.tickets;
+      const me = this.actingName;
+      return this.tickets.filter(t => this.firstHandlerName(t) === me);
+    },
     stageStats() {
       const names = this.stageOptions;
       const counts = {};
       names.forEach(name => { counts[name] = 0; });
-      this.tickets.forEach(t => {
+      this.scopedTickets.forEach(t => {
         const stage = this.feedbackStage(t);
         if (counts[stage] == null) return;
         counts[stage] += 1;
@@ -3132,12 +3344,15 @@ new Vue({
     },
     ticketHandlers() {
       const seen = {};
-      this.tickets.forEach(t => { if (t.handler) seen[t.handler] = true; });
+      this.tickets.forEach(t => {
+        const name = this.firstHandlerName(t);
+        if (name && name !== '—') seen[name] = true;
+      });
       return Object.keys(seen);
     },
     filteredTickets() {
       const q = this.query;
-      return this.tickets.filter(t => {
+      return this.scopedTickets.filter(t => {
         if (q.channel && t.channel !== q.channel) return false;
         if (q.stage && this.feedbackStage(t) !== q.stage) return false;
         if (q.categoryL1 && (t.categoryL1 || t.category1) !== q.categoryL1) return false;
@@ -3146,6 +3361,7 @@ new Vue({
         if (q.leadId && !(t.leadId || '').includes(String(q.leadId).trim())) return false;
         if (q.customerId && !(t.customerId || '').includes(String(q.customerId).trim())) return false;
         if (q.customerType && (t.customerType || '') !== q.customerType) return false;
+        if (q.businessType && (t.businessType || '') !== q.businessType) return false;
         if (q.ticketNo) {
           const key = String(q.ticketNo).trim().toLowerCase();
           const hit = [t.cfId, t.id].join(' ').toLowerCase();
@@ -3159,7 +3375,7 @@ new Vue({
             if (internalLabel.indexOf('内部工单完结') !== 0) return false;
           } else if (internalLabel !== q.internalStatus) return false;
         }
-        if (q.handler && t.handler !== q.handler) return false;
+        if (q.handler && this.firstHandlerName(t) !== q.handler) return false;
         if (q.overdue === '是' && this.slaOverdueText(t) !== '是 · 已逾期') return false;
         if (q.overdue === '否' && this.slaOverdueText(t) === '是 · 已逾期') return false;
         if (q.customerStatus && t.customerStatus !== q.customerStatus) return false;
@@ -3207,6 +3423,18 @@ new Vue({
     surveyTicket() {
       return this.tickets.find(t => t.id === this.survey.ticketId) || null;
     },
+    csatTicket() {
+      return this.surveyTicket || this.tickets.find(t => t.result) || this.tickets[0] || null;
+    },
+    csatShownScores() {
+      if (this.survey.preview && this.surveyMode === 'thanks') return { result: 5, service: 5 };
+      if (this.survey.preview && this.surveyMode === 'low') return { result: 2, service: 2 };
+      return { result: this.survey.systemScore || 0, service: this.survey.staffScore || 0 };
+    },
+    csatThanksNote() {
+      if (this.surveyMode === 'low') return '已安排回访。任一评分低于 3 星，或填写了文字反馈，会有专人联系您确认处理结果。';
+      return '感谢认可！如后续使用中还有问题，欢迎随时提交反馈或联系在线客服。';
+    },
     listMetrics() {
       const rows = this.filteredTickets;
       const total = rows.length;
@@ -3231,6 +3459,12 @@ new Vue({
     },
     csGroupChannel() {
       return /群/.test(this.intake.channel || '');
+    },
+    isFillPage() {
+      return this.page === 'guest' || this.page === 'sales' || this.page === 'cs';
+    },
+    salesChannelNames() {
+      return ['蜜度官网', '企微客户群'];
     },
     detailHasImage() {
       return /<img\b/i.test(this.intake.detailHtml || '');
@@ -3329,6 +3563,54 @@ new Vue({
     mineStatusClass(t) {
       return { '处理中': 'is-ing', '待评价': 'is-wait', '已完结': 'is-done', '已评价': 'is-rated' }[this.userProgress(t)] || '';
     },
+    mineListStatus(t) {
+      const progress = this.userProgress(t);
+      if (progress === '已评价') return '已完结';
+      return progress || '—';
+    },
+    mineCanRate(t) {
+      const progress = this.userProgress(t);
+      return progress === '待评价' || progress === '已完结';
+    },
+    mineProductShort(t) {
+      const name = (t && t.product) || '';
+      if (name.indexOf('舆情') >= 0) return '舆情通';
+      return name || '—';
+    },
+    mineWhen(t) {
+      return String((t && (t.reportedAt || t.createdAt)) || '').slice(0, 16) || '—';
+    },
+    mineHeroStatus(t) {
+      if (!t) return '—';
+      if (this.userProgress(t) === '已评价') return '已评价';
+      if (this.userProgress(t) === '待评价' || this.userProgress(t) === '已完结' || this.isClosedTicket(t)) return '已有结论';
+      return '处理中';
+    },
+    mineBriefTime(t) {
+      return String((t && (t.closedAt || t.statusAt || t.reportedAt || t.createdAt)) || '').slice(0, 16) || '—';
+    },
+    mineBriefLines(t) {
+      if (!t) return [];
+      const problem = String(t.detail || t.title || '').replace(/\s+/g, ' ').trim();
+      const result = String(t.result || t.solution || '').replace(/\s+/g, ' ').trim().replace(/[。！？.!?]+$/, '');
+      const lines = [];
+      if (problem) lines.push(problem);
+      if (result) lines.push(result + '。');
+      if (this.customerStepIndex(t) >= 3) lines.push('如后续使用中还有疑问，欢迎随时再次联系我们。');
+      else lines.push(this.aiBrief(t).next);
+      return lines;
+    },
+    mineLatestResult(t) {
+      if (!t) return '—';
+      const raw = String(t.result || t.solution || '').replace(/\s+/g, ' ').trim().replace(/[。！？.!?]+$/, '');
+      if (raw) return raw;
+      if (this.customerStepIndex(t) < 3) return '正在处理，完成后会同步结果';
+      return '问题已处理完成';
+    },
+    contactFromProgress() {
+      this.dlg.mine = false;
+      this.openMineCreate();
+    },
     userProgress(t) {
       if (!t) return '—';
       if (t.evalStatus === '已评价' || t.stage === '已评价') return '已评价';
@@ -3361,6 +3643,13 @@ new Vue({
     firstHandlerName(t) {
       return (t && (t.firstHandler || t.handler)) || '—';
     },
+    feedbackRole(t) {
+      const type = t && t.reportType;
+      if (type === '客户提交') return '客户';
+      if (type === '销售提交') return '销售';
+      if (type === '客服提交') return '客服';
+      return '—';
+    },
     canUpgrade(t) {
       return !!(t && (t.internalId || t.transferredAt || t.internalResult || t.flowBadge === '内部处理中'));
     },
@@ -3376,6 +3665,8 @@ new Vue({
       if (result === '返回工单') return { label: '工单转回', cls: 'tag-orange' };
       if (INTERNAL_FINISH.indexOf(result) >= 0) return { label: '内部工单完结 · ' + result, cls: 'tag-green' };
       if (t.flowBadge === '内部处理中' || t.internalId) return { label: '内部处理中', cls: 'tag-blue' };
+      const stage = t.stage || t.status || '';
+      if (t.flowBadge === '已转销售' || stage === '已纳入需求池' || t.poolAt) return { label: '已转销售', cls: 'tag-purple' };
       return { label: '未转出', cls: 'tag-default' };
     },
     feedbackStage(t) {
@@ -3447,14 +3738,14 @@ new Vue({
       const category = this.categoryText(t);
       const customer = t.customer || '该客户';
       const product = t.product || '相关产品';
-      const handler = t.handler || '尚未分派';
+      const handler = this.firstHandlerName(t);
       const detail = String(t.detail || '').replace(/\s+/g, ' ').trim();
       const brief = detail ? (detail.length > 48 ? detail.slice(0, 48) + '…' : detail) : '暂无问题详情';
       const remain = this.isClosedTicket(t) ? ('已于 ' + this.closeRemainText(t) + ' 完结') : ('剩余时间 ' + this.closeRemainText(t));
       const logs = t.logs || [];
       const last = logs.length ? logs[logs.length - 1] : null;
       const lastText = last ? ('最近进展：' + last.time + '，' + last.text) : '暂无跟踪记录。';
-      return customer + '反馈「' + product + '」问题，分类「' + category + '」。当前阶段' + stage + '，责任人' + handler + '，' + remain + '。问题：' + brief + '。' + lastText;
+      return customer + '反馈「' + product + '」问题，分类「' + category + '」。当前阶段' + stage + '，反馈负责人' + handler + '，' + remain + '。问题：' + brief + '。' + lastText;
     },
     categoryChildren(name) {
       const item = CATEGORY_GROUPS.find(group => group.name === name);
@@ -3676,8 +3967,8 @@ new Vue({
     markFirstHandle(ticket) {
       if (!ticket) return;
       if (!ticket.firstHandler) {
-        ticket.firstHandler = this.currentUser.name;
-        ticket.handler = this.currentUser.name;
+        ticket.firstHandler = this.actingName;
+        ticket.handler = this.actingName;
       }
       if (ticket.firstHandledAt || ticket.firstResponseAt) return;
       const time = this.nowText();
@@ -3815,7 +4106,17 @@ new Vue({
       if (idx === 3) eta = '已于 ' + (t.closedAt || t.statusAt || '—') + ' 完成';
       return { problem: problem, done: doneMap[idx], next: next, eta: eta };
     },
+    onStaffRole() {
+      this.listPage = 1;
+      if (this.detailVisible && this.staffRole === '普通客服' && this.current && this.firstHandlerName(this.current) !== this.actingName) {
+        this.detailVisible = false;
+      }
+    },
     openDetail(t) {
+      if (this.staffRole === '普通客服' && this.firstHandlerName(t) !== this.actingName) {
+        this.$message.warning('普通客服只能查看自己负责的工单');
+        return;
+      }
       this.showBotAdvice = false;
       this.showAiSummary = false;
       this.botLogged = false;
@@ -3838,7 +4139,7 @@ new Vue({
       const form = this.detailEdit;
       const checks = [
         { label: '问题大类', value: form.categoryL1 },
-        { label: '产品线', value: form.product },
+        { label: '产品项目', value: form.product },
         { label: '客户类型', value: form.customerType },
         { label: '问题详情', value: form.detail }
       ];
@@ -3856,8 +4157,8 @@ new Vue({
         ticket.messageSummary = String(form.messageSummary || '').trim();
         ticket.internalNote = String(form.internalNote || '').trim();
         if (!ticket.firstHandler) {
-          ticket.firstHandler = this.currentUser.name;
-          ticket.handler = this.currentUser.name;
+          ticket.firstHandler = this.actingName;
+          ticket.handler = this.actingName;
         }
         ticket.submitterAccount = ticket.submitterAccount || this.currentUser.account;
         ticket.logs.push({
@@ -3877,7 +4178,7 @@ new Vue({
     },
     doQuery() { this.listPage = 1; this.$message.success('已按条件筛选（原型本地过滤）'); },
     resetQuery() {
-      this.query = { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' };
+      this.query = { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', businessType: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' };
       this.listPage = 1;
     },
     nowText() {
@@ -4232,9 +4533,10 @@ new Vue({
     resetIntake() {
       const role = this.intake.reportType;
       this.intake = {
-        reportType: role, channel: role === '客户提交' ? '蜜度官网' : '', product: '', customer: '', customerId: '', leadId: '',
+        reportType: role, channel: role === '客户提交' ? '蜜度官网' : '', businessType: '', product: '', customer: '', customerId: '', leadId: '',
         customerStatus: '', contact: '', contactName: '', phone: '', email: '', department: '', leadOwner: '', customerOwner: '', orgName: '',
-        customerType: '', account: '', quickGroup: false, groupName: '', messageSummary: '', internalNote: '',
+        customerType: '', account: '', quickGroup: false, groupName: '', messageSummary: '', internalNote: '', salesContact: '', salesNote: '',
+        reporterName: '', reporterPhone: '', reporterEmail: '', systemContactName: '', systemPhone: '', systemEmail: '', systemProduct: '',
         categoryL1: '', category2: '', categorySource: '', urgency: '', detail: '', detailHtml: '', files: []
       };
       this.$nextTick(() => {
@@ -4469,16 +4771,27 @@ new Vue({
       }
       this.insertDetailHtml(this.escapeHtml(plain).replace(/\n/g, '<br>'));
     },
+    openIntake(which) {
+      const roles = { guest: '客户提交', sales: '销售提交', cs: '客服提交' };
+      const role = roles[which];
+      if (!role) return;
+      this.page = which;
+      if (this.intake.reportType !== role) this.setIntakeRole(role);
+    },
     setIntakeRole(role) {
       this.syncDetail();
+      const prevRole = this.intake.reportType;
       this.intake.reportType = role;
       if (role === '客户提交') {
         this.intake.channel = '蜜度官网';
         this.intake.customerId = '';
         this.intake.leadId = '';
       } else if (role === '销售提交') {
-        if (this.intake.channel === '蜜度官网') this.intake.channel = '';
+        if (prevRole === '客户提交' || this.salesChannelNames.indexOf(this.intake.channel) < 0) this.intake.channel = '';
         this.matchCustomerByOrg();
+      } else if (role === '客服提交') {
+        if (this.intake.channel === '蜜度官网') this.intake.channel = '';
+        this.loadCsDraft();
       } else if (this.intake.channel === '蜜度官网') {
         this.intake.channel = '';
       }
@@ -4488,6 +4801,51 @@ new Vue({
         const el = this.$refs.detailEditor;
         if (el) el.innerHTML = html;
       });
+    },
+    loadCsDraft() {
+      try {
+        const raw = localStorage.getItem('boss-cs-intake-draft');
+        if (!raw) return;
+        const draft = JSON.parse(raw);
+        if (!draft || draft.reportType !== '客服提交') return;
+        this.intake = Object.assign({}, this.intake, draft, { reportType: '客服提交' });
+      } catch (e) {}
+    },
+    saveCsIntake() {
+      this.syncDetail();
+      try {
+        localStorage.setItem('boss-cs-intake-draft', JSON.stringify(this.intake));
+        this.$message.success('已保存');
+      } catch (e) {
+        this.$message.warning('保存失败，请减少附件后再试');
+      }
+    },
+    cancelCsIntake() {
+      try { localStorage.removeItem('boss-cs-intake-draft'); } catch (e) {}
+      this.resetIntake();
+      this.page = 'list';
+    },
+    customerIdsByPhone(phone) {
+      const digits = String(phone || '').replace(/\D/g, '');
+      if (!digits) return [];
+      return Object.keys(CUSTOMER_BOOK).filter(id => String(CUSTOMER_BOOK[id].phone || '').replace(/\D/g, '') === digits);
+    },
+    customerIdsByAccount(account) {
+      const key = String(account || '').trim();
+      if (!key) return [];
+      return Object.keys(CUSTOMER_BOOK).filter(id => String(CUSTOMER_BOOK[id].account || '').trim() === key);
+    },
+    matchCustomerByPhoneOrAccount(phone, account) {
+      const byPhone = phone ? this.customerIdsByPhone(phone) : [];
+      const byAccount = account ? this.customerIdsByAccount(account) : [];
+      if (byPhone.length > 1) return { error: '该联系电话对应多个客户，无法确定匹配结果' };
+      if (byAccount.length > 1) return { error: '该账号对应多个客户，无法确定匹配结果' };
+      const phoneId = byPhone[0] || '';
+      const accountId = byAccount[0] || '';
+      if (phoneId && accountId && phoneId !== accountId) return { error: '联系电话和账号对应的不是同一客户' };
+      const id = phoneId || accountId;
+      if (!id) return { id: '', via: '' };
+      return { id: id, row: CUSTOMER_BOOK[id], via: phoneId && accountId ? '联系电话和账号' : (phoneId ? '联系电话' : '账号') };
     },
     lookupCustomer() {
       const id = String(this.intake.customerId || '').replace(/\D/g, '').slice(0, 6);
@@ -4546,44 +4904,69 @@ new Vue({
       const isCs = form.reportType === '客服提交';
       const isSales = form.reportType === '销售提交';
       const fields = [
-        { label: isCustomer ? '产品项目' : '产品线', value: form.product }
+        { label: '产品项目', value: form.product }
       ];
-      if (isCs || isSales) {
+      if (isCs) fields.unshift({ label: '业务类型', value: form.businessType });
+      if (isCs) {
         fields.push({ label: '问题大类', value: form.categoryL1 });
         if (this.categoryChildren(form.categoryL1).length) fields.push({ label: '问题子类', value: form.category2 });
         fields.push({ label: '紧急度', value: form.urgency });
       }
       if (!isCustomer) fields.push({ label: '反馈渠道', value: form.channel });
-      if (isCs || isSales) fields.push({ label: '客户类型', value: form.customerType });
+      if (isSales) fields.push({ label: '客户联系方式', value: form.salesContact }, { label: '账号', value: form.account });
       if (this.phoneRequired) fields.push({ label: '联系电话', value: form.phone });
-      if (this.emailRequired) fields.push({ label: '邮箱', value: form.email });
+      if (!isCs && !isSales && this.emailRequired) fields.push({ label: '邮箱', value: form.email });
       if (!this.requireFields(fields)) return;
-      const customerId = String(form.customerId || '').trim();
       const leadId = isCustomer ? '' : String(form.leadId || '').trim();
       const orgName = String(form.orgName || '').trim();
-      if (isCustomer || isCs || isSales) {
-        if (!orgName) {
-          this.$message.warning(isCustomer ? '请填写单位全称' : '请填写客户名称');
+      const csPhone = String(form.reporterPhone || '').trim();
+      const csAccount = String(form.account || '').trim();
+      let csMatch = { id: '', via: '', row: null };
+      if (isCs && (csPhone || csAccount)) {
+        csMatch = this.matchCustomerByPhoneOrAccount(csPhone, csAccount);
+        if (csMatch.error) {
+          this.$message.warning(csMatch.error);
           return;
         }
       }
-      if ((isCs || isSales) && this.csGroupChannel && !String(form.groupName || '').trim()) {
-        this.$message.warning('请填写群名称');
+      const customerId = isCs ? (csMatch.id || '') : String(form.customerId || '').trim();
+      if (isCustomer && !String(form.contactName || '').trim()) {
+        this.$message.warning('请填写联系人姓名');
         return;
       }
-      if (!isCustomer && customerId && !/^\d{6}$/.test(customerId)) {
-        this.$message.warning('客户 ID 为 6 位数字');
+      if (isSales && !orgName) {
+        this.$message.warning('请填写客户名称');
+        return;
+      }
+      const needGroupName = (isCs || isSales) && form.channel === '企微客户群';
+      if (needGroupName && !String(form.groupName || '').trim()) {
+        this.$message.warning('请填写企微群名称');
+        return;
+      }
+      if (isSales && !/^\d{6}$/.test(customerId)) {
+        this.$message.warning('请填写客户ID，6 位数字');
         return;
       }
       if (!isCustomer && leadId && !/^2\d{5}$/.test(leadId)) {
-        this.$message.warning('线索 ID 为 2 开头的 6 位数字');
+        this.$message.warning('线索ID为 2 开头的 6 位数字');
         return;
       }
       if (!(form.detail || '').trim() && !this.detailHasImage) {
-        this.$message.warning('请填写问题详情');
+        this.$message.warning(isSales ? '请填写问题描述' : '请填写问题详情');
         return;
       }
-      const customerName = orgName;
+      const matched = isCs && csMatch.row ? csMatch.row : null;
+      const salesBook = isSales && CUSTOMER_BOOK[customerId] ? CUSTOMER_BOOK[customerId] : null;
+      const salesContact = String(form.salesContact || '').trim();
+      const salesNote = String(form.salesNote || '').trim();
+      const customerName = orgName || (matched ? matched.name : '');
+      const ticketAccount = isCs ? (csAccount || (matched ? (matched.account || '') : '')) : (form.account || (salesBook ? (salesBook.account || '') : ''));
+      const ticketPhone = isCs ? csPhone : (isSales ? salesContact : (isCustomer ? '' : (form.phone || '')));
+      const ticketGroup = ((isCs || isSales) && form.channel === '企微客户群') ? String(form.groupName || '').trim() : '';
+      const ticketOwner = isCs ? (matched ? (matched.owner || '') : '') : (salesBook ? (salesBook.owner || '') : (form.customerOwner || ''));
+      const ticketType = isCs ? (matched ? (matched.systemType || '') : '') : (salesBook ? (salesBook.systemType || '') : '');
+      const ticketStatus = isCustomer ? '' : (isCs ? (matched ? (matched.status || '') : '') : (salesBook ? (salesBook.status || '') : (form.customerStatus || '')));
+      const ticketDept = isCs ? (matched ? (matched.department || '') : '') : (salesBook ? (salesBook.department || '') : '');
       const channel = isCustomer ? '蜜度官网' : form.channel;
       const plain = (form.detail || '').replace(/\s+/g, ' ').trim();
       const time = this.nowText();
@@ -4593,6 +4976,7 @@ new Vue({
         cfId: cfId,
         extId: '',
         channel: channel,
+        businessType: isCustomer ? (form.customerStatus === '正式客户' ? '售后工单' : '售前工单') : (isSales ? (salesBook ? (salesBook.status === '正式客户' ? '售后工单' : '售前工单') : '') : (form.businessType || '')),
         ops: '智齿',
         occurredAt: time,
         createdAt: time,
@@ -4604,19 +4988,23 @@ new Vue({
         customer: customerName,
         customerId: isCustomer ? '' : customerId,
         leadId: isCustomer ? '' : leadId,
-        customerStatus: isCustomer ? '' : form.customerStatus,
-        account: form.account || '',
+        customerStatus: ticketStatus,
+        account: ticketAccount,
         accountValid: '',
-        contactName: form.contactName || '',
-        phone: form.phone || '',
-        email: form.email || '',
-        groupName: (isCs || isSales) ? String(form.groupName || '').trim() : '',
+        contactName: isCs ? (form.reporterName || '') : (isSales ? salesContact : (form.contactName || '')),
+        phone: ticketPhone,
+        email: isCs ? (form.reporterEmail || '') : (form.email || ''),
+        systemContactName: matched ? (matched.contactName || '') : '',
+        systemPhone: matched ? (matched.phone || '') : '',
+        systemEmail: matched ? (matched.email || '') : '',
+        systemProduct: matched ? (matched.accountProduct || '') : '',
+        groupName: ticketGroup,
         messageSummary: (isCs || isSales) ? String(form.messageSummary || '').trim() : '',
-        internalNote: (isCs || isSales) ? String(form.internalNote || '').trim() : '',
-        contact: form.phone || form.email || '',
+        internalNote: isSales ? salesNote : (isCs ? String(form.internalNote || '').trim() : ''),
+        contact: (isCs ? (ticketPhone || form.reporterEmail) : (isSales ? salesContact : (isCustomer ? (form.email || '') : (form.phone || form.email)))) || '',
         leadOwner: '',
-        customerOwner: form.customerOwner,
-        customerType: (isCs || isSales) ? form.customerType : '',
+        customerOwner: ticketOwner,
+        customerType: ticketType,
         salesOwner: '',
         reportType: form.reportType,
         stage: '待处理',
@@ -4633,9 +5021,9 @@ new Vue({
         surveySuggestion: '',
         staffScore: null,
         systemScore: null,
-        department: '',
-        handler: (isCs || isSales) ? this.currentUser.name : '',
-        firstHandler: (isCs || isSales) ? this.currentUser.name : '',
+        department: ticketDept,
+        handler: (isCs || isSales) ? this.actingName : '',
+        firstHandler: (isCs || isSales) ? this.actingName : '',
         creator: form.reportType,
         customerUser: customerName,
         categoryL1: form.categoryL1,
@@ -4655,7 +5043,7 @@ new Vue({
         files: (form.files || []).slice(),
         logs: [{
           time: time,
-          text: form.reportType + '已在智齿界面提报，同步到 BOSS。' + (isCustomer ? '单位全称：' + orgName : '客户名称：' + orgName + '，客户 ID：' + (customerId || '未填写') + (leadId ? '，线索 ID：' + leadId : '')) + '。账号：' + (form.account || '未填写') + ((isCs || isSales) ? '。客户类型：' + form.customerType : '') + '。原路回复：' + this.replyPath(channel)
+          text: form.reportType + '已在智齿界面提报，同步到 BOSS。' + (isSales ? '客户名称：' : '单位全称：') + (customerName || '未填写') + (isCustomer ? '' : '，客户ID：' + (customerId || '未填写') + (leadId ? '，线索ID：' + leadId : '')) + '。' + (isSales ? '账号：' : '账号：') + (ticketAccount || '未填写') + (isCs ? (csMatch.via ? '。已按' + csMatch.via + '匹配客户「' + matched.name + '」' : ((csPhone || csAccount) ? '。联系电话或账号未匹配到客户' : '')) : '') + (isSales ? '。客户联系方式：' + salesContact + '。提交人：' + this.currentUser.name : '') + (salesNote ? '。销售补充说明：' + salesNote : '') + (ticketGroup ? '。企微群名称：' + ticketGroup : '') + '。原路回复：' + this.replyPath(channel)
             + ((form.files && form.files.length) ? ' 附件 ' + form.files.length + ' 个。' : ''),
           actor: '系统',
           level: ''
@@ -4672,6 +5060,9 @@ new Vue({
         ticket.evalTrigger = rule.evalTrigger;
       }
       this.tickets.unshift(ticket);
+      if (isCs) {
+        try { localStorage.removeItem('boss-cs-intake-draft'); } catch (e) {}
+      }
       this.resetIntake();
       this.intake.reportType = form.reportType;
       this.intake.channel = form.reportType === '客户提交' ? '蜜度官网' : '';
@@ -4682,7 +5073,8 @@ new Vue({
       }
       this.page = 'list';
       this.listPage = 1;
-      this.$message.success('已提报，进入待处理');
+      const matchedTip = isCs && csMatch.via ? ('已提报，已按' + csMatch.via + '匹配到「' + matched.name + '」') : (isCs && (csPhone || csAccount) ? '已提报，未匹配到客户' : '已提报，进入待处理');
+      this.$message.success(matchedTip);
     },
     viewSubmitProgress() {
       const ticket = this.submitSuccessTicket;
@@ -4693,13 +5085,13 @@ new Vue({
     },
     backSubmitHome() {
       this.submitSuccessVisible = false;
-      this.page = 'form';
+      this.page = 'guest';
     },
     submitAnother() {
       this.submitSuccessVisible = false;
       this.intake.reportType = '客户提交';
       this.resetIntake();
-      this.page = 'form';
+      this.page = 'guest';
     },
     openMine(t) {
       this.mineCurrent = Object.assign({}, t);
@@ -4717,7 +5109,7 @@ new Vue({
     openMineCreate() {
       this.intake.reportType = '客户提交';
       this.resetIntake();
-      this.page = 'form';
+      this.page = 'guest';
     },
     openSatLink(t) {
       if (!t) return;
@@ -4732,13 +5124,28 @@ new Vue({
       this.survey.ticketId = t.id;
       this.survey.staffScore = 0;
       this.survey.systemScore = 0;
+      this.survey.suggestion = '';
+      this.survey.preview = false;
+      this.surveyMode = 'form';
       this.page = 'survey';
     },
     openSurvey() {
       this.page = 'survey';
+      this.surveyMode = 'form';
+      this.survey.preview = false;
       const list = this.pendingSurveyTickets;
       if (!list.some(t => t.id === this.survey.ticketId)) {
-        this.survey.ticketId = list.length ? list[0].id : '';
+        const fallback = list[0] || this.tickets.find(t => t.result) || this.tickets[0];
+        this.survey.ticketId = fallback ? fallback.id : '';
+        this.survey.staffScore = 0;
+        this.survey.systemScore = 0;
+        this.survey.suggestion = '';
+      }
+    },
+    setCsatMode(mode) {
+      this.surveyMode = mode;
+      this.survey.preview = mode !== 'form';
+      if (mode === 'form') {
         this.survey.staffScore = 0;
         this.survey.systemScore = 0;
         this.survey.suggestion = '';
@@ -4773,7 +5180,7 @@ new Vue({
       const red = staff < 3 || system < 3 || !!suggestion;
       ticket.logs.push({
         time: time,
-        text: '满意度调查回传：服务人员 ' + staff + ' 分，工单系统 ' + system + ' 分' + (suggestion ? '。建议：' + suggestion : ''),
+        text: '满意度调查回传：处理结果 ' + system + ' 星，服务态度 ' + staff + ' 星' + (suggestion ? '。文字反馈：' + suggestion : ''),
         actor: '客户',
         level: red || staff === 3 || system === 3 ? 'warn' : 'ok'
       });
@@ -4786,10 +5193,8 @@ new Vue({
         });
         ticket.firstResolved = 'N';
       }
-      this.survey.staffScore = 0;
-      this.survey.systemScore = 0;
-      this.survey.suggestion = '';
-      this.survey.ticketId = this.pendingSurveyTickets.length ? this.pendingSurveyTickets[0].id : '';
+      this.survey.preview = false;
+      this.surveyMode = (staff < 3 || system < 3 || suggestion) ? 'low' : 'thanks';
       this.$message.success('评价已回写工单');
     },
     openReply() {
@@ -4865,7 +5270,7 @@ new Vue({
     saveFaq() {
       if (!this.requireFields([
         { label: 'FAQ 标题', value: this.forms.faq.title },
-        { label: '问题描述', value: this.forms.faq.question },
+        { label: '问题详情', value: this.forms.faq.question },
         { label: '标准答案', value: this.forms.faq.answer }
       ])) return;
       const form = this.forms.faq;
@@ -4929,6 +5334,7 @@ new Vue({
           else if (item.key === 'evalStatus') value = this.listEval(ticket);
           else if (item.key === 'title') value = ticket.detail || ticket.title || '';
           else if (item.key === 'reportedAt') value = ticket.reportedAt || ticket.createdAt || '';
+          else if (item.key === 'handler') value = this.firstHandlerName(ticket) === '—' ? '' : this.firstHandlerName(ticket);
           else value = ticket[item.key] || '';
           return '"' + String(value).replace(/"/g, '""') + '"';
         }).join(','));
@@ -5141,7 +5547,7 @@ new Vue({
         };
         ticket.logs.push({
           time: time,
-          text: '转销售，已写入问题日志 ' + form.problemId + '，客户负责人 ' + form.owner + '。责任人仍是 ' + (ticket.firstHandler || ticket.handler || '第一个处理人') + '。反馈阶段为处理中。' + (extra ? '补充：' + extra : ''),
+          text: '转销售，已写入问题日志 ' + form.problemId + '，客户负责人 ' + form.owner + '。反馈负责人仍是 ' + (ticket.firstHandler || ticket.handler || '第一个处理人') + '。反馈阶段为处理中。' + (extra ? '补充：' + extra : ''),
           actor: this.currentUser.name,
           level: 'warn'
         });
@@ -5233,7 +5639,7 @@ new Vue({
     submitInternal() {
       const form = this.internalForm;
       if (!form.customerName) {
-        this.$message.warning('客户名称缺失，无法转入内部系统');
+        this.$message.warning('单位全称缺失，无法转入内部系统');
         return;
       }
       if (!form.customerSubmitAt || !form.originalText || !form.externalId) {
@@ -5241,11 +5647,11 @@ new Vue({
         return;
       }
       if (!/^\d{6}$/.test(String(form.customerId || '').trim())) {
-        this.$message.warning('请填写客户 ID，6 位数字');
+        this.$message.warning('请填写客户ID，6 位数字');
         return;
       }
       if (!this.requireFields([
-        { label: '产品线', value: form.productLine },
+        { label: '产品项目', value: form.productLine },
         { label: '工单类型', value: form.ticketKind },
         { label: '问题类型', value: form.problemType },
         { label: '优先级', value: form.priority }
@@ -5368,6 +5774,7 @@ new Vue({
         cfId: this.nextCfId(),
         extId: '',
         channel: src.channel || '企微客户群',
+        businessType: src.businessType || '',
         ops: 'BOSS',
         occurredAt: time,
         createdAt: time,
@@ -5388,8 +5795,8 @@ new Vue({
         submitterAccount: this.currentUser.account,
         submittedBy: this.currentUser.name,
         department: src.department || '',
-        handler: this.currentUser.name,
-        firstHandler: this.currentUser.name,
+        handler: this.actingName,
+        firstHandler: this.actingName,
         categoryL1: form.categoryL1,
         category1: form.categoryL1,
         category2: form.category2 || '',
@@ -5422,7 +5829,7 @@ new Vue({
       const form = this.forms.trial;
       if (!this.requireFields([
         { label: '客户ID', value: form.customerId },
-        { label: '账号', value: form.account },
+        { label: '客户账号', value: form.account },
         { label: '产品项目', value: form.product }
       ])) return;
       if (!/^\d{6}$/.test(String(form.customerId).trim())) {
@@ -5439,7 +5846,7 @@ new Vue({
         }
       });
       this.dlg.trial = false;
-      this.forms.trial = { customerId: '', account: '', product: '新浪舆情通' };
+      this.forms.trial = { customerId: '', account: '', product: '舆情通' };
       this.$message.success('已登记开通试用');
     },
     patchTicket(fn) {
