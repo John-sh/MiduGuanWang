@@ -216,7 +216,7 @@
 
     .op-col {
       display: flex; flex-direction: row; align-items: center; flex-wrap: wrap;
-      min-width: 220px; white-space: nowrap;
+      min-width: 280px; white-space: nowrap;
     }
     .op-col .el-button { padding: 0; margin: 0; font-size: 12px; }
     .op-col .el-button + .el-button::before {
@@ -450,6 +450,33 @@
     .grade-radios { display: flex; flex-wrap: wrap; gap: 12px 8px; padding: 8px 0 4px; }
     .grade-radios .el-radio,
     .grade-radios .el-checkbox { width: 140px; margin: 0; }
+    .custom-tag-row { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+    .custom-tag-row .el-input { flex: 1; }
+    .product-picker { border: 1px solid #e4e7ed; border-radius: 4px; overflow: hidden; background: #fff; }
+    .product-picker-input {
+      min-height: 36px; padding: 6px 12px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+      border-bottom: 2px solid #1677ff; background: #fff;
+    }
+    .product-picker-input .ph { color: #c0c4cc; font-size: 13px; }
+    .product-picker-groups { padding: 0 4px; }
+    .product-picker-row {
+      display: flex; align-items: flex-start; gap: 16px; padding: 12px 12px;
+      border-bottom: 1px dashed #ebeef5;
+    }
+    .product-picker-row:last-child { border-bottom: none; }
+    .product-picker-row .g-name {
+      width: 72px; flex-shrink: 0; color: #909399; font-size: 13px; line-height: 28px;
+    }
+    .product-picker-row .g-items { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+    .product-chip {
+      height: 28px; padding: 0 14px; border: 1px solid #dcdfe6; border-radius: 14px;
+      background: #fff; color: #303133; font-size: 13px; cursor: pointer; line-height: 26px;
+      font-family: inherit; appearance: none; -webkit-appearance: none;
+    }
+    .product-chip:hover { border-color: #1677ff; color: #1677ff; }
+    .product-chip.active { border-color: #1677ff; color: #1677ff; background: #e8f3ff; }
+    .cust-profile-grid .cell.wide { grid-column: 1 / -1; border-right: none; }
+    .cust-profile-grid .v.pre { white-space: pre-line; align-items: flex-start; }
     .score-num { font-variant-numeric: tabular-nums; font-weight: 600; }
     .col-setting { padding: 6px 4px; min-width: 168px; }
     .col-setting .el-checkbox { display: block; margin: 4px 8px; }
@@ -633,11 +660,6 @@
             <el-form :model="custQuery" label-width="108px" size="small" class="filter-form">
               <el-row :gutter="12">
                 <el-col :span="6">
-                  <el-form-item label="联系人姓名">
-                    <el-input v-model="custQuery.name" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
                   <el-form-item label="手机号">
                     <el-input v-model="custQuery.mobile" placeholder="请输入" clearable />
                   </el-form-item>
@@ -645,31 +667,6 @@
                 <el-col :span="6">
                   <el-form-item label="官网账号">
                     <el-input v-model="custQuery.officialAccountId" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="客户主体名称">
-                    <el-input v-model="custQuery.customerSubjectName" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="客户主体ID">
-                    <el-input v-model="custQuery.customerSubjectId" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="邮箱">
-                    <el-input v-model="custQuery.email" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="微信">
-                    <el-input v-model="custQuery.wechat" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="微信昵称">
-                    <el-input v-model="custQuery.nickname" placeholder="请输入" clearable />
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -691,41 +688,15 @@
                 </el-col>
                 <el-col :span="6">
                   <el-form-item label="标签">
-                    <el-select v-model="custQuery.tags" placeholder="请选择" clearable multiple collapse-tags style="width:100%">
+                    <el-select v-model="custQuery.tags" placeholder="标准标签" clearable multiple collapse-tags style="width:100%">
                       <el-option v-for="s in tagOptions" :key="s" :label="s" :value="s" />
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="6">
-                  <el-form-item label="运营套餐">
-                    <el-select v-model="custQuery.memberPack" placeholder="请选择" clearable style="width:100%">
-                      <el-option v-for="s in memberPackOptions" :key="s" :label="s" :value="s" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="备注">
-                    <el-input v-model="custQuery.remark" placeholder="请输入" clearable />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="一级渠道">
-                    <el-select v-model="custQuery.channel1" placeholder="包含" clearable filterable style="width:100%" @change="onChannel1Change">
-                      <el-option v-for="s in channel1Options" :key="s" :label="s" :value="s" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
                   <el-form-item label="二级渠道">
-                    <el-select v-model="custQuery.channel2" placeholder="包含" clearable filterable style="width:100%" @change="onChannel2Change">
+                    <el-select v-model="custQuery.channel2" placeholder="包含" clearable filterable style="width:100%">
                       <el-option v-for="s in channel2Options" :key="s" :label="s" :value="s" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="三级渠道">
-                    <el-select v-model="custQuery.channel3" placeholder="包含" clearable filterable style="width:100%">
-                      <el-option v-for="s in channel3Options" :key="s" :label="s" :value="s" />
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -759,22 +730,8 @@
                 </el-col>
                 <el-col :span="6">
                   <el-form-item label="身份状态">
-                    <el-select v-model="custQuery.identityStatus" placeholder="请选择" clearable style="width:100%">
+                    <el-select v-model="custQuery.identityStatus" placeholder="请选择" clearable multiple collapse-tags style="width:100%">
                       <el-option v-for="s in identityStatusOptions" :key="s" :label="s" :value="s" />
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="行为等级">
-                    <el-select v-model="custQuery.behaviorLevel" placeholder="请选择" clearable style="width:100%">
-                      <el-option v-for="s in behaviorLevelOptions" :key="s" :label="s" :value="s"></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="数据状态">
-                    <el-select v-model="custQuery.dataStatus" placeholder="请选择" clearable style="width:100%">
-                      <el-option v-for="s in dataStatusOptions" :key="s" :label="s" :value="s"></el-option>
                     </el-select>
                   </el-form-item>
                 </el-col>
@@ -791,6 +748,24 @@
                     />
                   </el-form-item>
                 </el-col>
+                <el-col :span="6">
+                  <el-form-item label="更新时间">
+                    <el-date-picker
+                      v-model="custQuery.updatedAt"
+                      type="daterange"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      value-format="yyyy-MM-dd"
+                      unlink-panels
+                      style="width:100%"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="6">
+                  <el-form-item label="操作人">
+                    <el-input v-model="custQuery.lastOperator" placeholder="搜索操作人" clearable />
+                  </el-form-item>
+                </el-col>
               </el-row>
             </el-form>
             <div class="filter-actions">
@@ -798,7 +773,7 @@
               <el-button type="success" size="small" plain icon="el-icon-refresh" @click="onCustReset">重置</el-button>
               <el-button type="success" size="small" icon="el-icon-upload2" @click="$message.success('批量导入（原型）')">批量导入</el-button>
             </div>
-            <div class="warn-text">*行为分累计模力通 APP 和 GEO 的用户行为。模力通 APP 行为暂定为：注册、登录、功能使用-写作、功能使用-会议纪要。</div>
+            <div class="warn-text">*行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要。</div>
             <div class="toolbar">
               <div class="toolbar-left">
                 <el-dropdown trigger="click" :hide-on-click="false">
@@ -860,7 +835,7 @@
                     <th v-if="custCols.remark">备注</th>
                     <th v-if="custCols.openid">小程序openid</th>
                     <th v-if="custCols.unionid">微信unionid</th>
-                    <th class="sticky-op" style="min-width:220px">操作</th>
+                    <th class="sticky-op" style="min-width:280px">操作</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -911,6 +886,7 @@
                         <el-button type="text" @click="openCustDetail(row)">详情</el-button>
                         <el-button type="text" @click="openCustTag(row)">打标签</el-button>
                         <el-button type="text" :disabled="!!row.formNo" @click="openCustConvert(row)">转表单</el-button>
+                        <el-button type="text" @click="openCustRemark(row)">写备注</el-button>
                       </div>
                     </td>
                   </tr>
@@ -1549,9 +1525,9 @@
       <div class="cust-block">
         <div class="section-hd">基本信息</div>
         <div class="cust-profile-grid">
-          <div class="cell" v-for="item in custProfileFields" :key="item.label">
+          <div class="cell" v-for="item in custProfileFields" :key="item.label" :class="{ wide: item.wide }">
             <div class="k">{{ item.label }}</div>
-            <div class="v">
+            <div class="v" :class="{ pre: item.wide }">
               <template v-if="item.tags">
                 <div class="cell-tags" v-if="item.tags.length">
                   <span v-for="t in item.tags" :key="t" class="tag" :class="tagClass(t)">{{ t }}</span>
@@ -1636,7 +1612,7 @@
                 />
               </div>
             </div>
-            <p class="track-hint">可按产品筛选。模力通 APP 行为（暂定）：注册、登录、功能使用-写作、功能使用-会议纪要。蜜度GEO 恢复原用户行为记录。具体以产品传输内容为准。</p>
+            <p class="track-hint">行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要。可按产品筛选。</p>
             <div class="track-flow-wrap">
               <div v-if="!custFilteredTrack.length" class="flow-empty">{{ custTrackEmptyText }}</div>
               <div v-else class="track-flow">
@@ -1673,7 +1649,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4">行为分累计模力通 APP 和 GEO 的用户行为。模力通 APP 行为暂定四项。具体以产品传输内容为准。</td>
+                <td colspan="4">行为分累计模力通 APP 和 GEO 的用户行为。行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要。</td>
               </tr>
             </tfoot>
           </table>
@@ -1689,19 +1665,36 @@
 
   <el-dialog title="打标签" :visible.sync="custTagVisible" width="560px" append-to-body :close-on-click-modal="false">
     <p style="margin:0 0 12px;color:#606266;font-size:13px;">{{ custActionRow.name || custActionRow.nickname || custActionRow.mobile || '-' }}</p>
-    <p style="margin:0 0 8px;color:#909399;font-size:12px;">标签（可多选）</p>
+    <p style="margin:0 0 8px;color:#909399;font-size:12px;">标准标签（可多选，可用于列表筛选）</p>
     <el-checkbox-group v-model="custTagDraft" class="grade-radios">
       <el-checkbox v-for="t in tagOptions" :key="t" :label="t">{{ t }}</el-checkbox>
     </el-checkbox-group>
+    <p style="margin:16px 0 8px;color:#909399;font-size:12px;">自定义标签（不进入筛选）</p>
+    <div class="custom-tag-row">
+      <el-input v-model="custTagCustom" placeholder="输入后回车添加" size="small" maxlength="20" @keyup.enter.native="addCustomTag" />
+      <el-button size="small" @click="addCustomTag">添加</el-button>
+    </div>
+    <div class="cell-tags" style="margin-top:10px;" v-if="customTagDraft.length">
+      <el-tag v-for="t in customTagDraft" :key="t" size="small" closable @close="removeCustomTag(t)">{{ t }}</el-tag>
+    </div>
     <span slot="footer">
       <el-button @click="custTagVisible = false">取消</el-button>
       <el-button type="primary" @click="saveCustTags">确定</el-button>
     </span>
   </el-dialog>
 
-  <el-dialog title="转表单" :visible.sync="custFormVisible" width="560px" append-to-body :close-on-click-modal="false">
-    <p style="margin:0 0 12px;font-size:13px;color:#303133;line-height:1.7;">请补充转线索所需信息。单位、联系人姓名、手机号、产品必填。</p>
-    <el-form :model="custFormDraft" label-width="108px" size="small">
+  <el-dialog title="写备注" :visible.sync="custRemarkVisible" width="520px" append-to-body :close-on-click-modal="false">
+    <p style="margin:0 0 12px;color:#606266;font-size:13px;">{{ custActionRow.name || custActionRow.nickname || custActionRow.mobile || '-' }}</p>
+    <el-input type="textarea" v-model="custRemarkDraft" :rows="5" placeholder="请输入备注" maxlength="200" show-word-limit />
+    <span slot="footer">
+      <el-button @click="custRemarkVisible = false">取消</el-button>
+      <el-button type="primary" @click="saveCustRemark">保存</el-button>
+    </span>
+  </el-dialog>
+
+  <el-dialog title="转表单" :visible.sync="custFormVisible" width="720px" append-to-body :close-on-click-modal="false">
+    <p style="margin:0 0 12px;font-size:13px;color:#303133;line-height:1.7;">请补充转线索所需信息。单位、联系人姓名、手机号、产品项目、需求说明必填。</p>
+    <el-form :model="custFormDraft" label-width="148px" size="small">
       <el-form-item label="单位" required>
         <el-input v-model="custFormDraft.company" placeholder="请输入单位" clearable maxlength="50" />
       </el-form-item>
@@ -1711,24 +1704,54 @@
       <el-form-item label="手机号" required>
         <el-input v-model="custFormDraft.mobile" placeholder="请输入手机号" clearable maxlength="11" />
       </el-form-item>
-      <el-form-item label="产品" required>
-        <el-select v-model="custFormDraft.product" placeholder="请选择产品" clearable style="width:100%">
-          <el-option v-for="p in formProductOptions" :key="p" :label="p" :value="p" />
+      <el-form-item label="部门">
+        <el-select v-model="custFormDraft.dept" placeholder="请选择部门" style="width:100%">
+          <el-option v-for="d in formDeptOptions" :key="d" :label="d" :value="d" />
         </el-select>
+      </el-form-item>
+      <el-form-item label="已有客户ID/线索ID">
+        <el-input v-model="custFormDraft.existId" placeholder="选填" clearable maxlength="40" />
+      </el-form-item>
+      <el-form-item label="来源">
+        <el-input v-model="custFormDraft.source" disabled />
+      </el-form-item>
+      <el-form-item label="产品项目" required>
+        <div class="product-picker">
+          <div class="product-picker-input">
+            <span v-if="!(custFormDraft.products || []).length" class="ph">请选择</span>
+            <el-tag
+              v-for="p in (custFormDraft.products || [])"
+              :key="p"
+              size="mini"
+              closable
+              @close="toggleFormProduct(p)"
+            >{{ p }}</el-tag>
+          </div>
+          <div class="product-picker-groups">
+            <div class="product-picker-row" v-for="g in formProductGroups" :key="g.group">
+              <div class="g-name">{{ g.group }}</div>
+              <div class="g-items">
+                <button
+                  type="button"
+                  class="product-chip"
+                  :class="{ active: (custFormDraft.products || []).indexOf(p) !== -1 }"
+                  v-for="p in g.items"
+                  :key="p"
+                  @click="toggleFormProduct(p)"
+                >{{ p }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </el-form-item>
       <el-form-item label="邮箱">
         <el-input v-model="custFormDraft.email" placeholder="请输入邮箱" clearable />
       </el-form-item>
-      <el-form-item label="来源">
-        <el-select v-model="custFormDraft.source" placeholder="请选择" clearable style="width:100%">
-          <el-option v-for="s in sourceOptions" :key="s" :label="s" :value="s" />
-        </el-select>
-      </el-form-item>
       <el-form-item label="跟进人">
         <el-input v-model="custFormDraft.follower" placeholder="请输入跟进人" clearable maxlength="20" />
       </el-form-item>
-      <el-form-item label="需求描述">
-        <el-input type="textarea" v-model="custFormDraft.remark" :rows="3" placeholder="请输入需求或跟进备注" maxlength="200" />
+      <el-form-item label="需求说明" required>
+        <el-input type="textarea" v-model="custFormDraft.remark" :rows="3" placeholder="转线索原因，将写入表单变更日志-内容" maxlength="200" show-word-limit />
       </el-form-item>
     </el-form>
     <span slot="footer">
@@ -1792,7 +1815,7 @@
                 <th>服务开始日期</th>
                 <th>服务终止日期</th>
                 <th>下单时间</th>
-                <th>用户名</th>
+                <th>昵称</th>
                 <th>账号（手机号）</th>
                 <th>付款编号</th>
               </tr>
@@ -2600,52 +2623,65 @@ const INV_MOCK = [
   }
 ];
 
-const GEO_LINE = '蜜度GEO小程序评估套餐';
+const GEO_LINE = '蜜度GEO';
 const GEO_PURCHASED = '蜜度GEO';
 const YQ_LINE = '舆情平台';
-const MOLITONG_LINE = '模力通';
+const MOLITONG_LINE = '模力通APP';
+const PRODUCT_LINE_OPTIONS = ['蜜度GEO', '模力通APP', '舆情平台'];
 const PRODUCT_SHORT = {
-  '蜜度GEO小程序评估套餐': '蜜度GEO',
+  '蜜度GEO': '蜜度GEO',
   '舆情平台': '舆情平台',
-  '模力通': '模力通'
+  '模力通APP': '模力通APP',
+  '模力通': '模力通APP',
+  '蜜度GEO小程序评估套餐': '蜜度GEO'
 };
 const SOURCE_OPTIONS = ['模力通App', 'GEO小程序', '蜜度官网注册', '销售后台', '学习强国'];
-  const GRADE_OPTIONS = ['S', 'A', 'B', 'C'];
-  const BEHAVIOR_TAG_OPTIONS = ['已注册未下单', '体验中', '已充值', '已下单未开票', '已绑定主体', '已开票'];
-const TAG_OPTIONS = BEHAVIOR_TAG_OPTIONS.concat(GRADE_OPTIONS);
-const FORM_PRODUCT_OPTIONS = ['蜜度GEO', '舆情平台', '模力通'];
+const GRADE_OPTIONS = ['S', 'A', 'B', 'C'];
+const STANDARD_TAG_OPTIONS = ['体验中', '已充值'].concat(GRADE_OPTIONS);
+const TAG_OPTIONS = STANDARD_TAG_OPTIONS;
+const IDENTITY_STATUS_OPTIONS = [
+  '未注册未下单', '已注册未下单', '已下单未支付', '已下单已支付',
+  '已下单未开票', '已绑定主体', '已开票'
+];
+const FORM_CONVERT_SOURCE = '联系人模块转表单';
+const FORM_DEPT_OPTIONS = ['市场部'];
+const FORM_PRODUCT_GROUPS = [
+  { group: '智能检索', items: ['舆情通', '索骥', '城感通', '数咖'] },
+  { group: '智能校对', items: ['校对通', '新媒通', '安巡通'] },
+  { group: '智能办公', items: ['模力通'] },
+  { group: '其他', items: ['知知通', '文稿通', '版权通', '品誉通', '数察通DataQ', '云能力', '蜜度官网'] }
+];
 const TRACK_PRODUCT_OPTIONS = ['模力通', '蜜度GEO'];
 const TRACK_ACTION_OPTIONS = [
   '注册',
   '登录',
-  '功能使用-写作',
-  '功能使用-会议纪要'
+  '开始写作',
+  '生成会议纪要',
+  '下订单',
+  '开票'
 ];
 const GEO_TRACK_ACTIONS = [
   '注册',
   '登录',
   '点击 9.9 元体验',
-  '进入订单页',
-  '绑定主体',
-  '提交开票'
+  '下订单',
+  '开票'
 ];
 const KEY_BEHAVIOR_OPTIONS = [
-  '功能使用-写作',
-  '功能使用-会议纪要',
+  '开始写作',
+  '生成会议纪要',
   '点击 9.9 元体验',
-  '进入订单页',
-  '绑定主体',
-  '提交开票'
+  '下订单',
+  '开票'
 ];
 const BEHAVIOR_SCORE_MAP = {
   '注册': 10,
   '登录': 2,
-  '功能使用-写作': 8,
-  '功能使用-会议纪要': 8,
+  '开始写作': 8,
+  '生成会议纪要': 8,
   '点击 9.9 元体验': 10,
-  '进入订单页': 15,
-  '绑定主体': 20,
-  '提交开票': 10
+  '下订单': 15,
+  '开票': 10
 };
 function inferTrackProduct(action, source) {
   if (source === 'GEO小程序') return '蜜度GEO';
@@ -2655,20 +2691,20 @@ function inferTrackProduct(action, source) {
 function normalizeTrackAction(action, product) {
   const a = String(action || '');
   if (!a || a.indexOf('短信') !== -1) return '';
-  if (product === '蜜度GEO') {
-    if (a === '完成注册 + 授权手机号 + 同意协议' || a === '注册') return '注册';
-    if (a === '登录') return '登录';
-    if (GEO_TRACK_ACTIONS.indexOf(a) !== -1) return a;
-    return a;
-  }
   if (a === '完成注册 + 授权手机号 + 同意协议' || a === '注册') return '注册';
   if (a === '登录') return '登录';
+  if (a === '进入订单页' || a === '下单' || a === '支付成功' || a === '支付99元年包') return '下订单';
+  if (a === '提交开票' || a === '申请开票') return '开票';
+  if (product === '蜜度GEO') {
+    if (GEO_TRACK_ACTIONS.indexOf(a) !== -1) return a;
+    return '';
+  }
+  if (a === '功能使用-写作' || a === '浏览产品页' || a === '领取15天体验' || a === '填写表单' || a === '预约演示') return '开始写作';
+  if (a === '功能使用-会议纪要') return '生成会议纪要';
   if (TRACK_ACTION_OPTIONS.indexOf(a) !== -1) return a;
-  if (['浏览产品页', '领取15天体验', '填写表单', '预约演示'].indexOf(a) !== -1) return '功能使用-写作';
-  if (['进入订单页', '下单', '支付成功', '支付99元年包', '绑定主体', '提交开票'].indexOf(a) !== -1) return '功能使用-会议纪要';
   return '';
 }
-const MEMBER_PACK_OPTIONS = ['9.9元体验套餐', '15天体验版', '99元年包'];
+const MEMBER_PACK_OPTIONS = ['蜜度GEO体验版', '模力通轻享个人版'];
 const SMS_LINK = {
   '模力通App': 'https://mt.cn/m99',
   'GEO小程序': 'https://geo.midu.cn/t99',
@@ -2707,11 +2743,11 @@ function smsSlotOf(row) {
     if (tag === '已注册未下单') return 'norecharge';
     return 'unreg';
   }
-  if (pack === '99元年包' || tag === '已开票' || tag === '已绑定主体' || tag === '已下单未开票') {
+  if (tag === '已开票' || tag === '已绑定主体' || tag === '已下单未开票' || tag === '已下单已支付') {
     if (lastUse >= 14) return 'silent';
     return 'recharged';
   }
-  if (pack === '15天体验版' || pack === '9.9元体验套餐') {
+  if (pack === '模力通轻享个人版' || pack === '蜜度GEO体验版') {
     if (day >= 15) return 'expired';
     if (day >= 12) return 'trial12';
     if (lastUse >= 14) return 'silent';
@@ -2757,7 +2793,30 @@ function invoiceStatusText(row) {
   return '-';
 }
 function packHasPoints(pack) {
-  return pack === '15天体验版' || pack === '99元年包';
+  return pack === '模力通轻享个人版';
+}
+function remapProductLine(v) {
+  if (v === '蜜度GEO小程序评估套餐') return GEO_LINE;
+  if (v === '模力通') return MOLITONG_LINE;
+  return v;
+}
+function remapMemberPack(pack) {
+  if (pack === '9.9元体验套餐') return '蜜度GEO体验版';
+  if (pack === '15天体验版' || pack === '99元年包') return '模力通轻享个人版';
+  return pack;
+}
+function isIdentityLikeTag(v) {
+  return IDENTITY_STATUS_OPTIONS.indexOf(v) !== -1 || ['已注册未充值', '未注册'].indexOf(v) !== -1;
+}
+function mapIntentToFormProducts(lines) {
+  const out = [];
+  (lines || []).forEach(function (line) {
+    const v = remapProductLine(line);
+    if (v === YQ_LINE && out.indexOf('舆情通') === -1) out.push('舆情通');
+    if (v === MOLITONG_LINE && out.indexOf('模力通') === -1) out.push('模力通');
+    if (v === GEO_LINE && out.indexOf('蜜度官网') === -1) out.push('蜜度官网');
+  });
+  return out;
 }
 function packPointsText(row) {
   return packHasPoints(row && row.memberPack) ? row.pointsRemain : '-';
@@ -2794,8 +2853,8 @@ const SOURCE_TAG_OPTIONS = [
 ];
 const BEHAVIOR_LEVEL_RULES = [
   { level: '冷', score: '10–20分', rule: '刚注册或零星登录，销售暂不跟进。' },
-  { level: '温', score: '21–45分', rule: '有功能使用（写作 / 会议纪要），可由 SDR 初步触达。' },
-  { level: '热', score: '46分以上', rule: '多次功能使用，销售需立刻跟进。' }
+  { level: '温', score: '21–45分', rule: '有使用功能（开始写作 / 生成会议纪要），可由 SDR 初步触达。' },
+  { level: '热', score: '46分以上', rule: '多次使用功能或已下订单 / 开票，销售需立刻跟进。' }
 ];
 
 function trackScoreTotal(row) {
@@ -2925,15 +2984,12 @@ const CONTACT_MOCK = [
       { time: '2026-03-12 10:24:18', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-03-12 10:26:02', action: '登录', score: 2 },
       { time: '2026-08-05 10:18:00', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-08-05 10:19:00', action: '领取15天体验', score: 10 },
-      { time: '2026-08-05 10:20:36', action: '进入订单页', score: 15 },
-      { time: '2026-08-22 14:22:00', action: '支付99元年包', score: 20 },
+      { time: '2026-08-05 10:19:00', action: '开始写作', score: 8 },
+      { time: '2026-08-05 10:20:36', action: '生成会议纪要', score: 8 },
       { time: '2026-08-10 10:02:18', action: '登录', score: 2 },
       { time: '2026-08-22 14:18:00', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-08-28 14:02:11', action: '绑定主体', score: 20 },
-      { time: '2026-08-28 14:08:40', action: '提交开票', score: 10 },
-      { time: '2026-09-20 10:12:00', action: '短信发送', score: 0 },
-      { time: '2026-09-20 10:18:22', action: '短信点击链接', score: 5 }
+      { time: '2026-08-22 14:22:00', action: '下订单', score: 15 },
+      { time: '2026-08-28 14:08:40', action: '开票', score: 10 }
     ]
   }),
   contactRow({
@@ -2963,7 +3019,7 @@ const CONTACT_MOCK = [
     formNo: '200102',
     intentLines: [GEO_LINE],
     purchasedLines: [GEO_PURCHASED],
-    identityStatus: '已绑定主体',
+    identityStatus: '已下单已支付',
     dataStatus: '正常',
     createdAt: '2026-04-08 16:12:02',
     updatedAt: '2026-09-01 16:21:33',
@@ -2979,8 +3035,7 @@ const CONTACT_MOCK = [
       { time: '2026-04-08 16:12:02', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-04-08 16:13:10', action: '登录', score: 2 },
       { time: '2026-09-01 16:08:02', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-09-01 16:08:40', action: '进入订单页', score: 15 },
-      { time: '2026-09-01 16:20:08', action: '绑定主体', score: 20 },
+      { time: '2026-09-01 16:08:40', action: '下订单', score: 15 },
       { time: '2026-09-03 10:00:00', action: '短信发送', score: 0 },
       { time: '2026-09-03 10:04:18', action: '短信点击链接', score: 5 }
     ]
@@ -3007,7 +3062,7 @@ const CONTACT_MOCK = [
     unionid: 'un_wq_003',
     intentLines: [GEO_LINE],
     purchasedLines: [],
-    identityStatus: '已注册未下单',
+    identityStatus: '已下单未支付',
     dataStatus: '正常',
     createdAt: '2026-05-21 09:35:44',
     updatedAt: '2026-09-02 09:18:22',
@@ -3021,7 +3076,7 @@ const CONTACT_MOCK = [
       { time: '2026-05-21 09:35:44', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-05-21 09:36:01', action: '登录', score: 2 },
       { time: '2026-09-02 09:12:10', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-09-02 09:16:08', action: '进入订单页', score: 15 },
+      { time: '2026-09-02 09:16:08', action: '下订单', score: 15 },
       { time: '2026-09-02 09:16:40', action: '登录', score: 2 },
       { time: '2026-09-02 09:17:11', action: '登录', score: 2 },
       { time: '2026-09-02 09:18:00', action: '登录', score: 2 },
@@ -3071,8 +3126,8 @@ const CONTACT_MOCK = [
       { time: '2026-06-02 14:20:00', action: '登录', score: 2 },
       { time: '2026-07-15 08:22:51', action: '登录', score: 2 },
       { time: '2026-08-04 16:10:18', action: '登录', score: 2 },
-      { time: '2026-08-04 16:11:40', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-08-04 16:11:50', action: '领取15天体验', score: 10 },
+      { time: '2026-08-04 16:11:40', action: '开始写作', score: 8 },
+      { time: '2026-08-04 16:11:50', action: '生成会议纪要', score: 8 },
       { time: '2026-08-04 09:00:00', action: '短信发送', score: 0 },
       { time: '2026-08-04 09:06:12', action: '短信点击链接', score: 5 },
       { time: '2026-08-04 16:12:22', action: '登录', score: 2 },
@@ -3120,7 +3175,7 @@ const CONTACT_MOCK = [
       { time: '2026-06-18 11:06:33', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-06-18 11:07:02', action: '登录', score: 2 },
       { time: '2026-08-18 19:40:00', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-08-18 19:44:10', action: '进入订单页', score: 15 }
+      { time: '2026-08-18 19:44:10', action: '下订单', score: 15 }
     ]
   }),
   contactRow({
@@ -3195,7 +3250,7 @@ const CONTACT_MOCK = [
       { time: '2026-07-15 08:22:51', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-07-15 08:23:10', action: '登录', score: 2 },
       { time: '2026-07-16 09:10:00', action: '登录', score: 2 },
-      { time: '2026-07-16 09:12:00', action: '领取15天体验', score: 10 },
+      { time: '2026-07-16 09:12:00', action: '开始写作', score: 8 },
       { time: '2026-09-28 11:00:00', action: '短信发送', score: 0 }
     ]
   }),
@@ -3234,8 +3289,8 @@ const CONTACT_MOCK = [
     behaviorTrack: [
       { time: '2026-07-28 19:44:10', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-07-28 19:45:00', action: '登录', score: 2 },
-      { time: '2026-07-28 19:50:00', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-07-28 19:51:00', action: '领取15天体验', score: 10 }
+      { time: '2026-07-28 19:50:00', action: '开始写作', score: 8 },
+      { time: '2026-07-28 19:51:00', action: '生成会议纪要', score: 8 }
     ]
   }),
   contactRow({
@@ -3280,8 +3335,8 @@ const CONTACT_MOCK = [
       { time: '2026-08-04 10:11:26', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-08-04 10:12:00', action: '登录', score: 2 },
       { time: '2026-08-04 10:40:00', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-08-04 11:06:18', action: '进入订单页', score: 15 },
-      { time: '2026-08-04 11:20:00', action: '支付99元年包', score: 20 }
+      { time: '2026-08-04 11:06:18', action: '下订单', score: 15 },
+      { time: '2026-08-04 11:20:00', action: '下订单', score: 20 }
     ]
   }),
   contactRow({
@@ -3391,9 +3446,8 @@ const CONTACT_MOCK = [
       { time: '2026-08-29 09:16:08', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-08-29 09:16:40', action: '登录', score: 2 },
       { time: '2026-09-02 11:00:00', action: '点击 9.9 元体验', score: 10 },
-      { time: '2026-09-02 11:06:18', action: '进入订单页', score: 15 },
-      { time: '2026-09-02 11:40:00', action: '绑定主体', score: 20 },
-      { time: '2026-09-02 11:42:00', action: '提交开票', score: 10 },
+      { time: '2026-09-02 11:06:18', action: '下订单', score: 15 },
+      { time: '2026-09-02 11:42:00', action: '开票', score: 10 },
       { time: '2026-09-02 15:22:41', action: '登录', score: 2 },
       { time: '2026-09-04 09:30:00', action: '短信发送', score: 0 },
       { time: '2026-09-04 09:33:08', action: '短信点击链接', score: 5 }
@@ -3475,7 +3529,8 @@ const CONTACT_MOCK = [
     behaviorTrack: [
       { time: '2026-09-28 10:00:00', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-09-28 10:02:00', action: '登录', score: 2 },
-      { time: '2026-09-28 10:08:00', action: '领取15天体验', score: 10 },
+      { time: '2026-09-28 10:08:00', action: '开始写作', score: 8 },
+      { time: '2026-10-11 18:10:00', action: '生成会议纪要', score: 8 },
       { time: '2026-10-11 09:00:00', action: '短信发送', score: 0 },
       { time: '2026-10-11 09:04:22', action: '短信点击链接', score: 5 }
     ]
@@ -3523,8 +3578,10 @@ const CONTACT_MOCK = [
     behaviorTrack: [
       { time: '2026-08-01 09:00:00', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-08-01 09:02:00', action: '登录', score: 2 },
-      { time: '2026-08-01 09:10:00', action: '领取15天体验', score: 10 },
-      { time: '2026-08-16 11:20:00', action: '支付99元年包', score: 20 },
+      { time: '2026-08-01 09:10:00', action: '开始写作', score: 8 },
+      { time: '2026-08-12 14:00:00', action: '生成会议纪要', score: 8 },
+      { time: '2026-08-16 11:20:00', action: '下订单', score: 15 },
+      { time: '2026-08-16 11:40:00', action: '开票', score: 10 },
       { time: '2026-10-10 16:00:00', action: '短信发送', score: 0 },
       { time: '2026-10-10 16:03:11', action: '短信点击链接', score: 5 }
     ]
@@ -3544,7 +3601,7 @@ const CONTACT_MOCK = [
     grade: 'C',
     behaviorTag: '未注册',
     intentLines: [GEO_LINE],
-    identityStatus: '已注册未下单',
+    identityStatus: '未注册未下单',
     dataStatus: '正常',
     createdAt: '2026-10-08 11:00:00',
     updatedAt: '2026-10-10 09:00:00',
@@ -3568,18 +3625,18 @@ CONTACT_MOCK.forEach(function (row, i) {
     const seq = ('000' + (i + 1)).slice(-4);
     row.customerSubjectId = 'SUB' + d + seq;
   }
-  if (BEHAVIOR_TAG_OPTIONS.indexOf(row.behaviorTag) === -1) {
-    row.behaviorTag = row.identityStatus || '已注册未下单';
-  }
+  row.intentLines = (row.intentLines || []).map(remapProductLine);
+  row.purchasedLines = (row.purchasedLines || []).map(remapProductLine);
+  row.memberPack = remapMemberPack(row.memberPack);
   const mergedTags = [];
   function pushContactTag(v) {
-    if (!v || TAG_OPTIONS.indexOf(v) === -1) return;
+    if (!v || isIdentityLikeTag(v)) return;
     if (mergedTags.indexOf(v) === -1) mergedTags.push(v);
   }
   (row.tags || []).forEach(pushContactTag);
   pushContactTag(row.behaviorTag);
   pushContactTag(row.grade);
-  row.tags = TAG_OPTIONS.filter(function (t) { return mergedTags.indexOf(t) !== -1; });
+  row.tags = mergedTags;
   if (!row.invoiceStatus) {
     if (row.identityStatus === '已开票') row.invoiceStatus = '已开票';
     else if (row.identityStatus === '已下单未开票' && row.dataStatus === '无效') row.invoiceStatus = '已作废';
@@ -3631,23 +3688,23 @@ new Vue({
       tagOptions: TAG_OPTIONS,
       memberPackOptions: MEMBER_PACK_OPTIONS,
       smsTemplates: SMS_TEMPLATES,
-      formProductOptions: FORM_PRODUCT_OPTIONS,
+      formProductGroups: FORM_PRODUCT_GROUPS,
+      formDeptOptions: FORM_DEPT_OPTIONS,
       channelTree: CHANNEL_TREE,
       sourceTagOptions: SOURCE_TAG_OPTIONS,
       behaviorLevelRules: BEHAVIOR_LEVEL_RULES,
-      productLineOptions: [GEO_LINE, MOLITONG_LINE, YQ_LINE],
-      purchasedLineOptions: [GEO_PURCHASED, MOLITONG_LINE],
-      identityStatusOptions: ['已注册未下单', '已下单未开票', '已绑定主体', '已开票'],
+      productLineOptions: PRODUCT_LINE_OPTIONS,
+      purchasedLineOptions: PRODUCT_LINE_OPTIONS,
+      identityStatusOptions: IDENTITY_STATUS_OPTIONS,
       behaviorLevelOptions: ['冷', '温', '热'],
       dataStatusOptions: ['正常', '无效', '已合并'],
       convertedOptions: ['是', '否'],
       custQuery: {
-        name: '', mobile: '', wechat: '', nickname: '', email: '',
-        customerSubjectName: '', customerSubjectId: '', officialAccountId: '',
-        userId: '', miduNewId: '', source: '', tags: [], memberPack: '', remark: '',
-        channel1: '', channel2: '', channel3: '', sourceTag: '', converted: '',
-        intentLine: '', purchasedLine: '', identityStatus: '',
-        behaviorLevel: '', dataStatus: '', createdAt: []
+        mobile: '', officialAccountId: '',
+        userId: '', miduNewId: '', source: '', tags: [],
+        channel2: '', sourceTag: '', converted: '',
+        intentLine: '', purchasedLine: '', identityStatus: [],
+        createdAt: [], updatedAt: [], lastOperator: ''
       },
       custList: JSON.parse(JSON.stringify(CONTACT_MOCK)),
       custSels: [],
@@ -3700,14 +3757,17 @@ new Vue({
       custCurrent: {},
       custTagVisible: false,
       custFormVisible: false,
+      custRemarkVisible: false,
       custActionRow: {},
       custTagDraft: [],
+      custTagCustom: '',
+      custRemarkDraft: '',
       custSmsVisible: false,
       custSmsTargets: [],
       custSmsTemplateId: '',
       custFormDraft: {
-        company: '', name: '', mobile: '', product: '',
-        email: '', source: '', follower: '', remark: ''
+        company: '', name: '', mobile: '', dept: '市场部', existId: '',
+        products: [], email: '', source: FORM_CONVERT_SOURCE, follower: '', remark: ''
       },
       menus: [
         { name: '我的工作台', icon: 'el-icon-s-home' },
@@ -3852,7 +3912,7 @@ new Vue({
     },
     custProfileFields() {
       const c = this.custCurrent || {};
-      return [
+      const fields = [
         { label: '联系人姓名', value: c.name || '-' },
         { label: '手机号', value: c.mobile || '-' },
         { label: '官网账号', value: c.officialAccountId || '-' },
@@ -3886,6 +3946,17 @@ new Vue({
         { label: '小程序openid', value: c.openid || '-' },
         { label: '微信unionid', value: c.unionid || '-' }
       ];
+      const logs = c.formChangeLogs || [];
+      if (logs.length) {
+        fields.push({
+          label: '表单变更日志',
+          wide: true,
+          value: logs.map(function (l) {
+            return (l.time || '') + '　' + (l.operator || '') + '　' + (l.content || '');
+          }).join('\n')
+        });
+      }
+      return fields;
     },
     filtered() {
       const q = this.query;
@@ -3991,16 +4062,14 @@ new Vue({
       });
       return all;
     },
+    customTagDraft() {
+      const std = this.tagOptions || [];
+      return (this.custTagDraft || []).filter(function (t) { return std.indexOf(t) === -1; });
+    },
     custFiltered() {
       const q = this.custQuery;
       return this.custList.filter(row => {
-        if (q.name && !(row.name || '').includes(q.name)) return false;
         if (q.mobile && !(row.mobile || '').includes(q.mobile)) return false;
-        if (q.wechat && !(row.wechat || '').includes(q.wechat)) return false;
-        if (q.nickname && !(row.nickname || '').includes(q.nickname)) return false;
-        if (q.email && !(row.email || '').includes(q.email)) return false;
-        if (q.customerSubjectName && !(row.customerSubjectName || '').includes(q.customerSubjectName)) return false;
-        if (q.customerSubjectId && !(row.customerSubjectId || '').includes(q.customerSubjectId)) return false;
         if (q.officialAccountId && !(row.officialAccountId || '').includes(q.officialAccountId)) return false;
         if (q.userId && !(row.userId || '').includes(q.userId)) return false;
         if (q.miduNewId && !(row.miduNewId || '').includes(q.miduNewId)) return false;
@@ -4010,23 +4079,24 @@ new Vue({
           const miss = q.tags.some(function (t) { return rowTags.indexOf(t) === -1; });
           if (miss) return false;
         }
-        if (q.memberPack && row.memberPack !== q.memberPack) return false;
-        if (q.remark && !(row.remark || '').includes(q.remark)) return false;
-        if (q.channel1 && !(row.channel1 || '').includes(q.channel1)) return false;
         if (q.channel2 && !(row.channel2 || '').includes(q.channel2)) return false;
-        if (q.channel3 && !(row.channel3 || '').includes(q.channel3)) return false;
         if (q.sourceTag && latestSourceTagOf(row) !== q.sourceTag) return false;
         if (q.converted === '是' && !row.formNo) return false;
         if (q.converted === '否' && row.formNo) return false;
         if (q.intentLine && (row.intentLines || []).indexOf(q.intentLine) === -1) return false;
         if (q.purchasedLine && (row.purchasedLines || []).indexOf(q.purchasedLine) === -1) return false;
-        if (q.identityStatus && row.identityStatus !== q.identityStatus) return false;
-        if (q.behaviorLevel && this.contactLevel(row) !== q.behaviorLevel) return false;
-        if (q.dataStatus && row.dataStatus !== q.dataStatus) return false;
+        if (q.identityStatus && q.identityStatus.length) {
+          if (q.identityStatus.indexOf(row.identityStatus) === -1) return false;
+        }
         if (q.createdAt && q.createdAt.length === 2) {
           const d = (row.createdAt || '').slice(0, 10);
           if (d < q.createdAt[0] || d > q.createdAt[1]) return false;
         }
+        if (q.updatedAt && q.updatedAt.length === 2) {
+          const d = (row.updatedAt || '').slice(0, 10);
+          if (d < q.updatedAt[0] || d > q.updatedAt[1]) return false;
+        }
+        if (q.lastOperator && !(row.lastOperator || '').includes(q.lastOperator)) return false;
         return true;
       });
     },
@@ -4126,12 +4196,11 @@ new Vue({
     onCustSearch() { this.custPage = 1; this.$message.success('已按条件筛选'); },
     onCustReset() {
       this.custQuery = {
-        name: '', mobile: '', wechat: '', nickname: '', email: '',
-        customerSubjectName: '', customerSubjectId: '', officialAccountId: '',
-        userId: '', miduNewId: '', source: '', tags: [], memberPack: '', remark: '',
-        channel1: '', channel2: '', channel3: '', sourceTag: '', converted: '',
-        intentLine: '', purchasedLine: '', identityStatus: '',
-        behaviorLevel: '', dataStatus: '', createdAt: []
+        mobile: '', officialAccountId: '',
+        userId: '', miduNewId: '', source: '', tags: [],
+        channel2: '', sourceTag: '', converted: '',
+        intentLine: '', purchasedLine: '', identityStatus: [],
+        createdAt: [], updatedAt: [], lastOperator: ''
       };
       this.custPage = 1;
     },
@@ -4148,17 +4217,46 @@ new Vue({
     openCustTag(row) {
       this.custActionRow = row;
       this.custTagDraft = (row.tags || []).slice();
+      this.custTagCustom = '';
       this.custTagVisible = true;
     },
+    addCustomTag() {
+      const t = (this.custTagCustom || '').trim();
+      if (!t) return;
+      if (isIdentityLikeTag(t)) {
+        this.$message.warning('身份状态不再作为标签，请到身份状态字段查看');
+        return;
+      }
+      if (this.custTagDraft.indexOf(t) === -1) this.custTagDraft.push(t);
+      this.custTagCustom = '';
+    },
+    removeCustomTag(t) {
+      this.custTagDraft = (this.custTagDraft || []).filter(function (x) { return x !== t; });
+    },
     saveCustTags() {
-      const next = TAG_OPTIONS.filter(function (t) {
-        return (this.custTagDraft || []).indexOf(t) !== -1;
-      }.bind(this));
+      const seen = {};
+      const next = (this.custTagDraft || []).map(function (t) { return String(t || '').trim(); }).filter(function (t) {
+        if (!t || isIdentityLikeTag(t) || seen[t]) return false;
+        seen[t] = true;
+        return true;
+      });
       this.$set(this.custActionRow, 'tags', next);
       this.$set(this.custActionRow, 'lastOperator', '当前用户');
       this.$set(this.custActionRow, 'updatedAt', this.now());
       this.custTagVisible = false;
       this.$message.success(next.length ? ('已更新标签为 ' + next.join('、')) : '已清空标签');
+    },
+    openCustRemark(row) {
+      this.custActionRow = row;
+      this.custRemarkDraft = row.remark || '';
+      this.custRemarkVisible = true;
+    },
+    saveCustRemark() {
+      this.$set(this.custActionRow, 'remark', (this.custRemarkDraft || '').trim());
+      this.$set(this.custActionRow, 'lastOperator', '当前用户');
+      this.$set(this.custActionRow, 'updatedAt', this.now());
+      this.custRemarkVisible = false;
+      this.$message.success('备注已保存');
     },
     toggleAllCust(e) {
       const ids = this.custPaged.map(function (r) { return r.contactId; });
@@ -4202,22 +4300,26 @@ new Vue({
         return;
       }
       this.custActionRow = row;
-      const intent = (row.intentLines && row.intentLines[0]) || '';
-      let product = '';
-      if (intent === GEO_LINE || row.source === 'GEO小程序') product = '蜜度GEO';
-      else if (intent === MOLITONG_LINE || row.source === '模力通App' || row.source === '蜜度官网注册' || row.source === '销售后台' || row.source === '学习强国') product = '模力通';
-      else if (intent === YQ_LINE) product = '舆情平台';
       this.custFormDraft = {
         company: row.customerSubjectName || '',
         name: row.name || '',
         mobile: row.mobile || '',
-        product: product,
+        dept: '市场部',
+        existId: '',
+        products: mapIntentToFormProducts(row.intentLines),
         email: row.email || '',
-        source: row.source || '',
+        source: FORM_CONVERT_SOURCE,
         follower: '当前用户',
         remark: ''
       };
       this.custFormVisible = true;
+    },
+    toggleFormProduct(name) {
+      const list = (this.custFormDraft.products || []).slice();
+      const i = list.indexOf(name);
+      if (i === -1) list.push(name);
+      else list.splice(i, 1);
+      this.$set(this.custFormDraft, 'products', list);
     },
     nextFormNo() {
       let max = 200000;
@@ -4235,25 +4337,37 @@ new Vue({
       const company = (this.custFormDraft.company || '').trim();
       const name = (this.custFormDraft.name || '').trim();
       const mobile = (this.custFormDraft.mobile || '').trim();
-      const product = (this.custFormDraft.product || '').trim();
+      const products = (this.custFormDraft.products || []).slice();
+      const reason = (this.custFormDraft.remark || '').trim();
       if (!company) return this.$message.warning('请填写单位');
       if (!name) return this.$message.warning('请填写联系人姓名');
       if (!mobile) return this.$message.warning('请填写手机号');
-      if (!product) return this.$message.warning('请选择产品');
+      if (!products.length) return this.$message.warning('请选择意向产品');
+      if (!reason) return this.$message.warning('请填写需求说明（转线索原因）');
       const no = this.nextFormNo();
+      const now = this.now();
+      const operator = '当前用户';
       this.$set(this.custActionRow, 'customerSubjectName', company);
       this.$set(this.custActionRow, 'name', name);
       this.$set(this.custActionRow, 'mobile', mobile);
       if (this.custFormDraft.email) this.$set(this.custActionRow, 'email', this.custFormDraft.email.trim());
-      if (this.custFormDraft.source) this.$set(this.custActionRow, 'source', this.custFormDraft.source);
       this.$set(this.custActionRow, 'formNo', no);
-      this.$set(this.custActionRow, 'formProduct', product);
-      this.$set(this.custActionRow, 'formFollower', this.custFormDraft.follower || '当前用户');
-      this.$set(this.custActionRow, 'formRemark', (this.custFormDraft.remark || '').trim());
-      this.$set(this.custActionRow, 'lastOperator', '当前用户');
-      this.$set(this.custActionRow, 'updatedAt', this.now());
+      this.$set(this.custActionRow, 'formDept', this.custFormDraft.dept || '市场部');
+      this.$set(this.custActionRow, 'formExistId', (this.custFormDraft.existId || '').trim());
+      this.$set(this.custActionRow, 'formSource', FORM_CONVERT_SOURCE);
+      this.$set(this.custActionRow, 'formProduct', products.join('、'));
+      this.$set(this.custActionRow, 'formFollower', this.custFormDraft.follower || operator);
+      this.$set(this.custActionRow, 'formRemark', reason);
+      this.$set(this.custActionRow, 'formChangeLogs', [{
+        time: now,
+        operator: operator,
+        type: '转表单',
+        content: reason
+      }]);
+      this.$set(this.custActionRow, 'lastOperator', operator);
+      this.$set(this.custActionRow, 'updatedAt', now);
       this.custFormVisible = false;
-      this.$message.success('已转表单，表单ID ' + no);
+      this.$message.success('已转表单，表单ID ' + no + '，需求说明已写入表单变更日志');
     },
     productShortName(name) {
       return PRODUCT_SHORT[name] || name;
@@ -4289,7 +4403,10 @@ new Vue({
         '发送成功': 'tag-ok',
         '已点击': 'tag-clicked',
         '已退订': 'tag-unsub',
+        '未注册未下单': 'tag-unreg',
         '已注册未下单': 'tag-mute',
+        '已下单未支付': 'tag-warn',
+        '已下单已支付': 'tag-ok',
         '已下单未开票': 'tag-warn',
         '已绑定主体': 'tag-info',
         '无效': 'tag-mute',
