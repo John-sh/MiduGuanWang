@@ -773,7 +773,7 @@
               <el-button type="success" size="small" plain icon="el-icon-refresh" @click="onCustReset">重置</el-button>
               <el-button type="success" size="small" icon="el-icon-upload2" @click="$message.success('批量导入（原型）')">批量导入</el-button>
             </div>
-            <div class="warn-text">*行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要。</div>
+            <div class="warn-text">*行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要、内容校对、知识问答、创建知识库。</div>
             <div class="toolbar">
               <div class="toolbar-left">
                 <el-dropdown trigger="click" :hide-on-click="false">
@@ -1612,7 +1612,7 @@
                 />
               </div>
             </div>
-            <p class="track-hint">行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要。可按产品筛选。</p>
+            <p class="track-hint">行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要、内容校对、知识问答、创建知识库。可按产品筛选。</p>
             <div class="track-flow-wrap">
               <div v-if="!custFilteredTrack.length" class="flow-empty">{{ custTrackEmptyText }}</div>
               <div v-else class="track-flow">
@@ -1649,7 +1649,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="4">行为分累计模力通 APP 和 GEO 的用户行为。行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要。</td>
+                <td colspan="4">行为分累计模力通 APP 和 GEO 的用户行为。行为记录五类：注册、登录、使用功能、下订单、开票。模力通 APP 使用功能：开始写作、生成会议纪要、内容校对、知识问答、创建知识库。</td>
               </tr>
             </tfoot>
           </table>
@@ -2637,11 +2637,11 @@ const PRODUCT_SHORT = {
 };
 const SOURCE_OPTIONS = ['模力通App', 'GEO小程序', '蜜度官网注册', '销售后台', '学习强国'];
 const GRADE_OPTIONS = ['S', 'A', 'B', 'C'];
-const STANDARD_TAG_OPTIONS = ['体验中', '已充值'].concat(GRADE_OPTIONS);
+const STANDARD_TAG_OPTIONS = GRADE_OPTIONS.slice();
 const TAG_OPTIONS = STANDARD_TAG_OPTIONS;
 const IDENTITY_STATUS_OPTIONS = [
-  '未注册未下单', '已注册未下单', '已下单未支付', '已下单已支付',
-  '已下单未开票', '已绑定主体', '已开票'
+  '未注册未下单', '已注册未使用', '已注册已使用', '已注册未下单',
+  '已下单未支付', '已下单已支付', '已下单未开票', '已绑定主体', '已开票'
 ];
 const FORM_CONVERT_SOURCE = '联系人模块转表单';
 const FORM_DEPT_OPTIONS = ['市场部'];
@@ -2657,6 +2657,9 @@ const TRACK_ACTION_OPTIONS = [
   '登录',
   '开始写作',
   '生成会议纪要',
+  '内容校对',
+  '知识问答',
+  '创建知识库',
   '下订单',
   '开票'
 ];
@@ -2670,6 +2673,9 @@ const GEO_TRACK_ACTIONS = [
 const KEY_BEHAVIOR_OPTIONS = [
   '开始写作',
   '生成会议纪要',
+  '内容校对',
+  '知识问答',
+  '创建知识库',
   '点击 9.9 元体验',
   '下订单',
   '开票'
@@ -2679,6 +2685,9 @@ const BEHAVIOR_SCORE_MAP = {
   '登录': 2,
   '开始写作': 8,
   '生成会议纪要': 8,
+  '内容校对': 8,
+  '知识问答': 8,
+  '创建知识库': 8,
   '点击 9.9 元体验': 10,
   '下订单': 15,
   '开票': 10
@@ -2701,6 +2710,9 @@ function normalizeTrackAction(action, product) {
   }
   if (a === '功能使用-写作' || a === '浏览产品页' || a === '领取15天体验' || a === '填写表单' || a === '预约演示') return '开始写作';
   if (a === '功能使用-会议纪要') return '生成会议纪要';
+  if (a === '功能使用-内容校对') return '内容校对';
+  if (a === '功能使用-知识问答') return '知识问答';
+  if (a === '功能使用-创建知识库') return '创建知识库';
   if (TRACK_ACTION_OPTIONS.indexOf(a) !== -1) return a;
   return '';
 }
@@ -2808,6 +2820,9 @@ function remapMemberPack(pack) {
 function isIdentityLikeTag(v) {
   return IDENTITY_STATUS_OPTIONS.indexOf(v) !== -1 || ['已注册未充值', '未注册'].indexOf(v) !== -1;
 }
+function isRemovedStandardTag(v) {
+  return v === '体验中' || v === '已充值';
+}
 function mapIntentToFormProducts(lines) {
   const out = [];
   (lines || []).forEach(function (line) {
@@ -2853,7 +2868,7 @@ const SOURCE_TAG_OPTIONS = [
 ];
 const BEHAVIOR_LEVEL_RULES = [
   { level: '冷', score: '10–20分', rule: '刚注册或零星登录，销售暂不跟进。' },
-  { level: '温', score: '21–45分', rule: '有使用功能（开始写作 / 生成会议纪要），可由 SDR 初步触达。' },
+  { level: '温', score: '21–45分', rule: '有使用功能（开始写作 / 生成会议纪要 / 内容校对 / 知识问答 / 创建知识库），可由 SDR 初步触达。' },
   { level: '热', score: '46分以上', rule: '多次使用功能或已下订单 / 开票，销售需立刻跟进。' }
 ];
 
@@ -2986,6 +3001,7 @@ const CONTACT_MOCK = [
       { time: '2026-08-05 10:18:00', action: '点击 9.9 元体验', score: 10 },
       { time: '2026-08-05 10:19:00', action: '开始写作', score: 8 },
       { time: '2026-08-05 10:20:36', action: '生成会议纪要', score: 8 },
+      { time: '2026-08-05 10:22:10', action: '内容校对', score: 8 },
       { time: '2026-08-10 10:02:18', action: '登录', score: 2 },
       { time: '2026-08-22 14:18:00', action: '点击 9.9 元体验', score: 10 },
       { time: '2026-08-22 14:22:00', action: '下订单', score: 15 },
@@ -3111,7 +3127,7 @@ const CONTACT_MOCK = [
     behaviorTag: '体验中',
     openid: 'oX8fT5chenjing004',
     intentLines: [MOLITONG_LINE],
-    identityStatus: '已注册未下单',
+    identityStatus: '已注册已使用',
     dataStatus: '正常',
     createdAt: '2026-06-02 14:18:09',
     updatedAt: '2026-08-04 16:12:22',
@@ -3128,6 +3144,7 @@ const CONTACT_MOCK = [
       { time: '2026-08-04 16:10:18', action: '登录', score: 2 },
       { time: '2026-08-04 16:11:40', action: '开始写作', score: 8 },
       { time: '2026-08-04 16:11:50', action: '生成会议纪要', score: 8 },
+      { time: '2026-08-04 16:14:20', action: '知识问答', score: 8 },
       { time: '2026-08-04 09:00:00', action: '短信发送', score: 0 },
       { time: '2026-08-04 09:06:12', action: '短信点击链接', score: 5 },
       { time: '2026-08-04 16:12:22', action: '登录', score: 2 },
@@ -3290,7 +3307,8 @@ const CONTACT_MOCK = [
       { time: '2026-07-28 19:44:10', action: '完成注册 + 授权手机号 + 同意协议', score: 10 },
       { time: '2026-07-28 19:45:00', action: '登录', score: 2 },
       { time: '2026-07-28 19:50:00', action: '开始写作', score: 8 },
-      { time: '2026-07-28 19:51:00', action: '生成会议纪要', score: 8 }
+      { time: '2026-07-28 19:51:00', action: '生成会议纪要', score: 8 },
+      { time: '2026-07-28 19:53:00', action: '内容校对', score: 8 }
     ]
   }),
   contactRow({
@@ -3358,7 +3376,7 @@ const CONTACT_MOCK = [
     behaviorTag: '未注册',
     openid: 'oX8fT5sunyue010',
     intentLines: [MOLITONG_LINE],
-    identityStatus: '已注册未下单',
+    identityStatus: '已注册未使用',
     dataStatus: '已合并',
     createdAt: '2026-08-12 13:28:40',
     updatedAt: '2026-08-29 10:00:00',
@@ -3469,7 +3487,7 @@ const CONTACT_MOCK = [
     grade: 'B',
     behaviorTag: '已注册未充值',
     intentLines: [MOLITONG_LINE],
-    identityStatus: '已注册未下单',
+    identityStatus: '已注册未使用',
     dataStatus: '正常',
     createdAt: '2026-09-18 14:20:00',
     updatedAt: '2026-10-08 09:12:00',
@@ -3513,7 +3531,7 @@ const CONTACT_MOCK = [
     opCountApp: 22,
     lastUseDays: 0,
     intentLines: [MOLITONG_LINE],
-    identityStatus: '已注册未下单',
+    identityStatus: '已注册已使用',
     dataStatus: '正常',
     createdAt: '2026-09-28 10:00:00',
     updatedAt: '2026-10-11 18:20:00',
@@ -3531,6 +3549,7 @@ const CONTACT_MOCK = [
       { time: '2026-09-28 10:02:00', action: '登录', score: 2 },
       { time: '2026-09-28 10:08:00', action: '开始写作', score: 8 },
       { time: '2026-10-11 18:10:00', action: '生成会议纪要', score: 8 },
+      { time: '2026-10-11 18:20:00', action: '创建知识库', score: 8 },
       { time: '2026-10-11 09:00:00', action: '短信发送', score: 0 },
       { time: '2026-10-11 09:04:22', action: '短信点击链接', score: 5 }
     ]
@@ -3580,6 +3599,7 @@ const CONTACT_MOCK = [
       { time: '2026-08-01 09:02:00', action: '登录', score: 2 },
       { time: '2026-08-01 09:10:00', action: '开始写作', score: 8 },
       { time: '2026-08-12 14:00:00', action: '生成会议纪要', score: 8 },
+      { time: '2026-08-12 14:18:00', action: '创建知识库', score: 8 },
       { time: '2026-08-16 11:20:00', action: '下订单', score: 15 },
       { time: '2026-08-16 11:40:00', action: '开票', score: 10 },
       { time: '2026-10-10 16:00:00', action: '短信发送', score: 0 },
@@ -3630,7 +3650,7 @@ CONTACT_MOCK.forEach(function (row, i) {
   row.memberPack = remapMemberPack(row.memberPack);
   const mergedTags = [];
   function pushContactTag(v) {
-    if (!v || isIdentityLikeTag(v)) return;
+    if (!v || isIdentityLikeTag(v) || isRemovedStandardTag(v)) return;
     if (mergedTags.indexOf(v) === -1) mergedTags.push(v);
   }
   (row.tags || []).forEach(pushContactTag);
@@ -4227,6 +4247,10 @@ new Vue({
         this.$message.warning('身份状态不再作为标签，请到身份状态字段查看');
         return;
       }
+      if (isRemovedStandardTag(t)) {
+        this.$message.warning('「体验中」「已充值」已从标签中移除');
+        return;
+      }
       if (this.custTagDraft.indexOf(t) === -1) this.custTagDraft.push(t);
       this.custTagCustom = '';
     },
@@ -4236,7 +4260,7 @@ new Vue({
     saveCustTags() {
       const seen = {};
       const next = (this.custTagDraft || []).map(function (t) { return String(t || '').trim(); }).filter(function (t) {
-        if (!t || isIdentityLikeTag(t) || seen[t]) return false;
+        if (!t || isIdentityLikeTag(t) || isRemovedStandardTag(t) || seen[t]) return false;
         seen[t] = true;
         return true;
       });
@@ -4404,6 +4428,8 @@ new Vue({
         '已点击': 'tag-clicked',
         '已退订': 'tag-unsub',
         '未注册未下单': 'tag-unreg',
+        '已注册未使用': 'tag-mute',
+        '已注册已使用': 'tag-info',
         '已注册未下单': 'tag-mute',
         '已下单未支付': 'tag-warn',
         '已下单已支付': 'tag-ok',
