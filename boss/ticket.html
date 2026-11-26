@@ -286,7 +286,7 @@
       width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px;
     }
     .boss-table {
-      border-collapse: collapse; font-size: 13px; min-width: 2260px; width: 100%; table-layout: fixed;
+      border-collapse: collapse; font-size: 13px; min-width: 2440px; width: 100%; table-layout: fixed;
     }
     .boss-table th {
       background: #fafafa; color: var(--text); font-weight: 500;
@@ -350,6 +350,8 @@
     .col-detail, .col-summary, .col-expect { width: 180px; }
     .col-stage, .col-result { width: 130px; }
     .col-remain { width: 188px; }
+    .col-first { width: 168px; }
+    .time-text { white-space: nowrap; }
     .col-sat { width: 70px; } .col-action { width: 220px; }
     .boss-table a { color: var(--primary); }
 
@@ -2004,12 +2006,20 @@
                 </el-select>
               </div>
               <div class="filter-item">
-                <label>风险等级</label>
-                <el-select v-model="query.risk" clearable placeholder="全部" size="small" style="width:120px">
+                <label>紧急度</label>
+                <el-select v-model="query.urgency" clearable placeholder="全部" size="small" style="width:120px">
                   <el-option label="P0 紧急" value="P0"></el-option>
                   <el-option label="P1 高" value="P1"></el-option>
                   <el-option label="P2 中" value="P2"></el-option>
                   <el-option label="P3 低" value="P3"></el-option>
+                </el-select>
+              </div>
+              <div class="filter-item">
+                <label>反馈角色</label>
+                <el-select v-model="query.feedbackRole" clearable placeholder="全部" size="small" style="width:120px">
+                  <el-option label="客户" value="客户"></el-option>
+                  <el-option label="销售" value="销售"></el-option>
+                  <el-option label="客服" value="客服"></el-option>
                 </el-select>
               </div>
               <div class="filter-item">
@@ -2088,6 +2098,7 @@
                   <th class="col-cat">问题大类</th>
                   <th class="col-risk">风险等级</th>
                   <th class="col-stage">反馈阶段</th>
+                  <th class="col-first">首次响应时间</th>
                   <th class="col-remain">剩余时间</th>
                   <th class="col-role">反馈角色</th>
                   <th class="col-handler">反馈负责人</th>
@@ -2110,6 +2121,9 @@
                   <td>{{ t.categoryL1 || t.category1 || '—' }}</td>
                   <td><span class="tag" :class="riskView(t.risk).cls" :title="t.risk">{{ riskView(t.risk).label }}</span></td>
                   <td>{{ feedbackStage(t) }}</td>
+                  <td>
+                    <span class="time-text" :class="{ overdue: firstResponseClock(t).overdue }" :title="firstResponseClock(t).title">{{ firstResponseClock(t).text }}</span>
+                  </td>
                   <td>
                     <span v-if="isClosedTicket(t)" class="muted-time">{{ closeRemainText(t) }}</span>
                     <span v-else-if="isRemainOverdue(t)" class="overdue">{{ closeRemainText(t) }}</span>
@@ -3287,7 +3301,7 @@ new Vue({
       replyChannelOptions: ['电话', '短信', '邮箱', '企微'],
       staffSteps: ['待处理', '处理中', '待确认完结', '已完结'],
       current: {},
-      query: { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', businessType: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' },
+      query: { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', businessType: '', ticketNo: '', product: '', urgency: '', feedbackRole: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' },
       reissueFrom: null,
       reissue: { product: '', categoryL1: '', category2: '', detail: '' },
       listPage: 1,
@@ -3482,7 +3496,8 @@ new Vue({
           if (hit.indexOf(key) < 0) return false;
         }
         if (q.product && this.accountProduct(t) !== q.product) return false;
-        if (q.risk && String(t.risk || '').indexOf(q.risk) !== 0) return false;
+        if (q.urgency && this.urgencyKey(t) !== q.urgency) return false;
+        if (q.feedbackRole && this.feedbackRole(t) !== q.feedbackRole) return false;
         if (q.internalStatus) {
           const internalLabel = this.returnState(t).label;
           if (q.internalStatus === '内部工单完结') {
@@ -4000,6 +4015,32 @@ new Vue({
       const body = hours + '小时 ' + mins + '分';
       return overdue ? ('超时 ' + body) : ('还剩 ' + body);
     },
+    elapsedText(ms) {
+      const minutes = Math.max(0, Math.ceil(ms / 60000));
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      return hours + '小时 ' + mins + '分';
+    },
+    firstResponseClock(t) {
+      if (!t) return { text: '—', overdue: false, title: '' };
+      const start = this.parseTime(t.reportedAt || t.createdAt);
+      const handled = this.parseTime(this.firstHandleAt(t));
+      if (handled) {
+        if (!start || handled.getTime() < start.getTime()) return { text: '—', overdue: false, title: '' };
+        return {
+          text: this.elapsedText(handled.getTime() - start.getTime()),
+          overdue: false,
+          title: '录入 ' + (t.reportedAt || t.createdAt || '') + '，首次响应 ' + this.firstHandleAt(t)
+        };
+      }
+      const rule = this.urgencyRule(t);
+      if (!rule) return { text: '未定级', overdue: false, title: '' };
+      if (!start) return { text: '—', overdue: false, title: '' };
+      const end = this.isClosedTicket(t) ? (this.parseTime(t.closedAt || t.statusAt) || new Date(this.clockTick || Date.now())) : new Date(this.clockTick || Date.now());
+      const left = start.getTime() + rule.responseMs - end.getTime();
+      const overdue = left < 0;
+      return { text: this.durationText(left, overdue), overdue: overdue, title: '' };
+    },
     csFirstOvertime(t) {
       const rule = this.urgencyRule(t);
       if (!t || !rule || this.isClosedTicket(t)) return false;
@@ -4321,7 +4362,7 @@ new Vue({
     },
     doQuery() { this.listPage = 1; this.$message.success('已按条件筛选（原型本地过滤）'); },
     resetQuery() {
-      this.query = { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', businessType: '', ticketNo: '', product: '', risk: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' };
+      this.query = { channel: '', stage: '', categoryL1: '', categoryL2: '', department: '', leadId: '', customerId: '', customerType: '', businessType: '', ticketNo: '', product: '', urgency: '', feedbackRole: '', internalStatus: '', handler: '', overdue: '', customerStatus: '', firstResolved: '', satLevel: '' };
       this.listPage = 1;
     },
     nowText() {
